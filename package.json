@@ -1,7 +1,17 @@
-fileFormatVersion: 2
-guid: 39ae6553c554891439a663af00e37c3d
-TextScriptImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+{
+	"name": "com.devenant.core",
+	"displayName": "Devenant Core",
+	"version": "1.0.0",
+	"unity": "2022.3",
+	"description": "Base scripts and tools for all Devenant projects.",
+	"author": 
+	{
+		"name": "Devenant",
+		"email": "",
+		"url": "https://devenant.net"
+    },
+	"dependencies": 
+	{
+		"com.unity.services.relay": "1.0.5"
+	}
+}
