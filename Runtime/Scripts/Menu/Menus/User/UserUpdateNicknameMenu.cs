@@ -27,14 +27,14 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(nicknameInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateNickname(nicknameInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_invalid_nickname");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_nickname"));
 
                     return;
                 }
@@ -57,7 +57,7 @@ namespace Devenant
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(response.message);
+                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
                             }
                         });
                     });

@@ -31,35 +31,35 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(emailInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateEmail(emailInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_invalid_email");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_email"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(passwordInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidatePassword(passwordInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_invalid_password");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_password"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(codeInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
@@ -82,7 +82,7 @@ namespace Devenant
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(response.message);
+                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
                             }
                         });
                     });

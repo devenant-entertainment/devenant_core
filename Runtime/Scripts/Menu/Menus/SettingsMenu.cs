@@ -57,13 +57,13 @@ namespace Devenant
             manageButton.onClick.RemoveAllListeners();
             manageButton.onClick.AddListener(() =>
             {
-                Application.OpenURL(ApplicationManager.instance.applicationData.GetStoreUrl());
+                UnityEngine.Application.OpenURL(Application.config.storeUrl);
             });
 
             infoButton.onClick.RemoveAllListeners();
             infoButton.onClick.AddListener(() => 
             {
-                Application.OpenURL(ApplicationManager.instance.applicationData.GetGameUrl());
+                UnityEngine.Application.OpenURL(Application.config.gameUrl);
             });
 
             closeButton.onClick.RemoveAllListeners();

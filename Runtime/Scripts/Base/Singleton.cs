@@ -11,6 +11,15 @@ namespace Devenant
                 if(_instance == null)
                 {
                     _instance = FindFirstObjectByType<T>();
+
+                    if(_instance == null)
+                    {
+                        GameObject gameObject = new GameObject(typeof(T).Name);
+
+                        _instance = gameObject.AddComponent<T>();
+
+                        DontDestroyOnLoad(gameObject);
+                    }
                 }
 
                 return _instance;

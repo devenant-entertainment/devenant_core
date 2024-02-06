@@ -30,13 +30,15 @@ namespace Devenant
                 List<string> result = new List<string>();
 
                 foreach(Locale locale in LocalizationSettings.Instance.GetAvailableLocales().Locales)
+                {
                     result.Add(locale.LocaleName);
+                }
 
                 return result.ToArray();
             }
         }
 
-        public void Initialize(Action callback = null)
+        public void Setup(Action callback = null)
         {
             StartCoroutine(SetupCoroutine());
 

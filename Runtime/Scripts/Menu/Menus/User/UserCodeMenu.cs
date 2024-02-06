@@ -38,7 +38,7 @@ namespace Devenant
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(response.message);
+                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
                             }
                         });
                     });

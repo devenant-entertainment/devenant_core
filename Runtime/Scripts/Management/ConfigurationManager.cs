@@ -15,16 +15,14 @@ namespace Devenant
         public Data data { get { return _data; } private set { _data = value; } }
         private Data _data;
 
-        [SerializeField] private string remoteCall;
-
-        public void Initialize(Action<bool> callback)
+        public void Setup(Action<bool> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "game", Application.productName }
+                { "game", UnityEngine.Application.productName }
             };
 
-            Request.Post(remoteCall + "config/get.php", formFields, ((Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "config", formFields, ((Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -32,7 +30,7 @@ namespace Devenant
 
                     if(data.status == "active")
                     {
-                        if(new Version(Application.version).Compare(new Version(data.version)) != Version.Comparison.Greater)
+                        if(new Version(UnityEngine.Application.version).Compare(new Version(data.version)) != Version.Comparison.Greater)
                         {
                             callback?.Invoke(true);
                         }
@@ -42,7 +40,7 @@ namespace Devenant
                             {
                                 callback?.Invoke(false);
 
-                                Application.OpenURL(ApplicationManager.instance.applicationData.GetStoreUrl());
+                                UnityEngine.Application.OpenURL(Application.config.storeUrl);
                             }));
                         }
                     }

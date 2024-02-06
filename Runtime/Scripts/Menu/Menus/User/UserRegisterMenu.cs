@@ -16,7 +16,7 @@ namespace Devenant
 
         [SerializeField] private Button registerButton;
 
-        public void Open()
+        public override void Open(Action callback = null)
         {
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(() =>
@@ -34,49 +34,49 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(nicknameInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateNickname(nicknameInputfield.text))
                 {
-                    NotificationMenu.instance.Open("invalid_nickname");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("invalid_nickname"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(emailInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateEmail(emailInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_invalid_email");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_email"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(passwordInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidatePassword(passwordInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_invalid_password");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_password"));
 
                     return;
                 }
 
                 if(acceptToggle.isOn == false)
                 {
-                    NotificationMenu.instance.Open("user_accept_off");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_accept_off"));
 
                     return;
                 }
@@ -91,12 +91,12 @@ namespace Devenant
                             {
                                 MessageMenu.instance.Open("user_register_done", () =>
                                 {
-                                    Close();
+                                    Close(callback);
                                 });
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(response.message);
+                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
                             }    
                         });
                     });
@@ -106,7 +106,7 @@ namespace Devenant
             tosButton.onClick.RemoveAllListeners();
             tosButton.onClick.AddListener(() =>
             {
-                Application.OpenURL(ApplicationManager.instance.applicationData.GetLegalUrl());
+                UnityEngine.Application.OpenURL(Application.config.legalUrl);
             });
 
             base.Open();

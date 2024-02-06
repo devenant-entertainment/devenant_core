@@ -29,7 +29,7 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(emailInputfield.text))
                 {
-                    NotificationMenu.instance.Open("user_empty_fields");
+                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
 
                     return;
                 }
@@ -49,7 +49,7 @@ namespace Devenant
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(response.message);
+                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
                             }
                         });
                     });

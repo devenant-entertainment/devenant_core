@@ -13,16 +13,13 @@ namespace Devenant
             [System.Serializable]
             public class Purchase
             {
-                public string product;
+                public string id;
+                public string type;
+                public bool value;
             }
 
             public Purchase[] purchases;
         }
-
-        [SerializeField] private string remoteCall;
-
-        public PurchaseData[] purchaseDatas { get { return _purchaseDatas; } }
-        [SerializeField] private PurchaseData[] _purchaseDatas;
 
         private IStoreController controller;
         private IExtensionProvider extensions;
@@ -39,22 +36,34 @@ namespace Devenant
         public void Setup(Action<bool> callback)
         {
             setupCallback = callback;
-            
+
             ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-            foreach(PurchaseData purchase in purchaseDatas)
+            Request.Get(Application.config.apiUrl + "purchases", UserManager.instance.data.token, (Request.Response response) =>
             {
-                builder.AddProduct(purchase.id, purchase.type);
-            }
+                if(response.success)
+                {
+                    PurchaseList purchaseList = JsonUtility.FromJson<PurchaseList>(response.data);
 
-            if (builder.products.Count > 0)
-            {
-                UnityPurchasing.Initialize(this, builder);
-            }
-            else
-            {
-                callback?.Invoke(true); 
-            }
+                    foreach(PurchaseList.Purchase purchase in purchaseList.purchases)
+                    {
+                        builder.AddProduct(purchase.id, System.Enum.Parse<ProductType>(purchase.type));
+                    }
+
+                    if(builder.products.Count > 0)
+                    {
+                        UnityPurchasing.Initialize(this, builder);
+                    }
+                    else
+                    {
+                    callback?.Invoke(true);
+                    }
+                }
+                else
+                {
+                    callback?.Invoke(false);
+                }
+            });
         }
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
@@ -128,7 +137,7 @@ namespace Devenant
                 { "product", product }
             };
 
-            Request.Post(remoteCall + "purchase/create", formFields, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "purchase/create", formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -151,7 +160,7 @@ namespace Devenant
                 { "token", UserManager.instance.data.token }
             };
 
-            Request.Post(remoteCall + "purchase/get", formFields, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "purchase/get", formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -159,7 +168,7 @@ namespace Devenant
 
                     foreach(PurchaseList.Purchase purchase in JsonUtility.FromJson<PurchaseList>(response.data).purchases)
                     {
-                        purchases.Add(purchase.product);
+                        purchases.Add(purchase.id);
                     }
 
                     callback?.Invoke(true);

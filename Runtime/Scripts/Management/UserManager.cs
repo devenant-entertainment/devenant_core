@@ -19,7 +19,7 @@ namespace Devenant
             public string avatar;
             public string email;
             public string type;
-            public string status;
+            public bool validated;
         }
 
         public Data data { get { return _data; } private set { _data = value; } }
@@ -42,7 +42,7 @@ namespace Devenant
 
         public void Code(Action<Request.Response> callback)
         {
-            Request.Get(ApplicationManager.instance.applicationData.GetApiUrl() + "user/code", data.token, (Request.Response response) =>
+            Request.Get(Application.config.apiUrl + "user/code", data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -55,7 +55,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/delete", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/delete", formFields, data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -69,7 +69,7 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/login", formFields, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/login", formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -95,7 +95,7 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/register", formFields, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/register", formFields, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -108,7 +108,7 @@ namespace Devenant
                 { "avatar", avatar }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/update_avatar", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/update_avatar", formFields, data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -129,7 +129,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/update_email", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/update_email", formFields, data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -150,7 +150,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/update_password", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/update_password", formFields, data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -163,7 +163,7 @@ namespace Devenant
                 { "nickname", nickname }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/update_nickname", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/update_nickname", formFields, data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -182,7 +182,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.applicationData.GetApiUrl() + "user/validate", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.apiUrl + "user/validate", formFields, data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });

@@ -8,27 +8,49 @@ namespace Devenant
 {
     public class NotificationMenu : Menu<NotificationMenu>
     {
-        [SerializeField] private RectTransform panelTransform;
-        [SerializeField] private TextMeshProUGUI messageText;
-
-        private List<string> messages = new List<string>();
-
-        public void Open(string message)
+        public class Notification
         {
-            if(!messages.Contains(message))
+            public readonly string message;
+            public readonly Action action;
+
+            public Notification(string message)
             {
-                messages.Add(message);
+                this.message = message;
             }
 
-            if(!isOpen)
+            public Notification(string message, Action action)
             {
-                Open();
+                this.message = message;
+                this.action = action;
             }
         }
 
-        private void Open()
+        [SerializeField] private RectTransform panelTransform;
+
+        [SerializeField] private TextMeshProUGUI messageText;
+        [SerializeField] private Button actionButton;
+
+        private List<Notification> notifications = new List<Notification>();
+
+        public void Open(Notification notification)
         {
-            messageText.text = LocalizationManager.instance.Translate("message", messages[0]);
+            notifications.Add(notification);
+
+            if(!isOpen)
+            {
+                Show();
+            }
+        }
+
+        private void Show()
+        {
+            messageText.text = LocalizationManager.instance.Translate("message", notifications[0].message);
+
+            actionButton.onClick.RemoveAllListeners();
+            actionButton.onClick.AddListener(() => 
+            { 
+                notifications[0].action?.Invoke(); 
+            });
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(panelTransform);
 
@@ -43,11 +65,11 @@ namespace Devenant
 
                 Close(() =>
                 {
-                    messages.RemoveAt(0);
+                    notifications.RemoveAt(0);
 
-                    if(messages.Count > 0)
+                    if(notifications.Count > 0)
                     {
-                        Open();
+                        Show();
                     }
                 });
             }
