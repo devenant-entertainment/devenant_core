@@ -11,6 +11,9 @@ namespace Devenant
 {
     public class MultiplayerManager : Singleton<MultiplayerManager>
     {
+        public static Action onPlayersUpdated;
+        public static Action onDisconnected;
+
         public class Session
         {
             public readonly string code;
@@ -38,13 +41,8 @@ namespace Devenant
             }
         }
 
-        public Action onPlayersUpdated;
-        public Action onDisconnected;
-
-        public Session session;
-
-        [SerializeField] private GameObject[] networkManagers;
-        [SerializeField] private int maxPlayers;
+        public Session session { get { return _session; } private set { _session = value; } }
+        private Session _session;
 
         private void OnEnable()
         {
@@ -77,18 +75,27 @@ namespace Devenant
             }
         }
 
-        public async void StartServerHost(UnityAction<bool> callback = null)
+        public async void StartHost(int maxPlayers, UnityAction<bool> callback = null)
         {
             if(session != null)
                 Disconnect();
 
             try
             {
-                string code = await Host();
+                string code = await Host(maxPlayers);
 
-                session = new Session(code);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    session = new Session(code);
 
-                callback?.Invoke(true);
+                    callback?.Invoke(true);
+                }
+                else
+                {
+                    session = null;
+
+                    callback?.Invoke(false);
+                }
             }
             catch(RelayServiceException e)
             {
@@ -100,18 +107,27 @@ namespace Devenant
             }
         }
 
-        public async void StartServerClient(string code, UnityAction<bool> callback = null)
+        public async void StartClient(string code, UnityAction<bool> callback = null)
         {
             if(session != null)
                 Disconnect();
 
             try
             {
-                await Join(code);
+                bool success = await Join(code);
 
-                session = new Session(code);
+                if(success)
+                {
+                    session = new Session(code);
 
-                callback?.Invoke(true);
+                    callback?.Invoke(true);
+                }
+                else
+                {
+                    session = null;
+
+                    callback?.Invoke(false);
+                }
             }
             catch(RelayServiceException e)
             {
@@ -123,7 +139,7 @@ namespace Devenant
             }
         }
 
-        private async Task<string> Host()
+        private async Task<string> Host(int maxPlayers)
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
 
@@ -137,18 +153,10 @@ namespace Devenant
                 allocation.ConnectionData
             );
 
-            NetworkManager.Singleton.StartHost();
-
-            foreach(GameObject setupObject in networkManagers)
-            {
-                NetworkObject networkObject = Instantiate(setupObject, transform).GetComponent<NetworkObject>();
-                networkObject.Spawn();
-            }
-
-            return code;
+            return NetworkManager.Singleton.StartHost() ? code : string.Empty;
         }
 
-        private async Task<string> Join(string code)
+        private async Task<bool> Join(string code)
         {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(code);
 
@@ -161,9 +169,7 @@ namespace Devenant
                 joinAllocation.HostConnectionData
             );
 
-            NetworkManager.Singleton.StartClient();
-
-            return code;
+            return NetworkManager.Singleton.StartClient();
         }
 
         public void Disconnect()

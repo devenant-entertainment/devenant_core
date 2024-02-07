@@ -19,7 +19,7 @@ namespace Devenant
             public string avatar;
             public string email;
             public string type;
-            public bool validated;
+            public string status;
         }
 
         public Data data { get { return _data; } private set { _data = value; } }

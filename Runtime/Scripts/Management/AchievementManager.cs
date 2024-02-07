@@ -98,7 +98,7 @@ namespace Devenant
             {
                 foreach(Achievement achievement in achievements)
                 {
-                    if (achievement.id == id)
+                    if(achievement.id == id)
                     {
                         return achievement.value;
                     }
@@ -111,7 +111,12 @@ namespace Devenant
         public Category[] categories { get { return _categories.ToArray(); } }
         private List<Category> _categories;
 
-        public void Setup(Dictionary<string, Dictionary<Achievement.Info, Action<Achievement>>> data, Action<bool> callback)
+        public void Setup(Action<bool> callback) 
+        {
+            callback?.Invoke(this);
+        }
+
+        public void SetupAchievements(Dictionary<string, Dictionary<Achievement.Info, Action<Achievement>>> data, Action<bool> callback)
         {
             Request.Get(Application.config.apiUrl + "achievement/get", UserManager.instance.data.token, (Request.Response response) =>
             {

@@ -48,75 +48,112 @@ namespace Devenant
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    LocalizationManager.instance.Setup(() =>
+#if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
+                    SteamManager.instance.Setup((bool success) =>
                     {
-                        SettingsManager.instance.Load();
-
-                        ConfigurationManager.instance.Setup((bool success) =>
+                        if(success)
                         {
-                            if(success)
+#endif
+                            LocalizationManager.instance.Setup(() =>
                             {
-                                PurchaseManager.instance.Setup((bool success) =>
+                                SettingsManager.instance.Load();
+
+                                ConfigurationManager.instance.Setup((bool success) =>
                                 {
                                     if(success)
                                     {
-                                        UserManager.instance.AutoLogin((bool success) =>
+                                        PurchaseManager.instance.Setup((bool success) =>
                                         {
-                                            LoadingMenu.instance.Close(() =>
+                                            if(success)
                                             {
-                                                if(success)
+                                                AchievementManager.instance.Setup((bool success) =>
                                                 {
-                                                    if(UserManager.instance.data.validated)
+                                                    if(success)
                                                     {
-                                                        callback?.Invoke();
+                                                        UserManager.instance.AutoLogin((bool success) =>
+                                                        {
+                                                            LoadingMenu.instance.Close(() =>
+                                                            {
+                                                                if(success)
+                                                                {
+                                                                    OnLogin(callback);
+                                                                }
+                                                                else
+                                                                {
+                                                                    UserLoginMenu.instance.Open(() =>
+                                                                    {
+                                                                        OnLogin(callback);
+                                                                    });
+                                                                }
+                                                            });
+                                                        });
                                                     }
                                                     else
                                                     {
-                                                        UserValidationMenu.instance.Open(() =>
-                                                        {
-                                                            callback?.Invoke();
-                                                        });
+                                                        Exit();
                                                     }
-                                                }
-                                                else
-                                                {
-                                                    UserLoginMenu.instance.Open(() =>
-                                                    {
-                                                        if(UserManager.instance.data.validated)
-                                                        {
-                                                            callback?.Invoke();
-                                                        }
-                                                        else
-                                                        {
-                                                            UserValidationMenu.instance.Open(() =>
-                                                            {
-                                                                callback?.Invoke();
-                                                            });
-                                                        }
-                                                    });
-                                                }
-                                            });
+                                                });
+                                            }
+                                            else
+                                            {
+                                                Exit();
+                                            }
                                         });
                                     }
                                     else
                                     {
-                                        MessageMenu.instance.Open("error", () =>
-                                        {
-                                            Exit();
-                                        });
+                                        Exit();
                                     }
                                 });
-                            }
-                            else
-                            {
-                                LoadingMenu.instance.Close();
+                            });
+#if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
+                        }
+                        else
+                        {
+                            Exit();
+                        }
+                    });
+#endif
+                });
+            }
 
-                                MessageMenu.instance.Open("error", () =>
-                                {
-                                    Exit();
-                                });
-                            }
+            void OnLogin(Action callback)
+            {
+                switch(UserManager.instance.data.status)
+                {
+                    case "active":
+
+                        callback?.Invoke();
+
+                        break;
+
+                    case "unvalidated":
+
+                        UserValidationMenu.instance.Open(() =>
+                        {
+                            callback?.Invoke();
                         });
+
+                        break;
+
+                    case "banned":
+
+                        MessageMenu.instance.Open("user_banned", () =>
+                        {
+                            Exit();
+                        });
+
+                        break;
+                }
+            }
+
+            void Exit()
+            {
+                LoadingMenu.instance.Close(() =>
+                {
+                    MessageMenu.instance.Open("error", () =>
+                    {
+                        Exit();
                     });
                 });
             }
