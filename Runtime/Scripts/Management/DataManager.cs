@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class GameManager : Singleton<GameManager>
+    public class DataManager : Singleton<DataManager>
     {
         [System.Serializable]
         public class GameList
@@ -21,7 +21,7 @@ namespace Devenant
 
         [SerializeField] private string remoteCall;
 
-        public void Get(Action<GameList> callback)
+        public void List(Action<GameList> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {

@@ -22,7 +22,7 @@ namespace Devenant
                 { "game", UnityEngine.Application.productName }
             };
 
-            Request.Post(Application.config.apiUrl + "config", formFields, ((Request.Response response) =>
+            Request.Post(Application.config.gameApiUrl + "config", formFields, ((Request.Response response) =>
             {
                 if(response.success)
                 {

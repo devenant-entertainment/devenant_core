@@ -1,3 +1,4 @@
+using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 
@@ -15,15 +16,17 @@ namespace Devenant
 
             public readonly Environment environment;
 
-            public readonly string apiUrl;
+            public readonly string coreApiUrl;
+            public readonly string gameApiUrl;
             public readonly string gameUrl;
             public readonly string legalUrl;
             public readonly string storeUrl;
 
-            public Config (Environment environment, string apiUrl, string gameUrl, string legalUrl, string storeUrl)
+            public Config (Environment environment, string coreApiUrl, string gameApiUrl, string gameUrl, string legalUrl, string storeUrl)
             {
                 this.environment = environment;
-                this.apiUrl = apiUrl;
+                this.coreApiUrl = coreApiUrl;
+                this.gameApiUrl = gameApiUrl;
                 this.gameUrl = gameUrl;
                 this.legalUrl = legalUrl;
                 this.storeUrl = storeUrl;
@@ -33,7 +36,7 @@ namespace Devenant
         public static Config config { get { return _config; } }
         private static Config _config;
 
-        public static void Initialize(Config config, Action callback = null)
+        public static void Initialize(Config config, PurchaseManager.Purchase.Info[] purchases, AchievementManager.Achievement.Info[] achievements, Action callback = null)
         {
             _config = config;
 
@@ -45,6 +48,8 @@ namespace Devenant
                 options.SetEnvironmentName(config.environment.ToString());
 
                 await UnityServices.InitializeAsync(options);
+
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
                 LoadingMenu.instance.Open(() =>
                 {
@@ -66,7 +71,7 @@ namespace Devenant
                                         {
                                             if(success)
                                             {
-                                                AchievementManager.instance.Setup((bool success) =>
+                                                AchievementManager.instance.Setup(achievements, (bool success) =>
                                                 {
                                                     if(success)
                                                     {

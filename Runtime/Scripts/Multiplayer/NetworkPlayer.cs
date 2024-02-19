@@ -2,10 +2,10 @@ using Unity.Netcode;
 
 namespace Devenant
 {
-    public class Player : NetworkBehaviour
+    public class NetworkPlayer : NetworkBehaviour
     {
-        public static Action<Player> onPlayerConnected;
-        public static Action<Player> onPlayerDisconnected;
+        public static Action<NetworkPlayer> onPlayerConnected;
+        public static Action<NetworkPlayer> onPlayerDisconnected;
 
         public string nickname { get { return _nickname; } private set { _nickname = value; } }
         private string _nickname;

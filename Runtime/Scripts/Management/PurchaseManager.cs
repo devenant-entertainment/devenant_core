@@ -1,15 +1,21 @@
+using Codice.Client.Common;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 
 namespace Devenant
 {
-    public class PurchaseManager : Singleton<PurchaseManager>, IDetailedStoreListener
+    public class PurchaseManager : Singleton<PurchaseManager>
     {
+        public static Action<Purchase> onPurchased;
+
         [System.Serializable]
-        private class PurchaseList
+        private class Response
         {
+            public Purchase[] purchases;
+
             [System.Serializable]
             public class Purchase
             {
@@ -17,46 +23,106 @@ namespace Devenant
                 public string type;
                 public bool value;
             }
-
-            public Purchase[] purchases;
         }
 
-        private IStoreController controller;
-        private IExtensionProvider extensions;
-
-        public Product[] products { get { return _products; } private set { _products = value; } }
-        private Product[] _products;
-
-        public List<string> purchases { get { return _purchases; } private set { _purchases = value; } }
-        private List<string> _purchases;
-
-        private Action<bool> setupCallback;
-        private Action<bool> purchaseCallback;
-
-        public void Setup(Action<bool> callback)
+        public class Purchase
         {
-            setupCallback = callback;
+            public class Info
+            {
+                public enum Type
+                {
+                    Consumable,
+                    Non_Consumable,
+                    Subscription
+                }
 
-            ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+                public readonly string id;
+                public readonly Type type;
 
-            Request.Get(Application.config.apiUrl + "purchases", UserManager.instance.data.token, (Request.Response response) =>
+                public Info(string id, Type type)
+                {
+                    this.id = id;
+                    this.type = type;
+                }
+            }
+
+            public readonly Info info;
+
+            public bool purchased { get { return _purchased; } private set { _purchased = value; } }
+            private bool _purchased;
+
+            public Purchase(Info info, bool purchased)
+            {
+                this.info = info;
+                this.purchased = purchased;
+            }
+
+            public void Set(Action<bool> callback = null)
+            {
+                if(!purchased)
+                {
+                    callback?.Invoke(false);
+
+                    return;
+                }
+
+                purchased = true;
+
+                onPurchased?.Invoke(this);
+
+                Dictionary<string, string> formFields = new Dictionary<string, string>()
+                {
+                    {"id", info.id }
+                };
+
+                Request.Post(Application.config.gameApiUrl + "purchases/set", formFields, UserManager.instance.data.token, (Request.Response response) =>
+                {
+                    callback?.Invoke(response.success);
+                });
+            }
+        }
+
+        public Purchase[] purchases { get { return _purchases; } private set { _purchases = value; } }
+        private Purchase[] _purchases;
+
+        private PurchasingController purchasingController;
+
+        public void Setup(Purchase.Info[] purchases, Action<bool> callback)
+        {
+            Request.Get(Application.config.gameApiUrl + "purchases/get", UserManager.instance.data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    PurchaseList purchaseList = JsonUtility.FromJson<PurchaseList>(response.data);
+                    Response data = JsonUtility.FromJson<Response>(response.data);
 
-                    foreach(PurchaseList.Purchase purchase in purchaseList.purchases)
+                    this.purchases = new Purchase[purchases.Length];
+
+                    for(int i = 0; i < this.purchases.Length; i++)
                     {
-                        builder.AddProduct(purchase.id, System.Enum.Parse<ProductType>(purchase.type));
+                        bool purchased = false;
+
+                        foreach(Response.Purchase purchase in data.purchases)
+                        {
+                            if(purchase.id == purchases[i].id)
+                            {
+                                purchased = purchase.value;
+
+                                break;
+                            }
+                        }
+
+                        this.purchases[i] = new Purchase(purchases[i], purchased);
                     }
 
-                    if(builder.products.Count > 0)
+                    if(this.purchases.Length > 0)
                     {
-                        UnityPurchasing.Initialize(this, builder);
+                        purchasingController = new MobilePurchasing();
+
+                        purchasingController.Setup(this.purchases, callback);
                     }
                     else
                     {
-                    callback?.Invoke(true);
+                        callback?.Invoke(true);
                     }
                 }
                 else
@@ -66,118 +132,109 @@ namespace Devenant
             });
         }
 
-        public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+        public abstract class PurchasingController
         {
-            this.controller = controller;
-            this.extensions = extensions;
-
-            products = controller.products.all;
-
-            setupCallback?.Invoke(true);
-            setupCallback = null;
-        }
-
-        public void OnInitializeFailed(InitializationFailureReason error)
-        {
-            setupCallback?.Invoke(false);
-            setupCallback = null;
-
-            Debug.LogError("OnInitializeFailed: " + error.ToString());
-        }
-
-        public void OnInitializeFailed(InitializationFailureReason error, string message)
-        {
-            setupCallback?.Invoke(false);
-            setupCallback = null;
-
-            Debug.LogError("OnInitializeFailed: " + error.ToString() + " => message: " + message);
-        }
-
-        public void Purchase(Product product, Action<bool> callback)
-        {
-            purchaseCallback = callback;
-
-            controller.InitiatePurchase(product.definition.id);
-        }
-
-        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
-        {
-            purchaseCallback?.Invoke(false);
-            purchaseCallback = null;
-
-            Debug.LogError("OnPurchaseFailed: " + failureDescription.message.ToString());
-        }
-
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
-        {
-            purchaseCallback?.Invoke(false);
-            purchaseCallback = null;
-
-            Debug.LogError("OnPurchaseFailed: " + failureReason.ToString());
-        }
-
-        public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
-        {
-            CreatePurchase(purchaseEvent.purchasedProduct.definition.id, (bool success) =>
+            public class SetupData
             {
-                purchaseCallback?.Invoke(success);
+                public readonly bool success;
+                public readonly Purchase[] purchases;
+
+                public class Purchase
+                {
+                    public readonly string id;
+                    public readonly bool purchased;
+
+                    public Purchase(string id, bool purchased)
+                    {
+                        this.id = id;
+                        this.purchased = purchased;
+                    }
+                }
+
+                public SetupData(bool success, Purchase[] purchases = null)
+                {
+                    this.success = success; 
+                    this.purchases = purchases;
+                }
+            }
+
+            public abstract void Setup(Purchase[] purchases, Action<SetupData> callback);
+            public abstract void Purchase(string id, Action<bool> callback);
+        }
+
+        public class MobilePurchasing : PurchasingController, IDetailedStoreListener
+        {
+            private IStoreController controller;
+
+            private Product[] products;
+
+            private Action<SetupData> setupCallback;
+            private Action<bool> purchaseCallback;
+
+            public override void Setup(Purchase[] purchases, Action<SetupData> callback)
+            {
+                setupCallback = callback;
+
+                ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+
+                foreach(Purchase purchase in purchases)
+                {
+                    builder.AddProduct(purchase.info.id, purchase.info.type== PurchaseManager.Purchase.Info.Type.);
+                }
+
+                UnityPurchasing.Initialize(this, builder);
+            }
+
+            public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+            {
+                this.controller = controller;
+
+                products = controller.products.all;
+
+                List<SetupData.Purchase> purchases = new 
+
+                setupCallback?.Invoke(new SetupData(true, ));
+                setupCallback = null;
+            }
+
+            public void OnInitializeFailed(InitializationFailureReason error)
+            {
+                setupCallback?.Invoke(new SetupData(false));
+                setupCallback = null;
+            }
+
+            public void OnInitializeFailed(InitializationFailureReason error, string message)
+            {
+                setupCallback?.Invoke(new SetupData(false));
+                setupCallback = null;
+            }
+
+            public override void Purchase(string id, Action<bool> callback)
+            {
+                purchaseCallback = callback;
+
+                controller.InitiatePurchase(id);
+            }
+
+            public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
+            {
+                purchaseCallback?.Invoke(true);
                 purchaseCallback = null;
-            });
 
-            Debug.LogError("ProcessPurchase...");
+                return PurchaseProcessingResult.Complete;
+            }
 
-            return PurchaseProcessingResult.Complete;
-        }
-
-        private void CreatePurchase(string product, Action<bool> callback = null)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
+            public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
             {
-                { "token", UserManager.instance.data.token },
-                { "product", product }
-            };
+                purchaseCallback?.Invoke(false);
+                purchaseCallback = null;
+            }
 
-            Request.Post(Application.config.apiUrl + "purchase/create", formFields, (Request.Response response) =>
+            public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
             {
-                if(response.success)
-                {
-                    GetPurchases((bool success) =>
-                    {
-                        callback?.Invoke(success);
-                    });
-                }
-                else
-                {
-                    callback?.Invoke(false);
-                }
-            });
-        }
-
-        public void GetPurchases(Action<bool> callback)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
-            {
-                { "token", UserManager.instance.data.token }
-            };
-
-            Request.Post(Application.config.apiUrl + "purchase/get", formFields, (Request.Response response) =>
-            {
-                if(response.success)
-                {
-                    purchases = new List<string>();
-
-                    foreach(PurchaseList.Purchase purchase in JsonUtility.FromJson<PurchaseList>(response.data).purchases)
-                    {
-                        purchases.Add(purchase.id);
-                    }
-
-                    callback?.Invoke(true);
-                }
-                else
-                {
-                    callback?.Invoke(true);
-                }
-            });
+                purchaseCallback?.Invoke(false);
+                purchaseCallback = null;
+            }
         }
     }
 }

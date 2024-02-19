@@ -42,7 +42,7 @@ namespace Devenant
 
         public void Code(Action<Request.Response> callback)
         {
-            Request.Get(Application.config.apiUrl + "user/code", data.token, (Request.Response response) =>
+            Request.Get(Application.config.coreApiUrl + "user/code", data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -55,7 +55,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.apiUrl + "user/delete", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/delete", formFields, data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -69,7 +69,7 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(Application.config.apiUrl + "user/login", formFields, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/login", formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -95,7 +95,7 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(Application.config.apiUrl + "user/register", formFields, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/register", formFields, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -108,7 +108,7 @@ namespace Devenant
                 { "avatar", avatar }
             };
 
-            Request.Post(Application.config.apiUrl + "user/update_avatar", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/update_avatar", formFields, data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -129,7 +129,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.apiUrl + "user/update_email", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/update_email", formFields, data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -150,7 +150,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.apiUrl + "user/update_password", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/update_password", formFields, data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -163,7 +163,7 @@ namespace Devenant
                 { "nickname", nickname }
             };
 
-            Request.Post(Application.config.apiUrl + "user/update_nickname", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/update_nickname", formFields, data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -182,7 +182,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.apiUrl + "user/validate", formFields, data.token, (Request.Response response) =>
+            Request.Post(Application.config.coreApiUrl + "user/validate", formFields, data.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });

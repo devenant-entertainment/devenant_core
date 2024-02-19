@@ -12,7 +12,7 @@ namespace Devenant
 
         public void Get(string avatar, Action<Sprite> callback)
         {
-            UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(Application.config.apiUrl + "avatars/" + avatar + ".png");
+            UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(Application.config.coreApiUrl + "avatars/" + avatar + ".png");
 
             unityWebRequest.SendWebRequest().completed += (AsyncOperation asyncOperation) =>
             {

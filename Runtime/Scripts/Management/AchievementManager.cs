@@ -8,15 +8,16 @@ namespace Devenant
         public static Action<Achievement> onProgressed;
         public static Action<Achievement> onCompleted;
 
-        public class Category
+        [System.Serializable]
+        private class Response
         {
-            public readonly string id;
-            public readonly Achievement[] achievements;
+            public Achievement[] achievements;
 
-            public Category(string id, Achievement[] achievements)
+            [System.Serializable]
+            public class Achievement
             {
-                this.id = id;
-                this.achievements = achievements;
+                public string id;
+                public int value;
             }
         }
 
@@ -25,133 +26,100 @@ namespace Devenant
             public class Info
             {
                 public readonly string id;
-                public readonly int max;
+                public readonly int value;
 
-                public Info(string id)
+                public Info(string id, int value)
                 {
                     this.id = id;
-                    max = 1;
-                }
-
-                public Info(string id, int max)
-                {
-                    this.id = id;
-                    this.max = Mathf.Clamp(max, 1, int.MaxValue);
+                    this.value = value;
                 }
             }
 
             public readonly Info info;
 
-            public int value
-            {
-                get
-                {
-                    return _value;
-                }
-                set
-                {
-                    if(value > _value && value <= info.max)
-                    {
-                        _value = Mathf.Clamp(value, 0, info.max);
-
-                        onProgressed?.Invoke(this);
-
-                        if(_value == info.max)
-                        {
-                            onCompleted?.Invoke(this);
-                        }
-                    }
-                }
-            }
+            public int value { get { return _value; } private set { _value = value; } }
             private int _value;
 
-            public bool completed { get { return value == info.max; } }
-
-            public Achievement(Info info, int value, Action<Achievement> setup)
+            public Achievement(Info info, int value)
             {
                 this.info = info;
-                _value = value;
-
-                setup?.Invoke(this);
+                this.value = value;
             }
 
-            public void Complete()
+            public void Set(int value, Action<bool> callback = null)
             {
-                if(!completed)
+                if(value > info.value)
                 {
-                    value = info.max;
-                }
-            }
-        }
+                    callback?.Invoke(false);
 
-        private class AchievementData
-        {
-            public class Achievement
-            {
-                public string id;
-                public int value;
-            }
-
-            public Achievement[] achievements;
-
-            public int GetValue(string id)
-            {
-                foreach(Achievement achievement in achievements)
-                {
-                    if(achievement.id == id)
-                    {
-                        return achievement.value;
-                    }
+                    return;
                 }
 
-                return 0;
+                if(value <= this.value)
+                {
+                    callback?.Invoke(false);
+
+                    return;
+                }
+
+                this.value = value;
+
+                onProgressed?.Invoke(this);
+
+                if(this.value == info.value)
+                {
+                    onCompleted?.Invoke(this);
+                }
+
+                Dictionary<string, string> formFields = new Dictionary<string, string>()
+                {
+                    {"id", info.id },
+                    {"value", value.ToString() }
+                };
+
+                Request.Post(Application.config.gameApiUrl + "achievements/set", formFields, UserManager.instance.data.token, (Request.Response response) =>
+                {
+                    callback?.Invoke(response.success);
+                });
             }
         }
 
-        public Category[] categories { get { return _categories.ToArray(); } }
-        private List<Category> _categories;
+        public Achievement[] achievements { get { return _achievements; } private set { _achievements = value; } }
+        private Achievement[] _achievements;
 
-        public void Setup(Action<bool> callback) 
+        public void Setup(Achievement.Info[] achievements, Action<bool> callback) 
         {
-            callback?.Invoke(this);
-        }
-
-        public void SetupAchievements(Dictionary<string, Dictionary<Achievement.Info, Action<Achievement>>> data, Action<bool> callback)
-        {
-            Request.Get(Application.config.apiUrl + "achievement/get", UserManager.instance.data.token, (Request.Response response) =>
+            Request.Get(Application.config.gameApiUrl + "achievements/get", UserManager.instance.data.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    AchievementData achievementData = JsonUtility.FromJson<AchievementData>(response.data);
+                    Response data = JsonUtility.FromJson<Response>(response.data);
 
-                    _categories = new List<Category>();
+                    this.achievements = new Achievement[achievements.Length];
 
-                    foreach(string category in data.Keys)
+                    for(int i = 0; i < this.achievements.Length; i++)
                     {
-                        List<Achievement> achievements = new List<Achievement>();
+                        int value = 0;
 
-                        foreach(Achievement.Info achievement in data[category].Keys)
+                        foreach(Response.Achievement achievement in data.achievements)
                         {
-                            achievements.Add(new Achievement(achievement, achievementData.GetValue(achievement.id), data[category][achievement]));
+                            if (achievement.id == achievements[i].id)
+                            {
+                                value = achievement.value;
+
+                                break;
+                            }
                         }
 
-                        _categories.Add(new Category(category, achievements.ToArray()));
+                        this.achievements[i] = new Achievement(achievements[i], value);
                     }
+
+                    callback?.Invoke(true);
                 }
-            });
-        }
-
-        public void Set(string id, int value, Action<bool> callback)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>()
-            {
-                { "achievement" ,  id},
-                { "value" ,  value.ToString()},
-            };
-
-            Request.Post(Application.config.apiUrl + "achievement/get", formFields, UserManager.instance.data.token, (Request.Response response) =>
-            {
-                callback?.Invoke(response.success);
+                else
+                {
+                    callback?.Invoke(false);
+                }
             });
         }
     }
