@@ -17,7 +17,7 @@ namespace Devenant
         {
             if (IsLocalPlayer)
             {
-                SetupServerRpc(UserManager.instance.data.nickname, UserManager.instance.data.avatar);
+                SetupServerRpc(UserManager.instance.user.nickname, UserManager.instance.user.avatar);
             }
         }
 

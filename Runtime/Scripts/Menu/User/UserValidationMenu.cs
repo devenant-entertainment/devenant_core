@@ -21,7 +21,7 @@ namespace Devenant
                 {
                     if(response)
                     {
-                        Application.Exit();
+                        ApplicationManager.instance.Exit();
                     }
                 });
             });

@@ -1,28 +1,46 @@
-using Devenant;
 using UnityEngine;
 
-public class ApplicationInitializer : MonoBehaviour
+namespace Devenant.Samples
 {
-    [SerializeField] private Devenant.Application.Config.Environment environment;
-    [SerializeField] private string coreApiUrl;
-    [SerializeField] private string gameApiUrl;
-    [SerializeField] private string gameUrl;
-    [SerializeField] private string legalUrl;
-    [SerializeField] private string storeUrl;
-
-    private void Start()
+    public class ApplicationInitializer : MonoBehaviour
     {
-        Devenant.Application.Initialize(new Devenant.Application.Config(environment, coreApiUrl, gameApiUrl, gameUrl, legalUrl, storeUrl), 
-            new PurchaseManager.Purchase.Info[]
-            {
-                new PurchaseManager.Purchase.Info("starting_pack", UnityEngine.Purchasing.ProductType.Consumable)
-            },
-            new AchievementManager.Achievement.Info[]
-            {
-                new AchievementManager.Achievement.Info("initialize", 1)
-            }
-        );
+        [SerializeField] private ApplicationEnvironment environment;
 
-        Destroy(gameObject);
+        private void Start()
+        {
+            ApplicationManager.instance.Initialize(new Application(environment, string.Empty, string.Empty, string.Empty, new DatabaseEndpoints()
+            {
+                achievementGet = "",
+                achievementSet = "",
+                config = "",
+                gameCreate = "",
+                gameDelete = "",
+                gameGet = "",
+                gameLoad = "",
+                gameSave = "",
+                purchaseGet = "",
+                purchaseSet = "",
+                userCode = "",
+                userDelete = "",
+                userLogin = "",
+                userRegister = "",
+                userUpdateAvatar = "",
+                userUpdateEmail = "",
+                userUpdateNickname = "",
+                userUpdatePassword = "",
+                userValidate = "",
+            }),
+                new Purchase.Info[]
+                {
+                    new Purchase.Info("starting_pack", PurchaseType.Purchase)
+                },
+                new Achievement.Info[]
+                {
+                    new Achievement.Info("level_01", 1)
+                }
+            );
+
+            Destroy(gameObject);
+        }
     }
 }

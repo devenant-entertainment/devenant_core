@@ -6,24 +6,13 @@ namespace Devenant
 {
     public class UserManager : Singleton<UserManager>
     {
-        public static Action<Data> onUserUpdated;
+        public static Action<User> onUserUpdated;
 
         private const string emailKey = "UserManager.Email";
         private const string passwordKey = "UserManager.Password";
 
-        [System.Serializable]
-        public class Data
-        {
-            public string token;
-            public string nickname;
-            public string avatar;
-            public string email;
-            public string type;
-            public string status;
-        }
-
-        public Data data { get { return _data; } private set { _data = value; } }
-        private Data _data;
+        public User user { get { return _user; } private set { _user = value; } }
+        private User _user;
 
         public void AutoLogin(Action<bool> callback)
         {
@@ -42,7 +31,7 @@ namespace Devenant
 
         public void Code(Action<Request.Response> callback)
         {
-            Request.Get(Application.config.coreApiUrl + "user/code", data.token, (Request.Response response) =>
+            Request.Get(ApplicationManager.instance.config.endpoints.userCode, user.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -55,7 +44,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/delete", formFields, data.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userDelete, formFields, user.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -69,11 +58,13 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/login", formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userLogin, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    data = JsonUtility.FromJson<Data>(response.data);
+                    user = new User(JsonUtility.FromJson<UserResponse>(response.data));
+
+                    onUserUpdated?.Invoke(user);
 
                     if(rememberData)
                     {
@@ -95,7 +86,7 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/register", formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userRegister, formFields, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -108,13 +99,13 @@ namespace Devenant
                 { "avatar", avatar }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/update_avatar", formFields, data.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userUpdateAvatar, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    data.avatar = avatar;
+                    user.avatar = avatar;
 
-                    onUserUpdated?.Invoke(data);
+                    onUserUpdated?.Invoke(user);
                 }
 
                 callback?.Invoke(response);
@@ -129,13 +120,13 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/update_email", formFields, data.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userUpdateEmail, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    data.email = email;
+                    user.email = email;
 
-                    onUserUpdated?.Invoke(data);
+                    onUserUpdated?.Invoke(user);
                 }
 
                 callback?.Invoke(response);
@@ -150,7 +141,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/update_password", formFields, data.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userUpdatePassword, formFields, user.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -163,12 +154,13 @@ namespace Devenant
                 { "nickname", nickname }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/update_nickname", formFields, data.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userUpdateNickname, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    data.nickname = nickname;
-                    onUserUpdated?.Invoke(data);
+                    user.nickname = nickname;
+
+                    onUserUpdated?.Invoke(user);
                 }
 
                 callback?.Invoke(response);
@@ -182,8 +174,15 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(Application.config.coreApiUrl + "user/validate", formFields, data.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.userValidate, formFields, user.token, (Request.Response response) =>
             {
+                if(response.success)
+                {
+                    user.status = UserStatus.Active;
+
+                    onUserUpdated?.Invoke(user);
+                }
+
                 callback?.Invoke(response);
             });
         }

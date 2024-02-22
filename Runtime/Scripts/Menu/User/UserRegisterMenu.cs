@@ -106,7 +106,7 @@ namespace Devenant
             tosButton.onClick.RemoveAllListeners();
             tosButton.onClick.AddListener(() =>
             {
-                UnityEngine.Application.OpenURL(Application.config.legalUrl);
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.config.legalUrl);
             });
 
             base.Open();

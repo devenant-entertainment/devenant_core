@@ -12,6 +12,13 @@ namespace Devenant
             public bool success;
             public string message;
             public string data;
+
+            public Response(bool success, string message, string data)
+            {
+                this.success = success;
+                this.message = message;
+                this.data = data;
+            }
         }
 
         public static void Get(string uri, Action<Response> callback = null)

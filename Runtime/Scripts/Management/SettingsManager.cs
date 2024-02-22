@@ -6,63 +6,53 @@ namespace Devenant
     {
         private const string dataKey = "SettingsManager.Data";
 
-        [System.Serializable]
-        public class Data 
-        {
-            public int masterVolume = 100;
-            public int musicVolume = 100;
-            public int sfxVolume = 100;
-
-            public int locale = 0;
-        }
-
-        public Data data { get { return _data; } private set { _data = value; } }
-        private Data _data = new Data();
+        public Settings settings { get { return _settings; } private set { _settings = value; } }
+        private Settings _settings = new Settings();
 
         public void Load()
         {
             if(PlayerPrefs.HasKey(dataKey))
             {
-                data = JsonUtility.FromJson<Data>(PlayerPrefs.GetString(dataKey));
+                settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString(dataKey));
 
-                SetMasterVolume(data.masterVolume);
-                SetMusicVolume(data.musicVolume);
-                SetSfxVolume(data.sfxVolume);
-                SetLocale(data.locale);
+                SetMasterVolume(settings.masterVolume);
+                SetMusicVolume(settings.musicVolume);
+                SetSfxVolume(settings.sfxVolume);
+                SetLocale(settings.locale);
             }
         }
 
         public void SetMasterVolume(int volume)
         {
-            data.masterVolume = Mathf.Clamp(volume, 0, 100);
+            settings.masterVolume = Mathf.Clamp(volume, 0, 100);
 
-            AudioManager.instance.master.volume = data.masterVolume;
+            AudioManager.instance.master.volume = settings.masterVolume;
         }
 
         public void SetMusicVolume(int volume)
         {
-            data.musicVolume = Mathf.Clamp(volume, 0, 100);
+            settings.musicVolume = Mathf.Clamp(volume, 0, 100);
 
-            AudioManager.instance.music.volume = data.musicVolume;
+            AudioManager.instance.music.volume = settings.musicVolume;
         }
 
         public void SetSfxVolume(int volume)
         {
-            data.sfxVolume = Mathf.Clamp(volume, 0, 100);
+            settings.sfxVolume = Mathf.Clamp(volume, 0, 100);
 
-            AudioManager.instance.sfx.volume = data.sfxVolume;
+            AudioManager.instance.sfx.volume = settings.sfxVolume;
         }
 
         public void SetLocale(int locale)
         {
-            data.locale = locale;
+            settings.locale = locale;
 
-            LocalizationManager.instance.locale = data.locale;
+            LocalizationManager.instance.locale = settings.locale;
         }
 
         public void Save()
         {
-            PlayerPrefs.SetString(dataKey, JsonUtility.ToJson(data));
+            PlayerPrefs.SetString(dataKey, JsonUtility.ToJson(settings));
         }
     }
 }

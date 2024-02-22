@@ -1,42 +1,34 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Devenant
 {
-    public class DataManager : Singleton<DataManager>
+    public class GameManager : Singleton<GameManager>
     {
-        [System.Serializable]
-        public class GameList
+        public Game[] games { get { return _games; } private set { _games = value; } }
+        private Game[] _games;
+
+        public void Setup(Action<bool> callback)
         {
-            public Game[] games;
-        }
-
-        [System.Serializable]
-        public class Game
-        {
-            public string id;
-            public string name;
-            public string date;
-        }
-
-        [SerializeField] private string remoteCall;
-
-        public void List(Action<GameList> callback)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
-            {
-                { "token", UserManager.instance.data.token }
-            };
-
-            Request.Post(remoteCall + "get", formFields, (Request.Response response) => 
+            Request.Get(ApplicationManager.instance.config.endpoints.gameGet, UserManager.instance.user.token, (Request.Response response) => 
             { 
                 if(response.success)
                 {
-                    callback?.Invoke(JsonUtility.FromJson<GameList>(response.data));
+                    GameResponse data = JsonUtility.FromJson<GameResponse>(response.data);
+
+                    games = new Game[data.games.Length];
+
+                    for(int i = 0; i < games.Length; i++)
+                    {
+                        games[i] = new Game(data.games[i].id, data.games[i].name, DateTime.Parse(data.games[i].date));
+                    }
+
+                    callback?.Invoke(true);
                 }
                 else
                 {
-                    callback?.Invoke(null);
+                    callback?.Invoke(false);
                 }
             });
         }
@@ -45,12 +37,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "token", UserManager.instance.data.token },
                 { "name", name },
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(remoteCall + "create", formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.gameCreate, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -67,12 +58,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "token", UserManager.instance.data.token },
                 { "id", game.id },
                 { "name", game.name }
             };
 
-            Request.Post(remoteCall + "delete", formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.gameDelete, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -89,12 +79,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "token", UserManager.instance.data.token },
                 { "id", game.id },
                 { "name", game.name }
             };
 
-            Request.Post(remoteCall + "load", formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.gameLoad, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -111,13 +100,12 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "token", UserManager.instance.data.token },
                 { "id", id },
                 { "name", name },
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(remoteCall + "save", formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.config.endpoints.gameSave, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {

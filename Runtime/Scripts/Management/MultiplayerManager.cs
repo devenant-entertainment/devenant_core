@@ -6,6 +6,8 @@ using Unity.Services.Relay.Models;
 using Unity.Services.Relay;
 using UnityEngine;
 using UnityEngine.Events;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
 
 namespace Devenant
 {

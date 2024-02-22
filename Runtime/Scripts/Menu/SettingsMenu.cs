@@ -26,28 +26,28 @@ namespace Devenant
 
             localeDropdown.ClearOptions();
             localeDropdown.AddOptions(options);
-            localeDropdown.value = SettingsManager.instance.data.locale;
+            localeDropdown.value = SettingsManager.instance.settings.locale;
             localeDropdown.onValueChanged.RemoveAllListeners();
             localeDropdown.onValueChanged.AddListener((int value) =>
             {
                 SettingsManager.instance.SetLocale(value);
             });
 
-            masterVolumeSlider.value = SettingsManager.instance.data.masterVolume;
+            masterVolumeSlider.value = SettingsManager.instance.settings.masterVolume;
             masterVolumeSlider.onValueChanged.RemoveAllListeners();
             masterVolumeSlider.onValueChanged.AddListener((float value) => 
             {
                 SettingsManager.instance.SetMasterVolume(Mathf.RoundToInt(value));
             });
 
-            musicVolumeSlider.value = SettingsManager.instance.data.musicVolume;
+            musicVolumeSlider.value = SettingsManager.instance.settings.musicVolume;
             musicVolumeSlider.onValueChanged.RemoveAllListeners();
             musicVolumeSlider.onValueChanged.AddListener((float value) =>
             {
                 SettingsManager.instance.SetMusicVolume(Mathf.RoundToInt(value));
             });
 
-            sfxVolumeSlider.value = SettingsManager.instance.data.sfxVolume;
+            sfxVolumeSlider.value = SettingsManager.instance.settings.sfxVolume;
             sfxVolumeSlider.onValueChanged.RemoveAllListeners();
             sfxVolumeSlider.onValueChanged.AddListener((float value) =>
             {
@@ -57,13 +57,13 @@ namespace Devenant
             manageButton.onClick.RemoveAllListeners();
             manageButton.onClick.AddListener(() =>
             {
-                UnityEngine.Application.OpenURL(Application.config.storeUrl);
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.config.storeUrl);
             });
 
             infoButton.onClick.RemoveAllListeners();
             infoButton.onClick.AddListener(() => 
             {
-                UnityEngine.Application.OpenURL(Application.config.gameUrl);
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.config.gameUrl);
             });
 
             closeButton.onClick.RemoveAllListeners();

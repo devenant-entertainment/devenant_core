@@ -4,39 +4,12 @@ using Unity.Services.Core.Environments;
 
 namespace Devenant
 {
-    public static class Application
+    public class ApplicationManager : Singleton<ApplicationManager>
     {
-        public class Config
-        {
-            public enum Environment
-            {
-                Production,
-                Development
-            }
+        public Application config { get { return _config; } }
+        private Application _config;
 
-            public readonly Environment environment;
-
-            public readonly string coreApiUrl;
-            public readonly string gameApiUrl;
-            public readonly string gameUrl;
-            public readonly string legalUrl;
-            public readonly string storeUrl;
-
-            public Config (Environment environment, string coreApiUrl, string gameApiUrl, string gameUrl, string legalUrl, string storeUrl)
-            {
-                this.environment = environment;
-                this.coreApiUrl = coreApiUrl;
-                this.gameApiUrl = gameApiUrl;
-                this.gameUrl = gameUrl;
-                this.legalUrl = legalUrl;
-                this.storeUrl = storeUrl;
-            }
-        }
-
-        public static Config config { get { return _config; } }
-        private static Config _config;
-
-        public static void Initialize(Config config, PurchaseManager.Purchase.Info[] purchases, AchievementManager.Achievement.Info[] achievements, Action callback = null)
+        public void Initialize(Application config, Purchase.Info[] purchases, Achievement.Info[] achievements, Action callback = null)
         {
             _config = config;
 
@@ -45,7 +18,7 @@ namespace Devenant
             async void Setup(Action callback)
             {
                 InitializationOptions options = new InitializationOptions();
-                options.SetEnvironmentName(config.environment.ToString());
+                options.SetEnvironmentName(config.environment.ToString().ToLower());
 
                 await UnityServices.InitializeAsync(options);
 
@@ -67,7 +40,7 @@ namespace Devenant
                                 {
                                     if(success)
                                     {
-                                        PurchaseManager.instance.Setup((bool success) =>
+                                        PurchaseManager.instance.Setup(purchases, (bool success) =>
                                         {
                                             if(success)
                                             {
@@ -124,15 +97,15 @@ namespace Devenant
 
             void OnLogin(Action callback)
             {
-                switch(UserManager.instance.data.status)
+                switch(UserManager.instance.user.status)
                 {
-                    case "active":
+                    case UserStatus.Active:
 
                         callback?.Invoke();
 
                         break;
 
-                    case "unvalidated":
+                    case UserStatus.Unvalidated:
 
                         UserValidationMenu.instance.Open(() =>
                         {
@@ -141,7 +114,7 @@ namespace Devenant
 
                         break;
 
-                    case "banned":
+                    case UserStatus.Banned:
 
                         MessageMenu.instance.Open("user_banned", () =>
                         {
@@ -164,7 +137,7 @@ namespace Devenant
             }
         }
 
-        public static void Exit()
+        public void Exit()
         {
             UnityEngine.Application.Quit();
         }
