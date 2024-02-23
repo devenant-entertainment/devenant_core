@@ -23,7 +23,7 @@ namespace Devenant
 #elif UNITY_ANDROID || UNITY_IOS
                     storeController = new MobileStoreController();
 #else
-                    storeController = new EditorStoreController();
+                    storeController = new SteamStoreController();
 #endif
 
                     storeController.Setup(purchases, (bool success) =>
