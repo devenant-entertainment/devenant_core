@@ -13,15 +13,15 @@ namespace Devenant
         private Action<bool> setupCallback;
         private Action<StorePurchaseResponse> purchaseCallback;
 
-        public override void Setup(Purchase.Info[] purchases, Action<bool> callback)
+        public override void Setup(PurchaseData[] purchases, Action<bool> callback)
         {
             setupCallback = callback;
 
             ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-            foreach(Purchase.Info purchaseInfo in purchases)
+            foreach(PurchaseData purchaseInfo in purchases)
             {
-                builder.AddProduct(purchaseInfo.id, ProductType.NonConsumable);
+                builder.AddProduct(purchaseInfo.name, ProductType.NonConsumable);
             }
 
             UnityPurchasing.Initialize(this, builder);

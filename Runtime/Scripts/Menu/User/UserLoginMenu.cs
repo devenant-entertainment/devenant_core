@@ -6,61 +6,54 @@ namespace Devenant
 {
     public class UserLoginMenu : Menu<UserLoginMenu>
     {
-        [SerializeField] private Button closeButton;
-
-        [SerializeField] private TMP_InputField emailInputfield;
-        [SerializeField] private TMP_InputField passwordInputfield;
+        [SerializeField] private TMP_InputField emailInputField;
+        [SerializeField] private TMP_InputField passwordInputField;
         [SerializeField] private Toggle rememberToggle;
-
+        [Space]
         [SerializeField] private Button loginButton;
         [SerializeField] private Button updatePasswordButton;
         [SerializeField] private Button registerButton;
+        [Space]
+        [SerializeField] private Button closeButton;
 
-        public override void Open(Action callback = null)
+        public void Open(Action<bool> callback = null)
         {
-            closeButton.onClick.RemoveAllListeners();
-            closeButton.onClick.AddListener(() =>
-            {
-                MessageMenu.instance.Open("exit_app", (bool response) =>
-                {
-                    if(response)
-                    {
-                        ApplicationManager.instance.Exit();
-                    }
-                });
-            });
+            emailInputField.text = string.Empty;
+            emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
+            emailInputField.characterLimit = 256;
 
-            emailInputfield.text = string.Empty;
-            passwordInputfield.text = string.Empty;
+            passwordInputField.text = string.Empty;
+            passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
             rememberToggle.isOn = true;
 
             loginButton.onClick.RemoveAllListeners();
             loginButton.onClick.AddListener(() =>
             {
-                if(string.IsNullOrEmpty(emailInputfield.text))
+                if(string.IsNullOrEmpty(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(string.IsNullOrEmpty(passwordInputfield.text))
+                if(string.IsNullOrEmpty(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(UserManager.instance.ValidatePassword(passwordInputfield.text))
+                if(UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_password"));
+                    NotificationMenu.instance.Open(new Notification("user_invalid_password"));
 
                     return;
                 }
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.Login(emailInputfield.text, passwordInputfield.text, rememberToggle.isOn, (Request.Response response) =>
+                    UserManager.instance.Login(emailInputField.text, passwordInputField.text, rememberToggle.isOn, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
@@ -68,15 +61,24 @@ namespace Devenant
                             {
                                 Close(() => 
                                 {
-                                    callback?.Invoke();
+                                    callback?.Invoke(true);
                                 });
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
+                                NotificationMenu.instance.Open(new Notification(response.message));
                             }
                         });
                     });
+                });
+            });
+
+            updatePasswordButton.onClick.RemoveAllListeners();
+            updatePasswordButton.onClick.AddListener(() =>
+            {
+                UserSendCodeMenu.instance.Open(() =>
+                {
+                    UserUpdatePasswordMenu.instance.Open();
                 });
             });
 
@@ -86,10 +88,13 @@ namespace Devenant
                 UserRegisterMenu.instance.Open();
             });
 
-            updatePasswordButton.onClick.RemoveAllListeners();
-            updatePasswordButton.onClick.AddListener(() =>
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() =>
             {
-                UserUpdatePasswordMenu.instance.Open();
+                Close(() =>
+                {
+                    callback?.Invoke(false);
+                });
             });
 
             base.Open();

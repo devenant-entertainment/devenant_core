@@ -1,31 +1,38 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Devenant
 {
+    public struct ContextualMenuOption
+    {
+        public string name;
+        public Action action;
+
+        public ContextualMenuOption(string name, Action action) 
+        {
+            this.name = name;
+            this.action = action;
+        }
+    }
+
     public class ContextualMenu : Menu<ContextualMenu>
     {
-        public struct Option
-        {
-            public string name;
-            public Action action;
-        }
-
         [SerializeField] private RectTransform optionHolder;
         [SerializeField] private GameObject optionElement;
-
+        [Space]
         [SerializeField] private Button closeButton;
 
         private Content optionContent;
 
-        public void Open(Option[] options)
+        public void Open(ContextualMenuOption[] options)
         {
             optionContent?.Clear();
 
             optionContent = new Content(optionHolder, optionElement);
 
-            foreach(Option option in options)
+            foreach(ContextualMenuOption option in options)
             {
                 GameObject newOption = optionContent.Create();
 

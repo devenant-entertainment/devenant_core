@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f09b12ea8bd6a94f97e306b5d474726, type: 3}
+  m_Name: backend
+  m_EditorClassIdentifier: 
+  achievementGet: 
+  achievementSet: 
+  config: 
+  gameCreate: 
+  gameDelete: 
+  gameGet: 
+  gameLoad: 
+  gameSave: 
+  purchaseGet: 
+  purchaseSet: 
+  userDelete: 
+  userLogin: 
+  userRegister: 
+  userRestore: 
+  userSendCode: 
+  userUpdateAvatar: 
+  userUpdateEmail: 
+  userUpdateNickname: 
+  userUpdatePassword: 
+  userValidate: 

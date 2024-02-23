@@ -8,14 +8,14 @@ namespace Devenant
     public class SettingsMenu : Menu<SettingsMenu>
     {
         [SerializeField] private TMP_Dropdown localeDropdown;
-
+        [Space]
         [SerializeField] private Slider masterVolumeSlider;
         [SerializeField] private Slider musicVolumeSlider;
         [SerializeField] private Slider sfxVolumeSlider;
-
+        [Space]
         [SerializeField] private Button manageButton;
         [SerializeField] private Button infoButton;
-
+        [Space]
         [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
@@ -57,13 +57,13 @@ namespace Devenant
             manageButton.onClick.RemoveAllListeners();
             manageButton.onClick.AddListener(() =>
             {
-                UnityEngine.Application.OpenURL(ApplicationManager.instance.config.storeUrl);
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.GetStoreUrl());
             });
 
             infoButton.onClick.RemoveAllListeners();
             infoButton.onClick.AddListener(() => 
             {
-                UnityEngine.Application.OpenURL(ApplicationManager.instance.config.gameUrl);
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.gameUrl);
             });
 
             closeButton.onClick.RemoveAllListeners();

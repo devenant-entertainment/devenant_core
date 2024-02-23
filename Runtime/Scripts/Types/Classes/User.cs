@@ -12,7 +12,8 @@ namespace Devenant
     {
         Active,
         Unvalidated,
-        Banned
+        Banned,
+        Deleted
     }
 
     public class User

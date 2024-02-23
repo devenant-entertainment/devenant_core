@@ -6,67 +6,49 @@ namespace Devenant
 {
     public class UserUpdatePasswordMenu : Menu<UserUpdatePasswordMenu>
     {
-        [SerializeField] private Button closeButton;
-
-        [SerializeField] private TMP_InputField emailInputfield;
-        [SerializeField] private TMP_InputField passwordInputfield;
-        [SerializeField] private TMP_InputField codeInputfield;
-
+        [SerializeField] private TMP_InputField passwordInputField;
+        [SerializeField] private TMP_InputField codeInputField;
+        [Space]
         [SerializeField] private Button updateButton;
+        [Space]
+        [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
         {
-            closeButton.onClick.RemoveAllListeners();
-            closeButton.onClick.AddListener(() =>
-            {
-                Close();
-            });
+            passwordInputField.text = string.Empty;
+            passwordInputField.contentType = TMP_InputField.ContentType.Password;
 
-            emailInputfield.text = string.Empty;
-            passwordInputfield.text = string.Empty;
-            codeInputfield.text = string.Empty;
+            codeInputField.text = string.Empty;
+            codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
+            codeInputField.characterLimit = 6;
 
             updateButton.onClick.RemoveAllListeners();
             updateButton.onClick.AddListener(() =>
             {
-                if(string.IsNullOrEmpty(emailInputfield.text))
+                if(string.IsNullOrEmpty(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(!UserManager.instance.ValidateEmail(emailInputfield.text))
+                if(!UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_email"));
+                    NotificationMenu.instance.Open(new Notification("user_invalid_password"));
 
                     return;
                 }
 
-                if(string.IsNullOrEmpty(passwordInputfield.text))
+                if(string.IsNullOrEmpty(codeInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
-
-                    return;
-                }
-
-                if(!UserManager.instance.ValidatePassword(passwordInputfield.text))
-                {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_password"));
-
-                    return;
-                }
-
-                if(string.IsNullOrEmpty(codeInputfield.text))
-                {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.UpdatePassword(passwordInputfield.text, codeInputfield.text, (Request.Response response) =>
+                    UserManager.instance.UpdatePassword(passwordInputField.text, codeInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
@@ -82,11 +64,17 @@ namespace Devenant
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
+                                NotificationMenu.instance.Open(new Notification(response.message));
                             }
                         });
                     });
                 });
+            });
+
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() =>
+            {
+                Close();
             });
 
             base.Open();

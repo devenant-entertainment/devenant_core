@@ -9,7 +9,7 @@ namespace Devenant
 
         public void Setup(Action<bool> callback)
         {
-            Request.Get(ApplicationManager.instance.config.endpoints.config, ((Request.Response response) =>
+            Request.Get(ApplicationManager.instance.backend.config, ((Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -29,7 +29,7 @@ namespace Devenant
                                 {
                                     callback?.Invoke(false);
 
-                                    UnityEngine.Application.OpenURL(ApplicationManager.instance.config.storeUrl);
+                                    UnityEngine.Application.OpenURL(ApplicationManager.instance.application.GetStoreUrl());
                                 }));
                             }
 

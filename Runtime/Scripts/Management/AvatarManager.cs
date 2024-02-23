@@ -1,39 +1,17 @@
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
-
 namespace Devenant
 {
     public class AvatarManager : Singleton<AvatarManager>
     {
-        private Dictionary<string, Sprite> avatars = new Dictionary<string, Sprite>();
+        public Avatar[] avatars { get { return _avatars; } private set { _avatars = value; } }
+        private Avatar[] _avatars;
 
-        public void Get(string avatar, Action<Sprite> callback)
+        public void Setup(AvatarData[] avatars)
         {
-            if(avatars.ContainsKey(avatar))
+            this.avatars = new Avatar[avatars.Length];
+
+            for (int i = 0; i < avatars.Length; i ++)
             {
-                callback?.Invoke(avatars[avatar]);
-            }
-            else
-            {
-                UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(ApplicationManager.instance.config.endpoints + "avatars/" + avatar + ".png");
-
-                unityWebRequest.SendWebRequest().completed += (AsyncOperation asyncOperation) =>
-                {
-                    if(asyncOperation.isDone)
-                    {
-                        Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
-
-                        if(texture != null)
-                        {
-                            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-
-                            avatars.Add(avatar, sprite);
-
-                            callback?.Invoke(sprite);
-                        }
-                    }
-                };
+                this.avatars[i] = new Avatar(avatars[i].name, avatars[i].sprite, avatars[i].purchase.name, avatars[i].achievement.name);
             }
         }
     }

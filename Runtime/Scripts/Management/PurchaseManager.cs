@@ -11,9 +11,9 @@ namespace Devenant
 
         private StoreController storeController;
 
-        public void Setup(Purchase.Info[] purchases, Action<bool> callback)
+        public void Setup(PurchaseData[] purchases, Action<bool> callback)
         {
-            Request.Get(ApplicationManager.instance.config.endpoints.purchaseGet, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Get(ApplicationManager.instance.backend.purchaseGet, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -36,7 +36,7 @@ namespace Devenant
 
                                 foreach(PurchaseResponse.Purchase purchase in responseData.purchases)
                                 {
-                                    if(purchase.id == purchases[i].id)
+                                    if(purchase.id == purchases[i].name)
                                     {
                                         purchased = purchase.value;
 
@@ -46,7 +46,7 @@ namespace Devenant
 
                                 foreach(StorePurchase storePurchase in storePurchases)
                                 {
-                                    if(storePurchase.id == purchases[i].id)
+                                    if(storePurchase.id == purchases[i].name)
                                     {
                                         price = storePurchase.price;
 
@@ -54,7 +54,7 @@ namespace Devenant
                                     }
                                 }
 
-                                this.purchases[i] = new Purchase(purchases[i], price, purchased);
+                                this.purchases[i] = new Purchase(purchases[i].name, purchases[i].type, price, purchased);
                                 this.purchases[i].onUpdated += onUpdated;
                             }
 
@@ -82,7 +82,7 @@ namespace Devenant
                 return;
             }
 
-            storeController.Purchase(purchase.info.id, (StorePurchaseResponse response) =>
+            storeController.Purchase(purchase.id, (StorePurchaseResponse response) =>
             {
                 if(response.success)
                 {

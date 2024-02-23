@@ -11,7 +11,7 @@ namespace Devenant
 
         public void Setup(Action<bool> callback)
         {
-            Request.Get(ApplicationManager.instance.config.endpoints.gameGet, UserManager.instance.user.token, (Request.Response response) => 
+            Request.Get(ApplicationManager.instance.backend.gameGet, UserManager.instance.user.token, (Request.Response response) => 
             { 
                 if(response.success)
                 {
@@ -41,7 +41,7 @@ namespace Devenant
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.gameCreate, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameCreate, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -62,7 +62,7 @@ namespace Devenant
                 { "name", game.name }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.gameDelete, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameDelete, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -83,7 +83,7 @@ namespace Devenant
                 { "name", game.name }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.gameLoad, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameLoad, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -105,7 +105,7 @@ namespace Devenant
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.gameSave, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameSave, formFields, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {

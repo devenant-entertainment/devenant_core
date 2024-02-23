@@ -1,21 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Devenant
 {
-    public class UserMenu : MonoBehaviour
+    public class UserMenu : Menu<UserMenu>
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        //TODO
     }
 }

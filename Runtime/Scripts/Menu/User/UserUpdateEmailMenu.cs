@@ -6,51 +6,50 @@ namespace Devenant
 {
     public class UserUpdateEmailMenu : Menu<UserUpdateEmailMenu>
     {
-        [SerializeField] private Button closeButton;
-
-        [SerializeField] private TMP_InputField emailInputfield;
-        [SerializeField] private TMP_InputField codeInputfield;
-
+        [SerializeField] private TMP_InputField emailInputField;
+        [SerializeField] private TMP_InputField codeInputField;
+        [Space]
         [SerializeField] private Button updateButton;
+        [Space]
+        [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
         {
-            closeButton.onClick.RemoveAllListeners();
-            closeButton.onClick.AddListener(() =>
-            {
-                Close();
-            });
+            emailInputField.text = string.Empty;
+            emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
+            emailInputField.characterLimit = 256;
 
-            emailInputfield.text = string.Empty;
-            codeInputfield.text = string.Empty;
+            codeInputField.text = string.Empty;
+            codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
+            codeInputField.characterLimit = 6;
 
             updateButton.onClick.RemoveAllListeners();
             updateButton.onClick.AddListener(() =>
             {
-                if(string.IsNullOrEmpty(emailInputfield.text))
+                if(string.IsNullOrEmpty(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(!UserManager.instance.ValidateEmail(emailInputfield.text))
+                if(!UserManager.instance.ValidateEmail(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_email"));
+                    NotificationMenu.instance.Open(new Notification("user_invalid_email"));
 
                     return;
                 }
 
-                if(string.IsNullOrEmpty(codeInputfield.text))
+                if(string.IsNullOrEmpty(codeInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.UpdateEmail(emailInputfield.text, codeInputfield.text, (Request.Response response) =>
+                    UserManager.instance.UpdateEmail(emailInputField.text, codeInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
@@ -66,11 +65,17 @@ namespace Devenant
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
+                                NotificationMenu.instance.Open(new Notification(response.message));
                             }
                         });
                     });
                 });
+            });
+
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() =>
+            {
+                Close();
             });
 
             base.Open();

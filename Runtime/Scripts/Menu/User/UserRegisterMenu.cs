@@ -6,84 +6,93 @@ namespace Devenant
 {
     public class UserRegisterMenu : Menu<UserRegisterMenu>
     {
+        [SerializeField] private TMP_InputField nicknameInputField;
+        [SerializeField] private TMP_InputField emailInputField;
+        [SerializeField] private TMP_InputField passwordInputField;
+        [Space]
+        [SerializeField] private Toggle legalToggle;
+        [SerializeField] private Button legalButton;
+        [Space]
+        [SerializeField] private Button registerButton;
+        [Space]
         [SerializeField] private Button closeButton;
 
-        [SerializeField] private TMP_InputField nicknameInputfield;
-        [SerializeField] private TMP_InputField emailInputfield;
-        [SerializeField] private TMP_InputField passwordInputfield;
-        [SerializeField] private Toggle acceptToggle;
-        [SerializeField] private Button tosButton;
-
-        [SerializeField] private Button registerButton;
-
-        public override void Open(Action callback = null)
+        public void Open(Action<bool> callback = null)
         {
-            closeButton.onClick.RemoveAllListeners();
-            closeButton.onClick.AddListener(() =>
-            {
-                Close();
-            });
+            nicknameInputField.text = string.Empty;
+            nicknameInputField.contentType = TMP_InputField.ContentType.Name;
+            nicknameInputField.characterLimit = 32;
 
-            nicknameInputfield.text = string.Empty;
-            emailInputfield.text = string.Empty;
-            passwordInputfield.text = string.Empty;
-            acceptToggle.isOn = false;
+            emailInputField.text = string.Empty;
+            emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
+            emailInputField.characterLimit = 256;
+
+            passwordInputField.text = string.Empty;
+            passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
+            legalToggle.isOn = false;
+
+            legalButton.onClick.RemoveAllListeners();
+            legalButton.onClick.AddListener(() =>
+            {
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.legalUrl);
+            });
 
             registerButton.onClick.RemoveAllListeners();
             registerButton.onClick.AddListener(() =>
             {
-                if(string.IsNullOrEmpty(nicknameInputfield.text))
+                if(string.IsNullOrEmpty(nicknameInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(!UserManager.instance.ValidateNickname(nicknameInputfield.text))
+                if(!UserManager.instance.ValidateNickname(nicknameInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("invalid_nickname"));
+                    NotificationMenu.instance.Open(new Notification("invalid_nickname"));
 
                     return;
                 }
 
-                if(string.IsNullOrEmpty(emailInputfield.text))
+                if(string.IsNullOrEmpty(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(!UserManager.instance.ValidateEmail(emailInputfield.text))
+                if(!UserManager.instance.ValidateEmail(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_email"));
+                    NotificationMenu.instance.Open(new Notification("user_invalid_email"));
 
                     return;
                 }
 
-                if(string.IsNullOrEmpty(passwordInputfield.text))
+                if(string.IsNullOrEmpty(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
 
                     return;
                 }
 
-                if(!UserManager.instance.ValidatePassword(passwordInputfield.text))
+                if(!UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_invalid_password"));
+                    NotificationMenu.instance.Open(new Notification("user_invalid_password"));
 
                     return;
                 }
 
-                if(acceptToggle.isOn == false)
+                if(legalToggle.isOn == false)
                 {
-                    NotificationMenu.instance.Open(new NotificationMenu.Notification("user_accept_off"));
+                    NotificationMenu.instance.Open(new Notification("user_accept_legal"));
 
                     return;
                 }
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.Register(nicknameInputfield.text, emailInputfield.text, passwordInputfield.text, (Request.Response response) =>
+                    UserManager.instance.Register(nicknameInputField.text, emailInputField.text, passwordInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
@@ -91,22 +100,28 @@ namespace Devenant
                             {
                                 MessageMenu.instance.Open("user_register_done", () =>
                                 {
-                                    Close(callback);
+                                    Close(() =>
+                                    {
+                                        callback?.Invoke(true);
+                                    });
                                 });
                             }
                             else
                             {
-                                NotificationMenu.instance.Open(new NotificationMenu.Notification(response.message));
+                                NotificationMenu.instance.Open(new Notification(response.message));
                             }    
                         });
                     });
                 });
             });
 
-            tosButton.onClick.RemoveAllListeners();
-            tosButton.onClick.AddListener(() =>
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() =>
             {
-                UnityEngine.Application.OpenURL(ApplicationManager.instance.config.legalUrl);
+                Close(() =>
+                {
+                    callback?.Invoke(false);
+                });
             });
 
             base.Open();

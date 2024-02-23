@@ -10,9 +10,9 @@ namespace Devenant
         public Achievement[] achievements { get { return _achievements; } private set { _achievements = value; } }
         private Achievement[] _achievements;
 
-        public void Setup(Achievement.Info[] achievements, Action<bool> callback) 
+        public void Setup(AchievementData[] achievements, Action<bool> callback) 
         {
-            Request.Get(ApplicationManager.instance.config.endpoints.achievementGet, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Get(ApplicationManager.instance.backend.achievementGet, UserManager.instance.user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -26,7 +26,7 @@ namespace Devenant
 
                         foreach(AchievementResponse.Achievement achievement in data.achievements)
                         {
-                            if (achievement.id == achievements[i].id)
+                            if (achievement.id == achievements[i].name)
                             {
                                 value = achievement.value;
 
@@ -34,7 +34,7 @@ namespace Devenant
                             }
                         }
 
-                        this.achievements[i] = new Achievement(achievements[i], value);
+                        this.achievements[i] = new Achievement(achievements[i].name, achievements[i].maxValue, value);
                         this.achievements[i].onProgressed += onProgressed;
                         this.achievements[i].onCompleted += onCompleted;
                     }

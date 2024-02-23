@@ -5,13 +5,7 @@ namespace Devenant
     [RequireComponent(typeof(RectTransform))]
     public class SafeArea : MonoBehaviour
     {
-        private RectTransform rectTransform;
         private Rect lastSafeArea;
-
-        private void Awake()
-        {
-            rectTransform = GetComponent<RectTransform>();
-        }
 
         private void Start()
         {
@@ -38,6 +32,7 @@ namespace Devenant
             anchorMax.x /= Screen.width;
             anchorMax.y /= Screen.height;
 
+            RectTransform rectTransform = GetComponent<RectTransform>();
             rectTransform.anchorMin = anchorMin;
             rectTransform.anchorMax = anchorMax;
 

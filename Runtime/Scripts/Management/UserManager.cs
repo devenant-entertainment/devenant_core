@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -29,14 +30,6 @@ namespace Devenant
             }
         }
 
-        public void Code(Action<Request.Response> callback)
-        {
-            Request.Get(ApplicationManager.instance.config.endpoints.userCode, user.token, (Request.Response response) =>
-            {
-                callback?.Invoke(response);
-            });
-        }
-
         public void Delete(string code, Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
@@ -44,7 +37,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userDelete, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userDelete, formFields, user.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -58,7 +51,7 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userLogin, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userLogin, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -86,7 +79,33 @@ namespace Devenant
                 { "password", password }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userRegister, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userRegister, formFields, (Request.Response response) =>
+            {
+                callback?.Invoke(response);
+            });
+        }
+
+        public void Restore(string code, Action<Request.Response> callback)
+        {
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "code", code }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.userRestore, formFields, user.token, (Request.Response response) =>
+            {
+                callback?.Invoke(response);
+            });
+        }
+
+        public void SendCode(string email, Action<Request.Response> callback)
+        {
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "email", email }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.userSendCode, formFields, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -99,7 +118,7 @@ namespace Devenant
                 { "avatar", avatar }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userUpdateAvatar, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdateAvatar, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -120,7 +139,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userUpdateEmail, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdateEmail, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -141,7 +160,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userUpdatePassword, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdatePassword, formFields, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -154,7 +173,7 @@ namespace Devenant
                 { "nickname", nickname }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userUpdateNickname, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdateNickname, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -174,7 +193,7 @@ namespace Devenant
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.config.endpoints.userValidate, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userValidate, formFields, user.token, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -189,6 +208,8 @@ namespace Devenant
 
         public void Logout()
         {
+            user = null;
+
             PlayerPrefs.DeleteKey(emailKey);
             PlayerPrefs.DeleteKey(passwordKey);
         }

@@ -8,27 +8,9 @@ namespace Devenant
 {
     public class NotificationMenu : Menu<NotificationMenu>
     {
-        public class Notification
-        {
-            public readonly string message;
-            public readonly Action action;
-
-            public Notification(string message)
-            {
-                this.message = message;
-            }
-
-            public Notification(string message, Action action)
-            {
-                this.message = message;
-                this.action = action;
-            }
-        }
-
         [SerializeField] private RectTransform panelTransform;
-
-        [SerializeField] private TextMeshProUGUI messageText;
         [SerializeField] private Button actionButton;
+        [SerializeField] private TextMeshProUGUI messageText;
 
         private List<Notification> notifications = new List<Notification>();
 
@@ -44,13 +26,13 @@ namespace Devenant
 
         private void Show()
         {
-            messageText.text = LocalizationManager.instance.Translate("message", notifications[0].message);
-
             actionButton.onClick.RemoveAllListeners();
             actionButton.onClick.AddListener(() => 
             { 
                 notifications[0].action?.Invoke(); 
             });
+
+            messageText.text = LocalizationManager.instance.Translate("message", notifications[0].message);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(panelTransform);
 

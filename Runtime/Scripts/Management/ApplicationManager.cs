@@ -6,19 +6,24 @@ namespace Devenant
 {
     public class ApplicationManager : Singleton<ApplicationManager>
     {
-        public Application config { get { return _config; } }
-        private Application _config;
+        public Application application { get { return _application; } private set { _application = value; } }
+        private Application _application;
 
-        public void Initialize(Application config, Purchase.Info[] purchases, Achievement.Info[] achievements, Action callback = null)
+        public Backend backend { get { return _backend; } private set { _backend = value; } }
+        private Backend _backend;
+
+        public void Initialize(ApplicationData application, BackendData backend, PurchaseData[] purchases, AchievementData[] achievements, AvatarData[] avatars, Action callback = null)
         {
-            _config = config;
+            this.application = new Application(application);
+
+            this.backend = new Backend(backend);
 
             Setup(callback);
 
             async void Setup(Action callback)
             {
                 InitializationOptions options = new InitializationOptions();
-                options.SetEnvironmentName(config.environment.ToString().ToLower());
+                options.SetEnvironmentName(this.application.environment.ToString().ToLower());
 
                 await UnityServices.InitializeAsync(options);
 
@@ -48,6 +53,8 @@ namespace Devenant
                                                 {
                                                     if(success)
                                                     {
+                                                        AvatarManager.instance.Setup(avatars);
+
                                                         UserManager.instance.AutoLogin((bool success) =>
                                                         {
                                                             LoadingMenu.instance.Close(() =>
@@ -58,9 +65,16 @@ namespace Devenant
                                                                 }
                                                                 else
                                                                 {
-                                                                    UserLoginMenu.instance.Open(() =>
+                                                                    UserLoginMenu.instance.Open((bool success) =>
                                                                     {
-                                                                        OnLogin(callback);
+                                                                        if(success)
+                                                                        {
+                                                                            OnLogin(callback);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            Exit();
+                                                                        }
                                                                     });
                                                                 }
                                                             });
@@ -68,19 +82,19 @@ namespace Devenant
                                                     }
                                                     else
                                                     {
-                                                        Exit();
+                                                        ShowError();
                                                     }
                                                 });
                                             }
                                             else
                                             {
-                                                Exit();
+                                                ShowError();
                                             }
                                         });
                                     }
                                     else
                                     {
-                                        Exit();
+                                        ShowError();
                                     }
                                 });
                             });
@@ -88,7 +102,7 @@ namespace Devenant
                         }
                         else
                         {
-                            Exit();
+                            ShowError();
                         }
                     });
 #endif
@@ -107,9 +121,36 @@ namespace Devenant
 
                     case UserStatus.Unvalidated:
 
-                        UserValidationMenu.instance.Open(() =>
+                        MessageMenu.instance.Open("user_unvalidated", (bool success) =>
                         {
-                            callback?.Invoke();
+                            if(success)
+                            {
+                                UserSendCodeMenu.instance.Open((bool success) =>
+                                {
+                                    if(success)
+                                    {
+                                        UserValidateMenu.instance.Open((bool success) =>
+                                        {
+                                            if(success)
+                                            {
+                                                callback?.Invoke();
+                                            }
+                                            else
+                                            {
+                                                Exit();
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        Exit();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Exit();
+                            }
                         });
 
                         break;
@@ -122,10 +163,46 @@ namespace Devenant
                         });
 
                         break;
+
+                    case UserStatus.Deleted:
+
+                        MessageMenu.instance.Open("user_deleted", (bool success) =>
+                        {
+                            if(success)
+                            {
+                                UserSendCodeMenu.instance.Open((bool success) =>
+                                {
+                                    if(success)
+                                    {
+                                        UserRestoreMenu.instance.Open((bool success) =>
+                                        {
+                                            if(success)
+                                            {
+                                                callback?.Invoke();
+                                            }
+                                            else
+                                            {
+                                                Exit();
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        Exit();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Exit();
+                            }
+                        });
+
+                        break;
                 }
             }
 
-            void Exit()
+            void ShowError()
             {
                 LoadingMenu.instance.Close(() =>
                 {
