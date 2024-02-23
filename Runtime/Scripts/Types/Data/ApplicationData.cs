@@ -7,6 +7,7 @@ namespace Devenant
     {
         public ApplicationEnvironment environment;
 
+        [Header("URLs")]
         public string gameUrl;
         public string legalUrl;
         public string supportUrl;

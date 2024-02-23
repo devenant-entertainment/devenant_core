@@ -1,3 +1,6 @@
+using Steamworks;
+using System.Collections.Generic;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
 namespace Devenant
@@ -35,8 +38,6 @@ namespace Devenant
                         }
 
                         this.achievements[i] = new Achievement(achievements[i].name, achievements[i].maxValue, value);
-                        this.achievements[i].onProgressed += onProgressed;
-                        this.achievements[i].onCompleted += onCompleted;
                     }
 
                     callback?.Invoke(true);
@@ -46,6 +47,51 @@ namespace Devenant
                     callback?.Invoke(false);
                 }
             });
+        }
+
+        public void Set(string id, int value, Action<bool> callback = null)
+        {
+            foreach(Achievement achievement in achievements)
+            {
+                if(achievement.id == id)
+                {
+                    if(value > achievement.maxValue)
+                    {
+                        callback?.Invoke(false);
+
+                        return;
+                    }
+
+                    if(value <= achievement.value)
+                    {
+                        callback?.Invoke(false);
+
+                        return;
+                    }
+
+                    achievement.value = value;
+
+                    onProgressed?.Invoke(achievement);
+
+                    if(achievement.value == achievement.maxValue)
+                    {
+                        onCompleted?.Invoke(achievement);
+                    }
+
+                    Dictionary<string, string> formFields = new Dictionary<string, string>()
+                    {
+                        {"id", id },
+                        {"value", value.ToString() }
+                    };
+
+                    Request.Post(ApplicationManager.instance.backend.achievementSet, formFields, UserManager.instance.user.token, (Request.Response response) =>
+                    {
+                        callback?.Invoke(response.success);
+                    });
+
+                    break;
+                }
+            }
         }
     }
 }

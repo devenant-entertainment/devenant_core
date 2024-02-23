@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Devenant
 {
     public class PurchaseManager : Singleton<PurchaseManager>
     {
-        public static Action<Purchase> onUpdated;
+        public static Action<Purchase> onPurchased;
 
         public Purchase[] purchases { get { return _purchases; } private set { _purchases = value; } }
         private Purchase[] _purchases;
@@ -17,7 +18,13 @@ namespace Devenant
             {
                 if(response.success)
                 {
+#if UNITY_EDITOR
+                    storeController = new EditorStoreController();
+#elif UNITY_ANDROID || UNITY_IOS
                     storeController = new MobileStoreController();
+#else
+                    storeController = new EditorStoreController();
+#endif
 
                     storeController.Setup(purchases, (bool success) =>
                     {
@@ -55,7 +62,6 @@ namespace Devenant
                                 }
 
                                 this.purchases[i] = new Purchase(purchases[i].name, purchases[i].type, price, purchased);
-                                this.purchases[i].onUpdated += onUpdated;
                             }
 
                             callback?.Invoke(true);
@@ -73,26 +79,55 @@ namespace Devenant
             });
         }
 
-        public void Purchase(Purchase purchase, Action<bool> callback = null)
+        public void Purchase(string id, Action<bool> callback = null)
         {
-            if (storeController == null)
+            if(storeController == null)
             {
                 callback?.Invoke(false);
 
                 return;
             }
 
-            storeController.Purchase(purchase.id, (StorePurchaseResponse response) =>
+            foreach(Purchase purchase in purchases)
             {
-                if(response.success)
+                if(purchase.id == id)
                 {
-                    purchase.Set(true, response.transaction, callback);
+                    storeController.Purchase(purchase.id, (StorePurchaseResponse response) =>
+                    {
+                        if(response.success)
+                        {
+                            if(purchase.purchased == true)
+                            {
+                                callback?.Invoke(false);
+
+                                return;
+                            }
+
+                            purchase.purchased = true;
+
+                            onPurchased?.Invoke(purchase);
+
+                            Dictionary<string, string> formFields = new Dictionary<string, string>()
+                            {
+                                {"id", purchase.id },
+                                {"purchased", purchase.purchased.ToString() },
+                                {"platform", UnityEngine.Application.platform.ToString() },
+                                {"transaction", response.transaction }
+                            };
+
+                            Request.Post(ApplicationManager.instance.backend.purchaseSet, formFields, UserManager.instance.user.token, (Request.Response response) =>
+                            {
+                                callback?.Invoke(response.success);
+                            });
+                        }
+                        else
+                        {
+                            callback?.Invoke(false);
+                        }
+                    });
+                    break;
                 }
-                else
-                {
-                    callback?.Invoke(false);
-                }
-            });
+            }
         }
     }
 }
