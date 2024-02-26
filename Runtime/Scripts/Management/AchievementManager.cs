@@ -37,7 +37,7 @@ namespace Devenant
                             }
                         }
 
-                        this.achievements[i] = new Achievement(achievements[i].name, achievements[i].maxValue, value);
+                        this.achievements[i] = new Achievement(achievements[i].name, achievements[i].icon, achievements[i].maxValue, value);
                     }
 
                     callback?.Invoke(true);

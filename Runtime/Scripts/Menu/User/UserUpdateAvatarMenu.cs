@@ -29,6 +29,8 @@ namespace Devenant
         {
             avatarContent?.Clear();
 
+            avatarContent = new Content(avatarHolder, avatarElement);
+
             foreach(Avatar avatar in AvatarManager.instance.avatars)
             {
                 bool locked = IsLocked(avatar);
