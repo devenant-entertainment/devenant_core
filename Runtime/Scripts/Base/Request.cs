@@ -12,13 +12,6 @@ namespace Devenant
             public bool success;
             public string message;
             public string data;
-
-            public Response(bool success, string message, string data)
-            {
-                this.success = success;
-                this.message = message;
-                this.data = data;
-            }
         }
 
         public static void Get(string uri, Action<Response> callback = null)
@@ -44,7 +37,9 @@ namespace Devenant
         private static void SendRequest(UnityWebRequest unityWebRequest, string token, Action<Response> callback)
         {
             if(!string.IsNullOrEmpty(token))
+            {
                 unityWebRequest.SetRequestHeader("Authorization", "Bearer " + token);
+            }
 
             unityWebRequest.SetRequestHeader("Accept", "application/json");
 

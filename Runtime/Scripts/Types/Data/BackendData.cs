@@ -10,7 +10,7 @@ namespace Devenant
         public string achievementSet;
 
         [Header("Config")]
-        public string config;
+        public string configuration;
 
         [Header("Game")]
         public string gameCreate;
@@ -24,15 +24,14 @@ namespace Devenant
         public string purchaseSet;
 
         [Header("User")]
+        public string userActivate;
         public string userDelete;
         public string userLogin;
         public string userRegister;
-        public string userRestore;
         public string userSendCode;
         public string userUpdateAvatar;
         public string userUpdateEmail;
         public string userUpdateNickname;
         public string userUpdatePassword;
-        public string userValidate;
     }
 }

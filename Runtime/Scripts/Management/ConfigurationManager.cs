@@ -9,7 +9,7 @@ namespace Devenant
 
         public void Setup(Action<bool> callback)
         {
-            Request.Get(ApplicationManager.instance.backend.config, ((Request.Response response) =>
+            Request.Get(ApplicationManager.instance.backend.configuration, ((Request.Response response) =>
             {
                 if(response.success)
                 {

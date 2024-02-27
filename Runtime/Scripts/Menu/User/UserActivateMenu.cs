@@ -4,22 +4,22 @@ using UnityEngine.UI;
 
 namespace Devenant
 {
-    public class UserRestoreMenu : Menu<UserRestoreMenu>
+    public class UserActivateMenu : Menu<UserActivateMenu>
     {
         [SerializeField] private TMP_InputField codeInputField;
         [Space]
-        [SerializeField] private Button restoreButton;
+        [SerializeField] private Button validateButton;
         [Space]
         [SerializeField] private Button closeButton;
 
-        public void Open(Action<bool> callback = null)
+        public void Open(Action<bool> callback)
         {
             codeInputField.text = string.Empty;
             codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
             codeInputField.characterLimit = 6;
 
-            restoreButton.onClick.RemoveAllListeners();
-            restoreButton.onClick.AddListener(() =>
+            validateButton.onClick.RemoveAllListeners();
+            validateButton.onClick.AddListener(() =>
             {
                 if(string.IsNullOrEmpty(codeInputField.text))
                 {
@@ -30,13 +30,16 @@ namespace Devenant
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.Restore(codeInputField.text, (Request.Response response) =>
+                    UserManager.instance.Activate(codeInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
                             if(response.success)
                             {
-                                callback?.Invoke(true);
+                                Close(() =>
+                                {
+                                    callback?.Invoke(true);
+                                });
                             }
                             else
                             {

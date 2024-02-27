@@ -21,7 +21,7 @@ namespace Devenant
 
                     for(int i = 0; i < games.Length; i++)
                     {
-                        games[i] = new Game(data.games[i].id, data.games[i].name, DateTime.Parse(data.games[i].date));
+                        games[i] = new Game(data.games[i]);
                     }
 
                     callback?.Invoke(true);

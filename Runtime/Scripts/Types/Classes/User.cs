@@ -25,22 +25,12 @@ namespace Devenant
         public UserType type;
         public UserStatus status;
 
-        public User(string token, string nickname, string avatar, string email, UserType type, UserStatus status)
+        public User(string email, UserResponse data)
         {
-            this.token = token;
-            this.nickname = nickname;
-            this.avatar = avatar;
             this.email = email;
-            this.type = type;
-            this.status = status;
-        }
-
-        public User(UserResponse data)
-        {
             token = data.token;
             nickname = data.nickname;
             avatar = data.avatar;
-            email = data.email;
             type = Enum.Parse<UserType>(data.type);
             status = Enum.Parse<UserStatus>(data.status);
         }

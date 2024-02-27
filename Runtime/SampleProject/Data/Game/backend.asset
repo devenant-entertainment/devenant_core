@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   achievementGet: 
   achievementSet: 
-  config: 
+  configuration: https://mastertales.devenant.net/public/api/configuration
   gameCreate: 
   gameDelete: 
   gameGet: 
@@ -22,13 +22,12 @@ MonoBehaviour:
   gameSave: 
   purchaseGet: 
   purchaseSet: 
+  userActivate: 
   userDelete: 
   userLogin: 
   userRegister: 
-  userRestore: 
   userSendCode: 
   userUpdateAvatar: 
   userUpdateEmail: 
   userUpdateNickname: 
   userUpdatePassword: 
-  userValidate: 

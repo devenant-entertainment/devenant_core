@@ -8,13 +8,6 @@ namespace Devenant
         public readonly string name;
         public readonly DateTime date;
 
-        public Game(string id, string name, DateTime date)
-        {
-            this.id = id;
-            this.name = name;
-            this.date = date;
-        }
-
         public Game(GameResponse.Game data)
         {
             id = data.id;

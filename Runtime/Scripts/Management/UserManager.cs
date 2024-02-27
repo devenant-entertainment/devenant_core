@@ -30,6 +30,26 @@ namespace Devenant
             }
         }
 
+        public void Activate(string code, Action<Request.Response> callback)
+        {
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "code", code }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.userActivate, formFields, user.token, (Request.Response response) =>
+            {
+                if(response.success)
+                {
+                    user.status = UserStatus.Active;
+
+                    onUserUpdated?.Invoke(user);
+                }
+
+                callback?.Invoke(response);
+            });
+        }
+
         public void Delete(string code, Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
@@ -55,7 +75,7 @@ namespace Devenant
             {
                 if(response.success)
                 {
-                    user = new User(JsonUtility.FromJson<UserResponse>(response.data));
+                    user = new User(email, JsonUtility.FromJson<UserResponse>(response.data));
 
                     onUserUpdated?.Invoke(user);
 
@@ -80,19 +100,6 @@ namespace Devenant
             };
 
             Request.Post(ApplicationManager.instance.backend.userRegister, formFields, (Request.Response response) =>
-            {
-                callback?.Invoke(response);
-            });
-        }
-
-        public void Restore(string code, Action<Request.Response> callback)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
-            {
-                { "code", code }
-            };
-
-            Request.Post(ApplicationManager.instance.backend.userRestore, formFields, user.token, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -178,26 +185,6 @@ namespace Devenant
                 if(response.success)
                 {
                     user.nickname = nickname;
-
-                    onUserUpdated?.Invoke(user);
-                }
-
-                callback?.Invoke(response);
-            });
-        }
-
-        public void Validate(string code, Action<Request.Response> callback)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
-            {
-                { "code", code }
-            };
-
-            Request.Post(ApplicationManager.instance.backend.userValidate, formFields, user.token, (Request.Response response) =>
-            {
-                if(response.success)
-                {
-                    user.status = UserStatus.Active;
 
                     onUserUpdated?.Invoke(user);
                 }
