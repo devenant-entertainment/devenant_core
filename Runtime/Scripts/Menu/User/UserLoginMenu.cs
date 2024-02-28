@@ -44,7 +44,7 @@ namespace Devenant
                     return;
                 }
 
-                if(UserManager.instance.ValidatePassword(passwordInputField.text))
+                if(!UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
                     NotificationMenu.instance.Open(new Notification("user_invalid_password"));
 
@@ -76,9 +76,12 @@ namespace Devenant
             updatePasswordButton.onClick.RemoveAllListeners();
             updatePasswordButton.onClick.AddListener(() =>
             {
-                UserSendCodeMenu.instance.Open(() =>
+                UserSendCodeMenu.instance.Open((bool success) =>
                 {
-                    UserUpdatePasswordMenu.instance.Open();
+                    if(success)
+                    {
+                        UserUpdatePasswordMenu.instance.Open();
+                    }
                 });
             });
 

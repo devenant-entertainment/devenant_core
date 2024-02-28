@@ -15,7 +15,12 @@ namespace Devenant
 
         public void Setup(AchievementData[] achievements, Action<bool> callback) 
         {
-            Request.Get(ApplicationManager.instance.backend.achievementGet, UserManager.instance.user.token, (Request.Response response) =>
+            Dictionary<string, string> formFields = new Dictionary<string, string>()
+            {
+                { "token", UserManager.instance.user.token }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.achievementGet, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -80,11 +85,12 @@ namespace Devenant
 
                     Dictionary<string, string> formFields = new Dictionary<string, string>()
                     {
-                        {"id", id },
-                        {"value", value.ToString() }
+                        { "token", UserManager.instance.user.token },
+                        { "id", id },
+                        { "value", value.ToString() }
                     };
 
-                    Request.Post(ApplicationManager.instance.backend.achievementSet, formFields, UserManager.instance.user.token, (Request.Response response) =>
+                    Request.Post(ApplicationManager.instance.backend.achievementSet, formFields, (Request.Response response) =>
                     {
                         callback?.Invoke(response.success);
                     });

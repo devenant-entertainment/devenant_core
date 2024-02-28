@@ -16,31 +16,16 @@ namespace Devenant
 
         public static void Get(string uri, Action<Response> callback = null)
         {
-            Get(uri, string.Empty, callback);
-        }
-
-        public static void Get(string uri, string token, Action<Response> callback = null)
-        {
-            SendRequest(UnityWebRequest.Get(uri), token, callback);
+            SendRequest(UnityWebRequest.Get(uri), callback);
         }
 
         public static void Post(string uri, Dictionary<string, string> formFields, Action<Response> callback = null)
         {
-            Post(uri, formFields, string.Empty, callback);  
+            SendRequest(UnityWebRequest.Post(uri, formFields), callback);
         }
 
-        public static void Post(string uri, Dictionary<string, string> formFields, string token, Action<Response> callback = null)
+        private static void SendRequest(UnityWebRequest unityWebRequest, Action<Response> callback)
         {
-            SendRequest(UnityWebRequest.Post(uri, formFields), token, callback);
-        }
-
-        private static void SendRequest(UnityWebRequest unityWebRequest, string token, Action<Response> callback)
-        {
-            if(!string.IsNullOrEmpty(token))
-            {
-                unityWebRequest.SetRequestHeader("Authorization", "Bearer " + token);
-            }
-
             unityWebRequest.SetRequestHeader("Accept", "application/json");
 
             unityWebRequest.SendWebRequest().completed += (AsyncOperation asyncOperation) =>

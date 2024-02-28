@@ -116,7 +116,7 @@ namespace Devenant
                                             {
                                                 if(success)
                                                 {
-                                                    UserSendCodeMenu.instance.Open((bool success) =>
+                                                    SendCode((bool success) =>
                                                     {
                                                         if(success)
                                                         {
@@ -161,7 +161,7 @@ namespace Devenant
                                             {
                                                 if(success)
                                                 {
-                                                    UserSendCodeMenu.instance.Open((bool success) =>
+                                                    SendCode((bool success) =>
                                                     {
                                                         if(success)
                                                         {
@@ -179,7 +179,7 @@ namespace Devenant
                                                         }
                                                         else
                                                         {
-                                                            Exit();
+                                                            ShowError();
                                                         }
                                                     });
                                                 }
@@ -213,6 +213,20 @@ namespace Devenant
                     MessageMenu.instance.Open("error", () =>
                     {
                         Exit();
+                    });
+                });
+            }
+
+            void SendCode(Action<bool> callback)
+            {
+                LoadingMenu.instance.Open(() =>
+                {
+                    UserManager.instance.SendCode(UserManager.instance.user.email, (Request.Response response) =>
+                    {
+                        LoadingMenu.instance.Close(() =>
+                        {
+                            callback?.Invoke(response.success);
+                        });
                     });
                 });
             }

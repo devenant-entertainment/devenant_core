@@ -6,8 +6,8 @@ namespace Devenant
 {
     public class UserUpdatePasswordMenu : Menu<UserUpdatePasswordMenu>
     {
-        [SerializeField] private TMP_InputField passwordInputField;
         [SerializeField] private TMP_InputField codeInputField;
+        [SerializeField] private TMP_InputField passwordInputField;
         [Space]
         [SerializeField] private Button updateButton;
         [Space]
@@ -15,16 +15,23 @@ namespace Devenant
 
         public override void Open(Action callback = null)
         {
-            passwordInputField.text = string.Empty;
-            passwordInputField.contentType = TMP_InputField.ContentType.Password;
-
             codeInputField.text = string.Empty;
             codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
             codeInputField.characterLimit = 6;
 
+            passwordInputField.text = string.Empty;
+            passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
             updateButton.onClick.RemoveAllListeners();
             updateButton.onClick.AddListener(() =>
             {
+                if(string.IsNullOrEmpty(codeInputField.text))
+                {
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+
+                    return;
+                }
+
                 if(string.IsNullOrEmpty(passwordInputField.text))
                 {
                     NotificationMenu.instance.Open(new Notification("user_empty_fields"));
@@ -39,16 +46,9 @@ namespace Devenant
                     return;
                 }
 
-                if(string.IsNullOrEmpty(codeInputField.text))
-                {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
-
-                    return;
-                }
-
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.UpdatePassword(passwordInputField.text, codeInputField.text, (Request.Response response) =>
+                    UserManager.instance.UpdatePassword(codeInputField.text, passwordInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {

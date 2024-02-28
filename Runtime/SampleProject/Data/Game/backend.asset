@@ -12,22 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f09b12ea8bd6a94f97e306b5d474726, type: 3}
   m_Name: backend
   m_EditorClassIdentifier: 
-  achievementGet: 
-  achievementSet: 
+  achievementGet: https://mastertales.devenant.net/public/api/achievement/get
+  achievementSet: https://mastertales.devenant.net/public/api/achievement/set
   configuration: https://mastertales.devenant.net/public/api/configuration
-  gameCreate: 
-  gameDelete: 
-  gameGet: 
-  gameLoad: 
-  gameSave: 
-  purchaseGet: 
-  purchaseSet: 
-  userActivate: 
-  userDelete: 
-  userLogin: 
-  userRegister: 
-  userSendCode: 
-  userUpdateAvatar: 
-  userUpdateEmail: 
-  userUpdateNickname: 
-  userUpdatePassword: 
+  gameCreate: https://mastertales.devenant.net/public/api/game/create
+  gameDelete: https://mastertales.devenant.net/public/api/game/delete
+  gameGet: https://mastertales.devenant.net/public/api/game/get
+  gameLoad: https://mastertales.devenant.net/public/api/game/load
+  gameSave: https://mastertales.devenant.net/public/api/game/save
+  purchaseGet: https://mastertales.devenant.net/public/api/purchase/get
+  purchaseSet: https://mastertales.devenant.net/public/api/purchase/set
+  userActivate: https://mastertales.devenant.net/public/api/user/activate
+  userDelete: https://mastertales.devenant.net/public/api/user/delete
+  userLogin: https://mastertales.devenant.net/public/api/user/login
+  userRegister: https://mastertales.devenant.net/public/api/user/register
+  userSendCode: https://mastertales.devenant.net/public/api/user/send_code
+  userUpdateAvatar: https://mastertales.devenant.net/public/api/user/update_avatar
+  userUpdateEmail: https://mastertales.devenant.net/public/api/user/update_email
+  userUpdateNickname: https://mastertales.devenant.net/public/api/user/update_nickname
+  userUpdatePassword: https://mastertales.devenant.net/public/api/user/update_password

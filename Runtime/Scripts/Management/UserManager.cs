@@ -34,10 +34,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", user.token },
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.backend.userActivate, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userActivate, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -54,10 +55,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", user.token },
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.backend.userDelete, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userDelete, formFields, (Request.Response response) =>
             {
                 callback?.Invoke(response);
             });
@@ -75,7 +77,7 @@ namespace Devenant
             {
                 if(response.success)
                 {
-                    user = new User(email, JsonUtility.FromJson<UserResponse>(response.data));
+                    user = new User(JsonUtility.FromJson<UserResponse>(response.data));
 
                     onUserUpdated?.Invoke(user);
 
@@ -122,10 +124,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", user.token },
                 { "avatar", avatar }
             };
 
-            Request.Post(ApplicationManager.instance.backend.userUpdateAvatar, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdateAvatar, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -142,11 +145,12 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", user.token },
                 { "email", email },
                 { "code", code }
             };
 
-            Request.Post(ApplicationManager.instance.backend.userUpdateEmail, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdateEmail, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -159,12 +163,12 @@ namespace Devenant
             });
         }
 
-        public void UpdatePassword(string password, string code, Action<Request.Response> callback)
+        public void UpdatePassword(string code, string password, Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "password", password },
-                { "code", code }
+                { "code", code },
+                { "password", password }
             };
 
             Request.Post(ApplicationManager.instance.backend.userUpdatePassword, formFields, (Request.Response response) =>
@@ -177,10 +181,11 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", user.token },
                 { "nickname", nickname }
             };
 
-            Request.Post(ApplicationManager.instance.backend.userUpdateNickname, formFields, user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userUpdateNickname, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {

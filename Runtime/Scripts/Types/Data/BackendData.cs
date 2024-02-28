@@ -6,32 +6,32 @@ namespace Devenant
     public class BackendData : ScriptableObject
     {
         [Header("Achievement")]
-        public string achievementGet;
-        public string achievementSet;
+        [TextArea(1, 2)] public string achievementGet;
+        [TextArea(1, 2)] public string achievementSet;
 
         [Header("Config")]
-        public string configuration;
+        [TextArea(1, 2)] public string configuration;
 
         [Header("Game")]
-        public string gameCreate;
-        public string gameDelete;
-        public string gameGet;
-        public string gameLoad;
-        public string gameSave;
+        [TextArea(1, 2)] public string gameCreate;
+        [TextArea(1, 2)] public string gameDelete;
+        [TextArea(1, 2)] public string gameGet;
+        [TextArea(1, 2)] public string gameLoad;
+        [TextArea(1, 2)] public string gameSave;
 
         [Header("Purchase")]
-        public string purchaseGet;
-        public string purchaseSet;
+        [TextArea(1, 2)] public string purchaseGet;
+        [TextArea(1, 2)] public string purchaseSet;
 
         [Header("User")]
-        public string userActivate;
-        public string userDelete;
-        public string userLogin;
-        public string userRegister;
-        public string userSendCode;
-        public string userUpdateAvatar;
-        public string userUpdateEmail;
-        public string userUpdateNickname;
-        public string userUpdatePassword;
+        [TextArea(1, 2)] public string userActivate;
+        [TextArea(1, 2)] public string userDelete;
+        [TextArea(1, 2)] public string userLogin;
+        [TextArea(1, 2)] public string userRegister;
+        [TextArea(1, 2)] public string userSendCode;
+        [TextArea(1, 2)] public string userUpdateAvatar;
+        [TextArea(1, 2)] public string userUpdateEmail;
+        [TextArea(1, 2)] public string userUpdateNickname;
+        [TextArea(1, 2)] public string userUpdatePassword;
     }
 }

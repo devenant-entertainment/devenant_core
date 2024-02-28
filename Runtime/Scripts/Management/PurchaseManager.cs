@@ -14,7 +14,12 @@ namespace Devenant
 
         public void Setup(PurchaseData[] purchases, Action<bool> callback)
         {
-            Request.Get(ApplicationManager.instance.backend.purchaseGet, UserManager.instance.user.token, (Request.Response response) =>
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "token", UserManager.instance.user.token }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.purchaseGet, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -109,13 +114,14 @@ namespace Devenant
 
                             Dictionary<string, string> formFields = new Dictionary<string, string>()
                             {
-                                {"id", purchase.id },
-                                {"purchased", purchase.purchased.ToString() },
-                                {"platform", UnityEngine.Application.platform.ToString() },
-                                {"transaction", response.transaction }
+                                { "token", UserManager.instance.user.token },
+                                { "id", purchase.id },
+                                { "purchased", purchase.purchased.ToString() },
+                                { "platform", UnityEngine.Application.platform.ToString() },
+                                { "transaction", response.transaction }
                             };
 
-                            Request.Post(ApplicationManager.instance.backend.purchaseSet, formFields, UserManager.instance.user.token, (Request.Response response) =>
+                            Request.Post(ApplicationManager.instance.backend.purchaseSet, formFields, (Request.Response response) =>
                             {
                                 callback?.Invoke(response.success);
                             });

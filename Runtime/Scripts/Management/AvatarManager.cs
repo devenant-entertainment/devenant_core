@@ -11,7 +11,10 @@ namespace Devenant
 
             for (int i = 0; i < avatars.Length; i ++)
             {
-                this.avatars[i] = new Avatar(avatars[i].name, avatars[i].sprite, avatars[i].purchase.name, avatars[i].achievement.name);
+                string purchase = avatars[i].purchase != null ? avatars[i].purchase.name : string.Empty;
+                string achievement = avatars[i].achievement != null ? avatars[i].achievement.name : string.Empty;
+
+                this.avatars[i] = new Avatar(avatars[i].name, avatars[i].sprite, purchase, achievement);
             }
         }
     }

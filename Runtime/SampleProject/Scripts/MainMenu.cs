@@ -9,6 +9,8 @@ namespace Devenant.Samples
     {
         public override void Open(Action callback = null)
         {
+            Debug.Log("Done!");
+
             base.Open(callback);
         }
     }

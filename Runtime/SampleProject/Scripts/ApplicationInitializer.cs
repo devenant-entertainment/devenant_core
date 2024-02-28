@@ -12,6 +12,8 @@ namespace Devenant.Samples
 
         private void Start()
         {
+            //PlayerPrefs.DeleteAll();
+
             ApplicationManager.instance.Initialize(application, backend, purchases, achievements, avatars, () =>
             {
                 MainMenu.instance.Open();

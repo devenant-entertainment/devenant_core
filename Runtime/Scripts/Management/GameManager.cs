@@ -11,7 +11,12 @@ namespace Devenant
 
         public void Setup(Action<bool> callback)
         {
-            Request.Get(ApplicationManager.instance.backend.gameGet, UserManager.instance.user.token, (Request.Response response) => 
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "token", UserManager.instance.user.token }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.gameGet, formFields, (Request.Response response) => 
             { 
                 if(response.success)
                 {
@@ -37,11 +42,12 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", UserManager.instance.user.token },
                 { "name", name },
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameCreate, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameCreate, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -58,11 +64,12 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", UserManager.instance.user.token },
                 { "id", game.id },
                 { "name", game.name }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameDelete, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameDelete, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -79,11 +86,12 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", UserManager.instance.user.token },
                 { "id", game.id },
                 { "name", game.name }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameLoad, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameLoad, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -100,12 +108,13 @@ namespace Devenant
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
+                { "token", UserManager.instance.user.token },
                 { "id", id },
                 { "name", name },
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameSave, formFields, UserManager.instance.user.token, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.gameSave, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
