@@ -141,13 +141,13 @@ namespace Devenant
             });
         }
 
-        public void UpdateEmail(string email, string code, Action<Request.Response> callback)
+        public void UpdateEmail(string code, string email, Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "token", user.token },
-                { "email", email },
-                { "code", code }
+                { "code", code },
+                { "email", email }
             };
 
             Request.Post(ApplicationManager.instance.backend.userUpdateEmail, formFields, (Request.Response response) =>
@@ -177,11 +177,12 @@ namespace Devenant
             });
         }
 
-        public void UpdateNickname(string nickname, Action<Request.Response> callback)
+        public void UpdateNickname(string code, string nickname, Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "token", user.token },
+                { "code", code },
                 { "nickname", nickname }
             };
 

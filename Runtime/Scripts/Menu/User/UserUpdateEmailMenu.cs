@@ -6,8 +6,8 @@ namespace Devenant
 {
     public class UserUpdateEmailMenu : Menu<UserUpdateEmailMenu>
     {
-        [SerializeField] private TMP_InputField emailInputField;
         [SerializeField] private TMP_InputField codeInputField;
+        [SerializeField] private TMP_InputField emailInputField;
         [Space]
         [SerializeField] private Button updateButton;
         [Space]
@@ -15,17 +15,24 @@ namespace Devenant
 
         public override void Open(Action callback = null)
         {
-            emailInputField.text = string.Empty;
-            emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
-            emailInputField.characterLimit = 256;
-
             codeInputField.text = string.Empty;
             codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
             codeInputField.characterLimit = 6;
 
+            emailInputField.text = string.Empty;
+            emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
+            emailInputField.characterLimit = 256;
+
             updateButton.onClick.RemoveAllListeners();
             updateButton.onClick.AddListener(() =>
             {
+                if(string.IsNullOrEmpty(codeInputField.text))
+                {
+                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+
+                    return;
+                }
+
                 if(string.IsNullOrEmpty(emailInputField.text))
                 {
                     NotificationMenu.instance.Open(new Notification("user_empty_fields"));
@@ -40,16 +47,9 @@ namespace Devenant
                     return;
                 }
 
-                if(string.IsNullOrEmpty(codeInputField.text))
-                {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
-
-                    return;
-                }
-
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.UpdateEmail(emailInputField.text, codeInputField.text, (Request.Response response) =>
+                    UserManager.instance.UpdateEmail(codeInputField.text, emailInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {

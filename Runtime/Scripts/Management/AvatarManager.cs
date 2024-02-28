@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Devenant
 {
     public class AvatarManager : Singleton<AvatarManager>
@@ -16,6 +18,19 @@ namespace Devenant
 
                 this.avatars[i] = new Avatar(avatars[i].name, avatars[i].sprite, purchase, achievement);
             }
+        }
+
+        public Sprite Get(string avatar)
+        {
+            for(int i = 0; i < avatars.Length; i ++)
+            {
+                if(avatars[i].id == avatar)
+                {
+                    return avatars[i].sprite;
+                }
+            }
+
+            return avatars[0].sprite;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Devenant
 
         public void Open(Action<bool> callback = null)
         {
-            emailInputField.text = string.Empty;
+            emailInputField.text = UserManager.instance.user != null ? UserManager.instance.user.email : string.Empty;
             emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
             emailInputField.characterLimit = 256;
 

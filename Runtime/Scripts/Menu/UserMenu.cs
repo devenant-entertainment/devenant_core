@@ -1,0 +1,111 @@
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Devenant
+{
+    public class UserMenu : Menu<UserMenu>
+    {
+        [SerializeField] private Image avatarImage;
+        [SerializeField] private Button updateAvatarButton;
+        [Space]
+        [SerializeField] private TextMeshProUGUI nicknameText;
+        [SerializeField] private Button updateNicknameButton;
+        [Space]
+        [SerializeField] private TextMeshProUGUI emailText;
+        [SerializeField] private Button updateEmailButton;
+        [Space]
+        [SerializeField] private TextMeshProUGUI passwordText;
+        [SerializeField] private Button updatePasswordButton;
+        [Space]
+        [SerializeField] private Button achievementsButton;
+        [Space]
+        [SerializeField] private Button closeButton;
+
+        public override void Open(Action callback = null)
+        {
+            UserManager.onUserUpdated += OnUserUpdated;
+
+            OnUserUpdated(UserManager.instance.user);
+
+            updateAvatarButton.onClick.RemoveAllListeners();
+            updateAvatarButton.onClick.AddListener(() =>
+            {
+                UserUpdateAvatarMenu.instance.Open();
+            });
+
+            updateNicknameButton.onClick.RemoveAllListeners();
+            updateNicknameButton.onClick.AddListener(() =>
+            {
+                UserSendCodeMenu.instance.Open((bool success) =>
+                {
+                    if(success)
+                    {
+                        UserUpdateNicknameMenu.instance.Open();
+                    }
+                });
+            });
+
+            updateEmailButton.onClick.RemoveAllListeners();
+            updateEmailButton.onClick.AddListener(() =>
+            {
+                UserSendCodeMenu.instance.Open((bool success) =>
+                {
+                    if(success)
+                    {
+                        UserUpdateEmailMenu.instance.Open(() =>
+                        {
+                            UserManager.instance.Logout();
+
+                            ApplicationManager.instance.Exit();
+                        });
+                    }
+                });
+            });
+
+            updatePasswordButton.onClick.RemoveAllListeners();
+            updatePasswordButton.onClick.AddListener(() =>
+            {
+                UserSendCodeMenu.instance.Open((bool success) =>
+                {
+                    if(success)
+                    {
+                        UserUpdatePasswordMenu.instance.Open();
+                    }
+                });
+            });
+
+            achievementsButton.onClick.RemoveAllListeners();
+            achievementsButton.onClick.AddListener(() =>
+            {
+                AchievementMenu.instance.Open();
+            });
+
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() =>
+            {
+                Close();
+            });
+
+            base.Open(callback);
+        }
+
+        public override void Close(Action callback = null)
+        {
+            UserManager.onUserUpdated -= OnUserUpdated;
+
+            base.Close(callback);
+        }
+
+        private void OnUserUpdated(User user)
+        {
+            avatarImage.sprite = AvatarManager.instance.Get(user.avatar);
+
+            nicknameText.text = user.nickname;  
+
+            emailText.text = user.email;
+
+            passwordText.text = "********";
+        }
+    }
+}
