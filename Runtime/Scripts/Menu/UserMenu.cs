@@ -20,6 +20,10 @@ namespace Devenant
         [Space]
         [SerializeField] private Button achievementsButton;
         [Space]
+        [SerializeField] private Button logoutButton;
+        [Space]
+        [SerializeField] private Button deleteButton;
+        [Space]
         [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
@@ -79,6 +83,40 @@ namespace Devenant
             achievementsButton.onClick.AddListener(() =>
             {
                 AchievementMenu.instance.Open();
+            });
+
+            logoutButton.onClick.RemoveAllListeners();
+            logoutButton.onClick.AddListener(() =>
+            {
+                MessageMenu.instance.Open("user_logout", (bool success) =>
+                {
+                    if(success)
+                    {
+                        UserManager.instance.Logout();
+
+                        ApplicationManager.instance.Exit();
+                    }
+                });
+            });
+
+            deleteButton.onClick.RemoveAllListeners();
+            deleteButton.onClick.AddListener(() =>
+            {
+                UserSendCodeMenu.instance.Open((bool success) =>
+                {
+                    if(success)
+                    {
+                        UserDeleteMenu.instance.Open((bool success) =>
+                        {
+                            if(success)
+                            {
+                                UserManager.instance.Logout();
+
+                                ApplicationManager.instance.Exit();
+                            }
+                        });
+                    }
+                });
             });
 
             closeButton.onClick.RemoveAllListeners();

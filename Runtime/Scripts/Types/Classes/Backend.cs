@@ -5,7 +5,6 @@ namespace Devenant
         public readonly string achievementGet;
         public readonly string achievementSet;
         public readonly string configuration;
-        public readonly string gameCreate;
         public readonly string gameDelete;
         public readonly string gameGet;
         public readonly string gameLoad;
@@ -27,7 +26,6 @@ namespace Devenant
             achievementGet = data.achievementGet;
             achievementSet = data.achievementSet;
             configuration = data.configuration;
-            gameCreate = data.gameCreate;
             gameDelete = data.gameDelete;
             gameGet = data.gameGet;
             gameLoad = data.gameLoad;

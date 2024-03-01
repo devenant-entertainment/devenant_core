@@ -4,7 +4,7 @@ namespace Devenant
 {
     public class Achievement
     {
-        public readonly string id;
+        public readonly string name;
         public readonly Sprite icon;
         public readonly int maxValue;
 
@@ -18,9 +18,9 @@ namespace Devenant
             }
         }
 
-        public Achievement(string id, Sprite icon, int maxValue, int value)
+        public Achievement(string name, Sprite icon, int maxValue, int value)
         {
-            this.id = id;
+            this.name = name;
             this.icon = icon;
             this.maxValue = maxValue;
             this.value = value;

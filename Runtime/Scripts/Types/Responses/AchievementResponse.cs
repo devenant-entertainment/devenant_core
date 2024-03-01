@@ -8,7 +8,7 @@ namespace Devenant
         [System.Serializable]
         public class Achievement
         {
-            public string id;
+            public string name;
             public int value;
         }
     }

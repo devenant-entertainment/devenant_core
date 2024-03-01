@@ -37,7 +37,7 @@ namespace Devenant
         public bool isOpen { get { return _isOpen; } private set { _isOpen = value; } }
         private bool _isOpen = false;
 
-        private void OnEnable()
+        protected void OnEnable()
         {
             canvasGroup.alpha = 0;
             canvasGroup.interactable = false;

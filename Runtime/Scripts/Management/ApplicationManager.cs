@@ -1,7 +1,7 @@
-using Devenant;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
+using UnityEngine;
 
 namespace Devenant
 {
@@ -60,7 +60,10 @@ namespace Devenant
                                                     {
                                                         if(success)
                                                         {
-                                                            OnLogin(callback);
+                                                            LoadingMenu.instance.Open(() =>
+                                                            {
+                                                                OnLogin(callback);
+                                                            });
                                                         }
                                                         else
                                                         {
@@ -100,31 +103,41 @@ namespace Devenant
                         {
                             if(success)
                             {
-                                LoadingMenu.instance.Close(() =>
+                                GameManager.instance.Setup((bool success) =>
                                 {
-                                    switch(UserManager.instance.user.status)
+                                    if(success)
                                     {
-                                        case UserStatus.Active:
-
-                                            callback?.Invoke();
-
-                                            break;
-
-                                        case UserStatus.Unvalidated:
-
-                                            MessageMenu.instance.Open("user_unvalidated", (bool success) =>
+                                        LoadingMenu.instance.Close(() =>
+                                        {
+                                            switch(UserManager.instance.user.status)
                                             {
-                                                if(success)
-                                                {
-                                                    UserSendCodeMenu.instance.Open((bool success) =>
+                                                case UserStatus.Active:
+
+                                                    callback?.Invoke();
+
+                                                    break;
+
+                                                case UserStatus.Unvalidated:
+
+                                                    MessageMenu.instance.Open("user_unvalidated", (bool success) =>
                                                     {
                                                         if(success)
                                                         {
-                                                            UserActivateMenu.instance.Open((bool success) =>
+                                                            UserSendCodeMenu.instance.Open((bool success) =>
                                                             {
                                                                 if(success)
                                                                 {
-                                                                    callback?.Invoke();
+                                                                    UserActivateMenu.instance.Open((bool success) =>
+                                                                    {
+                                                                        if(success)
+                                                                        {
+                                                                            callback?.Invoke();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            Exit();
+                                                                        }
+                                                                    });
                                                                 }
                                                                 else
                                                                 {
@@ -137,59 +150,59 @@ namespace Devenant
                                                             Exit();
                                                         }
                                                     });
-                                                }
-                                                else
-                                                {
-                                                    Exit();
-                                                }
-                                            });
 
-                                            break;
+                                                    break;
 
-                                        case UserStatus.Banned:
+                                                case UserStatus.Banned:
 
-                                            MessageMenu.instance.Open("user_banned", () =>
-                                            {
-                                                Exit();
-                                            });
+                                                    MessageMenu.instance.Open("user_banned", () =>
+                                                    {
+                                                        Exit();
+                                                    });
 
-                                            break;
+                                                    break;
 
-                                        case UserStatus.Deleted:
+                                                case UserStatus.Deleted:
 
-                                            MessageMenu.instance.Open("user_deleted", (bool success) =>
-                                            {
-                                                if(success)
-                                                {
-                                                    UserSendCodeMenu.instance.Open((bool success) =>
+                                                    MessageMenu.instance.Open("user_deleted", (bool success) =>
                                                     {
                                                         if(success)
                                                         {
-                                                            UserActivateMenu.instance.Open((bool success) =>
+                                                            UserSendCodeMenu.instance.Open((bool success) =>
                                                             {
                                                                 if(success)
                                                                 {
-                                                                    callback?.Invoke();
+                                                                    UserActivateMenu.instance.Open((bool success) =>
+                                                                    {
+                                                                        if(success)
+                                                                        {
+                                                                            callback?.Invoke();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            Exit();
+                                                                        }
+                                                                    });
                                                                 }
                                                                 else
                                                                 {
-                                                                    Exit();
+                                                                    ShowError();
                                                                 }
                                                             });
                                                         }
                                                         else
                                                         {
-                                                            ShowError();
+                                                            Exit();
                                                         }
                                                     });
-                                                }
-                                                else
-                                                {
-                                                    Exit();
-                                                }
-                                            });
 
-                                            break;
+                                                    break;
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        ShowError();
                                     }
                                 });
                             }

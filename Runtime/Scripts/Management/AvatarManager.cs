@@ -24,7 +24,7 @@ namespace Devenant
         {
             for(int i = 0; i < avatars.Length; i ++)
             {
-                if(avatars[i].id == avatar)
+                if(avatars[i].name == avatar)
                 {
                     return avatars[i].sprite;
                 }

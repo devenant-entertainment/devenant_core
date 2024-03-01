@@ -4,14 +4,14 @@ namespace Devenant
 {
     public class Avatar
     {
-        public readonly string id;
+        public readonly string name;
         public readonly Sprite sprite;
         public readonly string purchase;
         public readonly string achievement;
 
-        public Avatar (string id, Sprite sprite, string purchase, string achievement)
+        public Avatar (string name, Sprite sprite, string purchase, string achievement)
         {
-            this.id = id;
+            this.name = name;
             this.sprite = sprite;
             this.purchase = purchase;
             this.achievement = achievement;

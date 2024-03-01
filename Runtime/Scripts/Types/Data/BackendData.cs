@@ -13,7 +13,6 @@ namespace Devenant
         [TextArea(1, 2)] public string configuration;
 
         [Header("Game")]
-        [TextArea(1, 2)] public string gameCreate;
         [TextArea(1, 2)] public string gameDelete;
         [TextArea(1, 2)] public string gameGet;
         [TextArea(1, 2)] public string gameLoad;

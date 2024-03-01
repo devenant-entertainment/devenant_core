@@ -34,7 +34,7 @@ namespace Devenant
 
                         foreach(AchievementResponse.Achievement achievement in data.achievements)
                         {
-                            if (achievement.id == achievements[i].name)
+                            if (achievement.name == achievements[i].name)
                             {
                                 value = achievement.value;
 
@@ -54,11 +54,11 @@ namespace Devenant
             });
         }
 
-        public void Set(string id, int value, Action<bool> callback = null)
+        public void Set(string name, int value, Action<bool> callback = null)
         {
             foreach(Achievement achievement in achievements)
             {
-                if(achievement.id == id)
+                if(achievement.name == name)
                 {
                     if(value > achievement.maxValue)
                     {
@@ -86,7 +86,7 @@ namespace Devenant
                     Dictionary<string, string> formFields = new Dictionary<string, string>()
                     {
                         { "token", UserManager.instance.user.token },
-                        { "id", id },
+                        { "name", name },
                         { "value", value.ToString() }
                     };
 
@@ -95,9 +95,11 @@ namespace Devenant
                         callback?.Invoke(response.success);
                     });
 
-                    break;
+                    return;
                 }
             }
+
+            callback?.Invoke(false);
         }
     }
 }

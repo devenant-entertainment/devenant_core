@@ -7,11 +7,16 @@
 	"author": 
 	{
 		"name": "Devenant",
-		"email": "",
 		"url": "https://devenant.net"
     },
 	"dependencies": 
 	{
-		"com.unity.services.relay": "1.0.5"
+		"com.rlabrecque.steamworks.net": "20.2.0",
+		"com.unity.addressables": "1.21.19",
+		"com.unity.services.authentication": "2.7.2",
+		"com.unity.netcode.gameobjects": "1.7.1",
+		"com.unity.services.relay": "1.0.5",
+		"com.unity.localization": "1.4.5",
+		"com.unity.purchasing": "4.10.0"
 	}
 }

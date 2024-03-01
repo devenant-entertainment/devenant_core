@@ -33,23 +33,23 @@ namespace Devenant
 
             foreach(Avatar avatar in AvatarManager.instance.avatars)
             {
-                bool locked = IsLocked(avatar);
+                bool isLocked = IsLocked(avatar);
 
                 GameObject newAvatar = avatarContent.Create();
 
-                newAvatar.transform.Find("Selected").gameObject.SetActive(UserManager.instance.user.avatar == avatar.id);
+                newAvatar.transform.Find("Selected").gameObject.SetActive(UserManager.instance.user.avatar == avatar.name);
 
                 newAvatar.transform.Find("AvatarImage").GetComponent<Image>().sprite = avatar.sprite;
 
-                newAvatar.transform.Find("Locked").gameObject.SetActive(locked);
+                newAvatar.transform.Find("Locked").gameObject.SetActive(isLocked);
 
                 newAvatar.GetComponent<Button>().onClick.AddListener(() =>
                 {
-                    if(!locked)
+                    if(!isLocked)
                     {
                         LoadingMenu.instance.Open(() =>
                         {
-                            UserManager.instance.UpdateAvatar(avatar.id, (Request.Response response) =>
+                            UserManager.instance.UpdateAvatar(avatar.name, (Request.Response response) =>
                             {
                                 LoadingMenu.instance.Close(() =>
                                 {
@@ -78,7 +78,7 @@ namespace Devenant
 
                     foreach(Purchase purchase in PurchaseManager.instance.purchases)
                     {
-                        if(purchase.id == avatar.purchase && purchase.purchased)
+                        if(purchase.name == avatar.purchase && purchase.purchased)
                         {
                             locked = false;
                         }
@@ -91,7 +91,7 @@ namespace Devenant
 
                     foreach(Achievement achievement in AchievementManager.instance.achievements)
                     {
-                        if(achievement.id == avatar.achievement && achievement.completed)
+                        if(achievement.name == avatar.achievement && achievement.completed)
                         {
                             locked = false;
                         }

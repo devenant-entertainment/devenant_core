@@ -38,8 +38,6 @@ namespace Devenant
                             {
                                 MessageMenu.instance.Open("user_delete_done", () =>
                                 {
-                                    UserManager.instance.Logout();
-
                                     Close(() =>
                                     {
                                         callback?.Invoke(true);

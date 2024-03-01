@@ -16,8 +16,8 @@ namespace Devenant
                 { "token", UserManager.instance.user.token }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameGet, formFields, (Request.Response response) => 
-            { 
+            Request.Post(ApplicationManager.instance.backend.gameGet, formFields, (Request.Response response) =>
+            {
                 if(response.success)
                 {
                     GameResponse data = JsonUtility.FromJson<GameResponse>(response.data);
@@ -38,35 +38,12 @@ namespace Devenant
             });
         }
 
-        public void Create<T>(string name, T data, Action<bool> callback)
+        public void Delete(string name, Action<bool> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "token", UserManager.instance.user.token },
-                { "name", name },
-                { "data", JsonUtility.ToJson(data) }
-            };
-
-            Request.Post(ApplicationManager.instance.backend.gameCreate, formFields, (Request.Response response) =>
-            {
-                if(response.success)
-                {
-                    callback?.Invoke(true);
-                }
-                else
-                {
-                    callback?.Invoke(false);
-                }
-            });
-        }
-
-        public void Delete(Game game, Action<bool> callback)
-        {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
-            {
-                { "token", UserManager.instance.user.token },
-                { "id", game.id },
-                { "name", game.name }
+                { "name", name }
             };
 
             Request.Post(ApplicationManager.instance.backend.gameDelete, formFields, (Request.Response response) =>
@@ -82,13 +59,12 @@ namespace Devenant
             });
         }
 
-        public void Load<T>(Game game, Action<T> callback)
+        public void Load<T>(string name, Action<T> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "token", UserManager.instance.user.token },
-                { "id", game.id },
-                { "name", game.name }
+                { "name", name }
             };
 
             Request.Post(ApplicationManager.instance.backend.gameLoad, formFields, (Request.Response response) =>
@@ -104,12 +80,11 @@ namespace Devenant
             });
         }
 
-        public void Save<T>(string id, string name, T data, Action<bool> callback = null)
+        public void Save<T>(string name, T data, Action<bool> callback = null)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "token", UserManager.instance.user.token },
-                { "id", id },
                 { "name", name },
                 { "data", JsonUtility.ToJson(data) }
             };

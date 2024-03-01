@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ namespace Devenant
 
             achievementContent = new Content(achievementHolder, achievementElement);
 
-            List<Achievement> sortedAchievements = new List<Achievement>();
+            List<Achievement> sortedAchievements = AchievementManager.instance.achievements.ToList();
             sortedAchievements.Sort((a, b) => a.completed.CompareTo(b.completed));
 
             foreach(Achievement achievement in sortedAchievements)
@@ -41,9 +42,9 @@ namespace Devenant
         {
             GameObject newAchievement = achievementContent.Create();
 
-            newAchievement.transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("achievement", achievement.id + "_name");
-            newAchievement.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("achievement", achievement.id + "_description");
-            newAchievement.transform.Find("IconImage").GetComponent<Image>().sprite = achievement.icon;
+            newAchievement.transform.Find("IconImage").GetComponent<Image>().sprite = achievement.icon; 
+            newAchievement.transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("achievement", achievement.name + "_name");
+            newAchievement.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("achievement", achievement.name + "_description");
 
             newAchievement.transform.Find("Completed").gameObject.SetActive(achievement.completed);
 

@@ -8,7 +8,7 @@ namespace Devenant
         [System.Serializable]
         public class Purchase
         {
-            public string id;
+            public string name;
             public bool value;
         }
     }

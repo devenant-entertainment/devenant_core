@@ -48,7 +48,7 @@ namespace Devenant
 
                                 foreach(PurchaseResponse.Purchase purchase in responseData.purchases)
                                 {
-                                    if(purchase.id == purchases[i].name)
+                                    if(purchase.name == purchases[i].name)
                                     {
                                         purchased = purchase.value;
 
@@ -84,7 +84,7 @@ namespace Devenant
             });
         }
 
-        public void Purchase(string id, Action<bool> callback = null)
+        public void Purchase(string name, Action<bool> callback = null)
         {
             if(storeController == null)
             {
@@ -95,9 +95,9 @@ namespace Devenant
 
             foreach(Purchase purchase in purchases)
             {
-                if(purchase.id == id)
+                if(purchase.name == name)
                 {
-                    storeController.Purchase(purchase.id, (StorePurchaseResponse response) =>
+                    storeController.Purchase(purchase.name, (StorePurchaseResponse response) =>
                     {
                         if(response.success)
                         {
@@ -115,10 +115,10 @@ namespace Devenant
                             Dictionary<string, string> formFields = new Dictionary<string, string>()
                             {
                                 { "token", UserManager.instance.user.token },
-                                { "id", purchase.id },
-                                { "purchased", purchase.purchased.ToString() },
+                                { "name", purchase.name },
+                                { "transaction", response.transaction },
                                 { "platform", UnityEngine.Application.platform.ToString() },
-                                { "transaction", response.transaction }
+                                { "value", purchase.purchased.ToString() }
                             };
 
                             Request.Post(ApplicationManager.instance.backend.purchaseSet, formFields, (Request.Response response) =>
@@ -131,9 +131,12 @@ namespace Devenant
                             callback?.Invoke(false);
                         }
                     });
-                    break;
+
+                    return;
                 }
             }
+
+            callback?.Invoke(false);
         }
     }
 }
