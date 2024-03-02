@@ -8,9 +8,9 @@ namespace Devenant
     {
         [SerializeField] private TMP_InputField codeInputField;
         [SerializeField] private TMP_InputField emailInputField;
-        [Space]
+        
         [SerializeField] private Button updateButton;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)

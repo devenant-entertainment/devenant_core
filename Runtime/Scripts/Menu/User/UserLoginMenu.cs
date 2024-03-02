@@ -9,11 +9,11 @@ namespace Devenant
         [SerializeField] private TMP_InputField emailInputField;
         [SerializeField] private TMP_InputField passwordInputField;
         [SerializeField] private Toggle rememberToggle;
-        [Space]
+        
         [SerializeField] private Button loginButton;
         [SerializeField] private Button updatePasswordButton;
         [SerializeField] private Button registerButton;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         public void Open(Action<bool> callback = null)

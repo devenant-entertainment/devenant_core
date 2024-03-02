@@ -1,12 +1,14 @@
 # Devenant Core
 Base project to all devenant games and applications.
 ##Setup
-1. Import the package into your Unity project using package manager.
-2. Download and import the Steamworks.NET package form https://steamworks.github.io/installation/.
-##Modules
-###Achievement
-###Data
-###Menu
-###Purchasing
-###Settings
-###User
+1. Download Devenant Core repository to your local machine on the master branch.
+2. Create a new Unity  project and import the Devenant Core package from disk using package manager.
+3. Download and import the Steamworks.NET package form https://steamworks.github.io/installation/.
+## Modules
+### Achievement
+### Game
+### Menu
+### Multiplayer
+### Purchase
+### Settings
+### User

@@ -15,11 +15,42 @@ namespace Devenant
             {
                 settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString(dataKey));
 
+                SetLocale(settings.locale);
+
+                SetResolution(settings.resolution);
+                SetFullScreenMode(settings.fullScreenMode);
+
                 SetMasterVolume(settings.masterVolume);
                 SetMusicVolume(settings.musicVolume);
                 SetSfxVolume(settings.sfxVolume);
-                SetLocale(settings.locale);
             }
+        }
+
+        public void SetLocale(int locale)
+        {
+            settings.locale = locale;
+
+            LocalizationManager.instance.locale = settings.locale;
+        }
+
+        public void SetResolution(int resolution)
+        {
+            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+                return;
+
+            settings.resolution = resolution;
+
+            Screen.SetResolution(Screen.resolutions[resolution].width, Screen.resolutions[resolution].height, (FullScreenMode)settings.fullScreenMode);
+        }
+
+        public void SetFullScreenMode(int fullScreenMode)
+        {
+            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+                return;
+
+            settings.fullScreenMode = fullScreenMode;
+
+            Screen.SetResolution(Screen.resolutions[settings.resolution].width, Screen.resolutions[settings.resolution].height, (FullScreenMode)fullScreenMode);
         }
 
         public void SetMasterVolume(int volume)
@@ -41,13 +72,6 @@ namespace Devenant
             settings.sfxVolume = Mathf.Clamp(volume, 0, 100);
 
             AudioManager.instance.sfx.volume = settings.sfxVolume;
-        }
-
-        public void SetLocale(int locale)
-        {
-            settings.locale = locale;
-
-            LocalizationManager.instance.locale = settings.locale;
         }
 
         public void Save()

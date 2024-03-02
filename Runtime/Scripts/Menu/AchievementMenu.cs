@@ -10,7 +10,7 @@ namespace Devenant
     {
         [SerializeField] private RectTransform achievementHolder;
         [SerializeField] private GameObject achievementElement;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         private Content achievementContent;

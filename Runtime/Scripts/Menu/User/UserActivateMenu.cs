@@ -7,9 +7,9 @@ namespace Devenant
     public class UserActivateMenu : Menu<UserActivateMenu>
     {
         [SerializeField] private TMP_InputField codeInputField;
-        [Space]
+        
         [SerializeField] private Button validateButton;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         public void Open(Action<bool> callback)

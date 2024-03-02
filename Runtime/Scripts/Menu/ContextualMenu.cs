@@ -21,7 +21,7 @@ namespace Devenant
     {
         [SerializeField] private RectTransform optionHolder;
         [SerializeField] private GameObject optionElement;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         private Content optionContent;

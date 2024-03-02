@@ -7,7 +7,7 @@ namespace Devenant
     {
         [SerializeField] private RectTransform avatarHolder;
         [SerializeField] private GameObject avatarElement;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         private Content avatarContent;

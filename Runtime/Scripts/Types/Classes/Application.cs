@@ -1,5 +1,12 @@
 namespace Devenant
 {
+    public enum ApplicationPlatform
+    {
+        Steam,
+        Android,
+        IOS,
+    }
+
     public enum ApplicationEnvironment
     {
         Production,
@@ -8,15 +15,14 @@ namespace Devenant
 
     public class Application
     {
+        public readonly ApplicationPlatform platform;
         public readonly ApplicationEnvironment environment;
 
         public readonly string gameUrl;
         public readonly string legalUrl;
         public readonly string supportUrl;
 
-        private readonly string windowsStoreUrl;
-        private readonly string androidStoreUrl;
-        private readonly string iosStoreUrl;
+        public readonly string storeUrl;
 
         public Application(ApplicationData data)
         {
@@ -26,26 +32,31 @@ namespace Devenant
             legalUrl = data.legalUrl;
             supportUrl = data.supportUrl;
 
-            windowsStoreUrl = data.windowsStoreUrl;
-            androidStoreUrl = data.androidStoreUrl;
-            iosStoreUrl = data.iosStoreUrl;
-        }
-
-        public string GetStoreUrl()
-        {
             switch(UnityEngine.Application.platform)
             {
                 default:
 
-                    return windowsStoreUrl;
+                    platform = ApplicationPlatform.Steam;
+
+                    storeUrl = data.windowsStoreUrl;
+
+                    break;
 
                 case UnityEngine.RuntimePlatform.Android:
 
-                    return androidStoreUrl;
+                    platform = ApplicationPlatform.Android;
+
+                    storeUrl = data.androidStoreUrl;
+
+                    break;
 
                 case UnityEngine.RuntimePlatform.IPhonePlayer:
 
-                    return iosStoreUrl;
+                    platform = ApplicationPlatform.IOS;
+
+                    storeUrl = data.iosStoreUrl;
+
+                    break;
             }
         }
     }

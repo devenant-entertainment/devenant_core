@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,57 +9,43 @@ namespace Devenant
 {
     public class SettingsMenu : Menu<SettingsMenu>
     {
+        [Header("Localization")]
         [SerializeField] private TMP_Dropdown localeDropdown;
-        [Space]
+
+        [Header("Graphics")]
+        [SerializeField] private GameObject resolutionHolder;
+        [SerializeField] private TMP_Dropdown resolutionDropdown;
+
+        [SerializeField] private GameObject fullScreenModeHolder;
+        [SerializeField] private TMP_Dropdown fullScreenModeDropdown;
+
+        [Header("Audio")]
         [SerializeField] private Slider masterVolumeSlider;
         [SerializeField] private Slider musicVolumeSlider;
         [SerializeField] private Slider sfxVolumeSlider;
-        [Space]
+
+        [Header("Links")]
         [SerializeField] private Button manageButton;
         [SerializeField] private Button infoButton;
-        [Space]
+
+        [Header("Menu")]
         [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
         {
-            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
-            foreach(string locale in LocalizationManager.instance.locales)
-                options.Add(new TMP_Dropdown.OptionData(locale));
+            SetupLocale();
 
-            localeDropdown.ClearOptions();
-            localeDropdown.AddOptions(options);
-            localeDropdown.value = SettingsManager.instance.settings.locale;
-            localeDropdown.onValueChanged.RemoveAllListeners();
-            localeDropdown.onValueChanged.AddListener((int value) =>
-            {
-                SettingsManager.instance.SetLocale(value);
-            });
+            SetupResolution();
+            SetupFullScreenMode();
 
-            masterVolumeSlider.value = SettingsManager.instance.settings.masterVolume;
-            masterVolumeSlider.onValueChanged.RemoveAllListeners();
-            masterVolumeSlider.onValueChanged.AddListener((float value) => 
-            {
-                SettingsManager.instance.SetMasterVolume(Mathf.RoundToInt(value));
-            });
-
-            musicVolumeSlider.value = SettingsManager.instance.settings.musicVolume;
-            musicVolumeSlider.onValueChanged.RemoveAllListeners();
-            musicVolumeSlider.onValueChanged.AddListener((float value) =>
-            {
-                SettingsManager.instance.SetMusicVolume(Mathf.RoundToInt(value));
-            });
-
-            sfxVolumeSlider.value = SettingsManager.instance.settings.sfxVolume;
-            sfxVolumeSlider.onValueChanged.RemoveAllListeners();
-            sfxVolumeSlider.onValueChanged.AddListener((float value) =>
-            {
-                SettingsManager.instance.SetSfxVolume(Mathf.RoundToInt(value));
-            });
+            SetupMasterVolume();
+            SetupMusicVolume();
+            SetupSfxVolume();
 
             manageButton.onClick.RemoveAllListeners();
             manageButton.onClick.AddListener(() =>
             {
-                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.GetStoreUrl());
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
             });
 
             infoButton.onClick.RemoveAllListeners();
@@ -80,6 +68,106 @@ namespace Devenant
             SettingsManager.instance.Save();
 
             base.Close(callback);
+        }
+
+        private void SetupLocale()
+        {
+            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+
+            foreach(string locale in LocalizationManager.instance.locales)
+            {
+                options.Add(new TMP_Dropdown.OptionData(locale));
+            }
+
+            localeDropdown.ClearOptions();
+            localeDropdown.AddOptions(options);
+
+            localeDropdown.value = SettingsManager.instance.settings.locale;
+            localeDropdown.onValueChanged.RemoveAllListeners();
+            localeDropdown.onValueChanged.AddListener((int value) =>
+            {
+                SettingsManager.instance.SetLocale(value);
+            });
+        }
+
+        private void SetupResolution()
+        {
+            resolutionHolder.SetActive(ApplicationManager.instance.application.platform == ApplicationPlatform.Steam);
+
+            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+                return;
+
+            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+
+            foreach(Resolution resolution in Screen.resolutions)
+            {
+                options.Add(new TMP_Dropdown.OptionData(string.Format("{0} x {1}", resolution.width, resolution.height)));
+            }
+
+            resolutionDropdown.ClearOptions();
+            resolutionDropdown.AddOptions(options);
+
+            resolutionDropdown.value = SettingsManager.instance.settings.resolution;
+            resolutionDropdown.onValueChanged.RemoveAllListeners();
+            resolutionDropdown.onValueChanged.AddListener((int value) =>
+            {
+                SettingsManager.instance.SetResolution(value);
+            });
+        }
+
+        private void SetupFullScreenMode()
+        {
+            fullScreenModeHolder.SetActive(ApplicationManager.instance.application.platform == ApplicationPlatform.Steam);
+
+            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+                return;
+
+            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+
+            foreach(string fullScreenMode in Enum.GetValues(typeof(FullScreenMode)).Cast<string>())
+            {
+                options.Add(new TMP_Dropdown.OptionData(fullScreenMode));
+            }
+
+            fullScreenModeDropdown.ClearOptions();
+            fullScreenModeDropdown.AddOptions(options);
+
+            fullScreenModeDropdown.value = SettingsManager.instance.settings.fullScreenMode;
+            fullScreenModeDropdown.onValueChanged.RemoveAllListeners();
+            fullScreenModeDropdown.onValueChanged.AddListener((int value) =>
+            {
+                SettingsManager.instance.SetFullScreenMode(value);
+            });
+        }
+
+        private void SetupMasterVolume()
+        {
+            masterVolumeSlider.value = SettingsManager.instance.settings.masterVolume;
+            masterVolumeSlider.onValueChanged.RemoveAllListeners();
+            masterVolumeSlider.onValueChanged.AddListener((float value) =>
+            {
+                SettingsManager.instance.SetMasterVolume(Mathf.RoundToInt(value));
+            });
+        }
+
+        private void SetupMusicVolume()
+        {
+            musicVolumeSlider.value = SettingsManager.instance.settings.musicVolume;
+            musicVolumeSlider.onValueChanged.RemoveAllListeners();
+            musicVolumeSlider.onValueChanged.AddListener((float value) =>
+            {
+                SettingsManager.instance.SetMusicVolume(Mathf.RoundToInt(value));
+            });
+        }
+
+        private void SetupSfxVolume()
+        {
+            sfxVolumeSlider.value = SettingsManager.instance.settings.sfxVolume;
+            sfxVolumeSlider.onValueChanged.RemoveAllListeners();
+            sfxVolumeSlider.onValueChanged.AddListener((float value) =>
+            {
+                SettingsManager.instance.SetSfxVolume(Mathf.RoundToInt(value));
+            });
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Devenant
     {
         [SerializeField] private TMP_InputField emailInputField;
         [SerializeField] private Button acceptButton;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         public void Open(Action<bool> callback = null)

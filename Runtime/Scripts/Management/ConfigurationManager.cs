@@ -29,7 +29,7 @@ namespace Devenant
                                 {
                                     callback?.Invoke(false);
 
-                                    UnityEngine.Application.OpenURL(ApplicationManager.instance.application.GetStoreUrl());
+                                    UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
                                 }));
                             }
 

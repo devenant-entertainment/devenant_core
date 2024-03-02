@@ -7,9 +7,9 @@ namespace Devenant
     public class UserDeleteMenu : Menu<UserDeleteMenu>
     {
         [SerializeField] private TMP_InputField codeInputField;
-        [Space]
+        
         [SerializeField] private Button deleteButton;
-        [Space]
+        
         [SerializeField] private Button closeButton;
 
         public void Open(Action<bool> callback = null)
