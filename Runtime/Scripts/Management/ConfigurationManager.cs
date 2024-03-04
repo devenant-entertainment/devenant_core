@@ -25,11 +25,18 @@ namespace Devenant
                             }
                             else
                             {
-                                MessageMenu.instance.Open("version_error", (() =>
+                                MessageMenu.instance.Open("dialogue_version", ((bool success) =>
                                 {
                                     callback?.Invoke(false);
 
-                                    UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
+                                    if(success)
+                                    {
+                                        UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
+                                    }
+                                    else
+                                    {
+                                        ApplicationManager.instance.Exit();
+                                    }
                                 }));
                             }
 
@@ -37,7 +44,7 @@ namespace Devenant
 
                         case ConfigurationStatus.Inactive:
 
-                            MessageMenu.instance.Open("maintenance_error", () =>
+                            MessageMenu.instance.Open("error_maintenance", () =>
                             {
                                 callback?.Invoke(false);
                             });

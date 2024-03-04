@@ -27,21 +27,21 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(codeInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_invalid_password"));
+                    NotificationMenu.instance.Open(new Notification("error_field_password"));
 
                     return;
                 }
@@ -54,7 +54,7 @@ namespace Devenant
                         {
                             if(response.success)
                             {
-                                MessageMenu.instance.Open("user_update_password_done", () =>
+                                MessageMenu.instance.Open("info_user_update_password", () =>
                                 {
                                     Close(() =>
                                     {

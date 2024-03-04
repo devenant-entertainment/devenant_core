@@ -119,7 +119,7 @@ namespace Devenant
 
                                                 case UserStatus.Unvalidated:
 
-                                                    MessageMenu.instance.Open("user_unvalidated", (bool success) =>
+                                                    MessageMenu.instance.Open("dialogue_user_unvalidated", (bool success) =>
                                                     {
                                                         if(success)
                                                         {
@@ -155,16 +155,23 @@ namespace Devenant
 
                                                 case UserStatus.Banned:
 
-                                                    MessageMenu.instance.Open("user_banned", () =>
+                                                    MessageMenu.instance.Open("dialogue_user_banned", (bool success) =>
                                                     {
-                                                        Exit();
+                                                        if(success)
+                                                        {
+                                                            UnityEngine.Application.OpenURL(application.supportUrl);
+                                                        }
+                                                        else
+                                                        {
+                                                            Exit();
+                                                        }
                                                     });
 
                                                     break;
 
                                                 case UserStatus.Deleted:
 
-                                                    MessageMenu.instance.Open("user_deleted", (bool success) =>
+                                                    MessageMenu.instance.Open("dialogue_user_deleted", (bool success) =>
                                                     {
                                                         if(success)
                                                         {

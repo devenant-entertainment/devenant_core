@@ -25,8 +25,9 @@ namespace Devenant
         [SerializeField] private Slider sfxVolumeSlider;
 
         [Header("Links")]
-        [SerializeField] private Button manageButton;
-        [SerializeField] private Button infoButton;
+        [SerializeField] private Button supportUrlButton;
+        [SerializeField] private Button storeUrlButton;
+        [SerializeField] private Button gameUrlButton;
 
         [Header("Menu")]
         [SerializeField] private Button closeButton;
@@ -42,14 +43,20 @@ namespace Devenant
             SetupMusicVolume();
             SetupSfxVolume();
 
-            manageButton.onClick.RemoveAllListeners();
-            manageButton.onClick.AddListener(() =>
+            supportUrlButton.onClick.RemoveAllListeners();
+            supportUrlButton.onClick.AddListener(() =>
+            {
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.supportUrl);
+            });
+
+            storeUrlButton.onClick.RemoveAllListeners();
+            storeUrlButton.onClick.AddListener(() =>
             {
                 UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
             });
 
-            infoButton.onClick.RemoveAllListeners();
-            infoButton.onClick.AddListener(() => 
+            gameUrlButton.onClick.RemoveAllListeners();
+            gameUrlButton.onClick.AddListener(() => 
             {
                 UnityEngine.Application.OpenURL(ApplicationManager.instance.application.gameUrl);
             });

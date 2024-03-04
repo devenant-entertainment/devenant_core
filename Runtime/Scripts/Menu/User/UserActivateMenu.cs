@@ -23,7 +23,7 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(codeInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }

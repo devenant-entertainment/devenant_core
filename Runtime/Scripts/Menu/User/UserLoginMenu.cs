@@ -32,21 +32,21 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_invalid_password"));
+                    NotificationMenu.instance.Open(new Notification("error_field_password"));
 
                     return;
                 }

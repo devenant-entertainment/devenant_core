@@ -43,49 +43,49 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(nicknameInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateNickname(nicknameInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("invalid_nickname"));
+                    NotificationMenu.instance.Open(new Notification("error_field_nickname"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateEmail(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_invalid_email"));
+                    NotificationMenu.instance.Open(new Notification("error_field_email"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidatePassword(passwordInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_invalid_password"));
+                    NotificationMenu.instance.Open(new Notification("error_field_password"));
 
                     return;
                 }
 
                 if(legalToggle.isOn == false)
                 {
-                    NotificationMenu.instance.Open(new Notification("user_accept_legal"));
+                    NotificationMenu.instance.Open(new Notification("error_field_legal"));
 
                     return;
                 }
@@ -98,7 +98,7 @@ namespace Devenant
                         {
                             if(response.success)
                             {
-                                MessageMenu.instance.Open("user_register_done", () =>
+                                MessageMenu.instance.Open("info_user_registered", () =>
                                 {
                                     Close(() =>
                                     {

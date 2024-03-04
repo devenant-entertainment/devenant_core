@@ -28,21 +28,21 @@ namespace Devenant
             {
                 if(string.IsNullOrEmpty(codeInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(string.IsNullOrEmpty(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_empty_fields"));
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
                 if(!UserManager.instance.ValidateEmail(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("user_invalid_email"));
+                    NotificationMenu.instance.Open(new Notification("error_field_email"));
 
                     return;
                 }
@@ -55,7 +55,7 @@ namespace Devenant
                         {
                             if(response.success)
                             {
-                                MessageMenu.instance.Open("user_update_email_done", () =>
+                                MessageMenu.instance.Open("info_user_code", () =>
                                 {
                                     Close(() =>
                                     {
