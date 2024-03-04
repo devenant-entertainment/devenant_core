@@ -1,5 +1,3 @@
-using System;
-
 namespace Devenant
 {
     public class Game
