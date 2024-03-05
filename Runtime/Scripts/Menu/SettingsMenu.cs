@@ -153,7 +153,7 @@ namespace Devenant
         private void SetupInterfaceScale()
         {
             interfaceScaleSlider.wholeNumbers = false;
-            interfaceScaleSlider.minValue = 0.75f;
+            interfaceScaleSlider.minValue = 1.0f;
             interfaceScaleSlider.maxValue = 1.5f;
 
             interfaceScaleSlider.value = SettingsManager.instance.settings.interfaceScale;
