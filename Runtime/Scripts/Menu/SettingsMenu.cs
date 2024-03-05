@@ -19,6 +19,8 @@ namespace Devenant
         [SerializeField] private GameObject fullScreenModeHolder;
         [SerializeField] private TMP_Dropdown fullScreenModeDropdown;
 
+        [SerializeField] private Slider interfaceScaleSlider;
+
         [Header("Audio")]
         [SerializeField] private Slider masterVolumeSlider;
         [SerializeField] private Slider musicVolumeSlider;
@@ -38,6 +40,7 @@ namespace Devenant
 
             SetupResolution();
             SetupFullScreenMode();
+            SetupInterfaceScale();
 
             SetupMasterVolume();
             SetupMusicVolume();
@@ -101,7 +104,7 @@ namespace Devenant
         {
             resolutionHolder.SetActive(ApplicationManager.instance.application.platform == ApplicationPlatform.Steam);
 
-            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+            if(!resolutionHolder.activeSelf)
                 return;
 
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
@@ -126,7 +129,7 @@ namespace Devenant
         {
             fullScreenModeHolder.SetActive(ApplicationManager.instance.application.platform == ApplicationPlatform.Steam);
 
-            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+            if(!fullScreenModeHolder.activeSelf)
                 return;
 
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
@@ -147,9 +150,29 @@ namespace Devenant
             });
         }
 
+        private void SetupInterfaceScale()
+        {
+            interfaceScaleSlider.wholeNumbers = false;
+            interfaceScaleSlider.minValue = 0.75f;
+            interfaceScaleSlider.maxValue = 1.5f;
+
+            interfaceScaleSlider.value = SettingsManager.instance.settings.interfaceScale;
+
+            interfaceScaleSlider.onValueChanged.RemoveAllListeners();
+            interfaceScaleSlider.onValueChanged.AddListener((float value) =>
+            {
+                SettingsManager.instance.SetInterfaceScale(value);
+            });
+        }
+
         private void SetupMasterVolume()
         {
+            interfaceScaleSlider.wholeNumbers = true;
+            interfaceScaleSlider.minValue = 0;
+            interfaceScaleSlider.maxValue = 100;
+
             masterVolumeSlider.value = SettingsManager.instance.settings.masterVolume;
+
             masterVolumeSlider.onValueChanged.RemoveAllListeners();
             masterVolumeSlider.onValueChanged.AddListener((float value) =>
             {
@@ -159,7 +182,12 @@ namespace Devenant
 
         private void SetupMusicVolume()
         {
+            interfaceScaleSlider.wholeNumbers = true;
+            interfaceScaleSlider.minValue = 0;
+            interfaceScaleSlider.maxValue = 100;
+
             musicVolumeSlider.value = SettingsManager.instance.settings.musicVolume;
+
             musicVolumeSlider.onValueChanged.RemoveAllListeners();
             musicVolumeSlider.onValueChanged.AddListener((float value) =>
             {
@@ -169,7 +197,12 @@ namespace Devenant
 
         private void SetupSfxVolume()
         {
+            interfaceScaleSlider.wholeNumbers = true;
+            interfaceScaleSlider.minValue = 0;
+            interfaceScaleSlider.maxValue = 100;
+
             sfxVolumeSlider.value = SettingsManager.instance.settings.sfxVolume;
+
             sfxVolumeSlider.onValueChanged.RemoveAllListeners();
             sfxVolumeSlider.onValueChanged.AddListener((float value) =>
             {

@@ -19,6 +19,7 @@ namespace Devenant
 
                 SetResolution(settings.resolution);
                 SetFullScreenMode(settings.fullScreenMode);
+                SetInterfaceScale(settings.interfaceScale);
 
                 SetMasterVolume(settings.masterVolume);
                 SetMusicVolume(settings.musicVolume);
@@ -40,7 +41,7 @@ namespace Devenant
 
             settings.resolution = resolution;
 
-            Screen.SetResolution(Screen.resolutions[resolution].width, Screen.resolutions[resolution].height, (FullScreenMode)settings.fullScreenMode);
+            Screen.SetResolution(Screen.resolutions[settings.resolution].width, Screen.resolutions[settings.resolution].height, (FullScreenMode)settings.fullScreenMode);
         }
 
         public void SetFullScreenMode(int fullScreenMode)
@@ -50,7 +51,14 @@ namespace Devenant
 
             settings.fullScreenMode = fullScreenMode;
 
-            Screen.SetResolution(Screen.resolutions[settings.resolution].width, Screen.resolutions[settings.resolution].height, (FullScreenMode)fullScreenMode);
+            Screen.SetResolution(Screen.resolutions[settings.resolution].width, Screen.resolutions[settings.resolution].height, (FullScreenMode)settings.fullScreenMode);
+        }
+
+        public void SetInterfaceScale(float scale)
+        {
+            settings.interfaceScale = scale;
+
+            InterfaceManager.instance.SetScale(settings.interfaceScale);
         }
 
         public void SetMasterVolume(int volume)
