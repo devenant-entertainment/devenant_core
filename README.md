@@ -29,14 +29,14 @@ This table is for base messages sent by Devenant Server and Devenant Core. It is
 | message | dialogue_user_banned | Your account has been banned. Do you want to contact support? |
 | message | dialogue_user_deleted | This account is deleted. Do you want to recover it? |
 | message | dialogue_user_unvalidated | Your account is unvalidated. Do you want to activate it? |
-| message | dialogue_version | There is an new game version. Do you want to update game? |
+| message | dialogue_version | There is a new game version. Do you want to update game? |
 | message | error | An unknown error has ocurred. |
 | message | error_field_empty | You must fill all fields. |
 | message | error_field_email | You must enter a valid email. |
 | message | error_field_nickname | You must enter a valid nickname with a minimum of 2 characters. |
 | message | error_field_legal | You must accept the terms and conditions of the service. |
-| message | error_field_password | You must enter a valid password. It must be a combination of uppercase and lowercase letters and numbers, with a minimum of 2 characters and a maximum of 32. |
-| message | error_maintenance | Game are in maintenance. Try again later. |
+| message | error_field_password | You must enter a valid password. It must be a combination of uppercase and lowercase letters and numbers, with a minimum of 8 characters and a maximum of 32. |
+| message | error_maintenance | Game servers are in maintenance. Try again later. |
 | message | error_user_code | Invalid user code. |
 | message | error_user_login | There was an error during login. |
 | message | error_user_register | There was an error during register. |
