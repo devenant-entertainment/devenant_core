@@ -17,7 +17,7 @@ namespace Devenant
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button closeButton;
 
-        public void Open(Action<bool> callback = null)
+        public override void Open(Action callback = null)
         {
             emailInputField.text = string.Empty;
             emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
@@ -62,7 +62,7 @@ namespace Devenant
                             {
                                 Close(() => 
                                 {
-                                    callback?.Invoke(true);
+                                    callback?.Invoke();
                                 });
                             }
                             else
@@ -101,9 +101,12 @@ namespace Devenant
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(() =>
             {
-                Close(() =>
+                MessageMenu.instance.Open("dialogue_exit", (bool success) =>
                 {
-                    callback?.Invoke(false);
+                    if(success)
+                    {
+                        ApplicationManager.instance.Exit();
+                    }
                 });
             });
 

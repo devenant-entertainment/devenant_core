@@ -11,7 +11,7 @@ namespace Devenant
 
         public void Setup()
         {
-            if(!PlayerPrefs.HasKey(dataKey))
+            if(PlayerPrefs.HasKey(dataKey))
             {
                 settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString(dataKey));
             }

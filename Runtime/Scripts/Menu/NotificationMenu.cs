@@ -32,7 +32,7 @@ namespace Devenant
                 notifications[0].action?.Invoke(); 
             });
 
-            messageText.text = LocalizationManager.instance.Translate("message", notifications[0].message);
+            messageText.text = LocalizationManager.instance.Translate("Message", notifications[0].message);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(panelTransform);
 

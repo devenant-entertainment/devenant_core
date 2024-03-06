@@ -35,7 +35,7 @@ namespace Devenant
             {
                 GameObject newOption = optionContent.Create();
 
-                newOption.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("interface", option.name);
+                newOption.GetComponentInChildren<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("Interface", option.name);
 
                 newOption.GetComponent<Button>().onClick.AddListener(() =>
                 {

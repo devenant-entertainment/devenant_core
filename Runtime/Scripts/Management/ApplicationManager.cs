@@ -53,19 +53,12 @@ namespace Devenant
                                         {
                                             LoadingMenu.instance.Close(() =>
                                             {
-                                                UserLoginMenu.instance.Open((bool success) =>
+                                                UserLoginMenu.instance.Open(() =>
                                                 {
-                                                    if(success)
+                                                    LoadingMenu.instance.Open(() =>
                                                     {
-                                                        LoadingMenu.instance.Open(() =>
-                                                        {
-                                                            OnLogin(callback);
-                                                        });
-                                                    }
-                                                    else
-                                                    {
-                                                        Exit();
-                                                    }
+                                                        OnLogin(callback);
+                                                    });
                                                 });
                                             });
                                         }

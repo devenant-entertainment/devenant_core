@@ -28,8 +28,8 @@ namespace Devenant
 
         [Header("Links")]
         [SerializeField] private Button supportUrlButton;
-        [SerializeField] private Button storeUrlButton;
         [SerializeField] private Button gameUrlButton;
+        [SerializeField] private Button storeUrlButton;
 
         [Header("Menu")]
         [SerializeField] private Button exitButton;
@@ -53,16 +53,16 @@ namespace Devenant
                 UnityEngine.Application.OpenURL(ApplicationManager.instance.application.supportUrl);
             });
 
+            gameUrlButton.onClick.RemoveAllListeners();
+            gameUrlButton.onClick.AddListener(() =>
+            {
+                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.gameUrl);
+            });
+
             storeUrlButton.onClick.RemoveAllListeners();
             storeUrlButton.onClick.AddListener(() =>
             {
                 UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
-            });
-
-            gameUrlButton.onClick.RemoveAllListeners();
-            gameUrlButton.onClick.AddListener(() => 
-            {
-                UnityEngine.Application.OpenURL(ApplicationManager.instance.application.gameUrl);
             });
 
             exitButton.onClick.RemoveAllListeners();
@@ -149,9 +149,9 @@ namespace Devenant
 
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
 
-            foreach(string fullScreenMode in Enum.GetValues(typeof(FullScreenMode)).Cast<string>())
+            foreach(FullScreenMode fullScreenMode in Enum.GetValues(typeof(FullScreenMode)))
             {
-                options.Add(new TMP_Dropdown.OptionData(fullScreenMode));
+                options.Add(new TMP_Dropdown.OptionData(fullScreenMode.ToString()));
             }
 
             fullScreenModeDropdown.ClearOptions();
@@ -182,9 +182,9 @@ namespace Devenant
 
         private void SetupMasterVolume()
         {
-            interfaceScaleSlider.wholeNumbers = true;
-            interfaceScaleSlider.minValue = 0;
-            interfaceScaleSlider.maxValue = 100;
+            masterVolumeSlider.wholeNumbers = true;
+            masterVolumeSlider.minValue = 0;
+            masterVolumeSlider.maxValue = 100;
 
             masterVolumeSlider.value = SettingsManager.instance.settings.masterVolume;
 
@@ -197,9 +197,9 @@ namespace Devenant
 
         private void SetupMusicVolume()
         {
-            interfaceScaleSlider.wholeNumbers = true;
-            interfaceScaleSlider.minValue = 0;
-            interfaceScaleSlider.maxValue = 100;
+            musicVolumeSlider.wholeNumbers = true;
+            musicVolumeSlider.minValue = 0;
+            musicVolumeSlider.maxValue = 100;
 
             musicVolumeSlider.value = SettingsManager.instance.settings.musicVolume;
 
@@ -212,9 +212,9 @@ namespace Devenant
 
         private void SetupSfxVolume()
         {
-            interfaceScaleSlider.wholeNumbers = true;
-            interfaceScaleSlider.minValue = 0;
-            interfaceScaleSlider.maxValue = 100;
+            sfxVolumeSlider.wholeNumbers = true;
+            sfxVolumeSlider.minValue = 0;
+            sfxVolumeSlider.maxValue = 100;
 
             sfxVolumeSlider.value = SettingsManager.instance.settings.sfxVolume;
 

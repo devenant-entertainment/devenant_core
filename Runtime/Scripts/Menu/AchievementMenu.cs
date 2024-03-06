@@ -43,8 +43,8 @@ namespace Devenant
             GameObject newAchievement = achievementContent.Create();
 
             newAchievement.transform.Find("IconImage").GetComponent<Image>().sprite = achievement.icon; 
-            newAchievement.transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("achievement", achievement.name + "_name");
-            newAchievement.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("achievement", achievement.name + "_description");
+            newAchievement.transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("Achievement", achievement.name + "_name");
+            newAchievement.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("Achievement", achievement.name + "_description");
 
             newAchievement.transform.Find("Completed").gameObject.SetActive(achievement.completed);
 

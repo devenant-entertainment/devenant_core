@@ -67,7 +67,7 @@ namespace Devenant
 
         private void ShowMessage(string message)
         {
-            messageText.text = LocalizationManager.instance.Translate("message", message);
+            messageText.text = LocalizationManager.instance.Translate("Message", message);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(panelTransform);
         }
