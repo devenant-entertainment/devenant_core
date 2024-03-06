@@ -67,6 +67,8 @@ namespace Devenant
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(() =>
             {
+                SettingsManager.instance.Save();
+
                 Close();
             });
 

@@ -9,21 +9,11 @@ namespace Devenant
         public Settings settings { get { return _settings; } private set { _settings = value; } }
         private Settings _settings;
 
-        public void Load()
+        public void Setup()
         {
-            if(PlayerPrefs.HasKey(dataKey))
+            if(!PlayerPrefs.HasKey(dataKey))
             {
                 settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString(dataKey));
-
-                SetLocale(settings.locale);
-
-                SetResolution(settings.resolution);
-                SetFullScreenMode(settings.fullScreenMode);
-                SetInterfaceScale(settings.interfaceScale);
-
-                SetMasterVolume(settings.masterVolume);
-                SetMusicVolume(settings.musicVolume);
-                SetSfxVolume(settings.sfxVolume);
             }
             else
             {
@@ -38,7 +28,19 @@ namespace Devenant
                 settings.masterVolume = 100;
                 settings.musicVolume = 100;
                 settings.sfxVolume = 100;
+
+                Save();
             }
+
+            SetLocale(settings.locale);
+
+            SetResolution(settings.resolution);
+            SetFullScreenMode(settings.fullScreenMode);
+            SetInterfaceScale(settings.interfaceScale);
+
+            SetMasterVolume(settings.masterVolume);
+            SetMusicVolume(settings.musicVolume);
+            SetSfxVolume(settings.sfxVolume);
         }
 
         public void SetLocale(int locale)

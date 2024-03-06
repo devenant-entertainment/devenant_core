@@ -39,7 +39,7 @@ namespace Devenant
 #endif
                             LocalizationManager.instance.Setup(() =>
                             {
-                                SettingsManager.instance.Load();
+                                SettingsManager.instance.Setup();
 
                                 ConfigurationManager.instance.Setup((bool success) =>
                                 {
