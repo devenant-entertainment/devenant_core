@@ -41,42 +41,35 @@ namespace Devenant
                             {
                                 SettingsManager.instance.Setup();
 
-                                ConfigurationManager.instance.Setup((bool success) =>
+                                ConfigurationManager.instance.Setup(() =>
                                 {
-                                    if(success)
+                                    UserManager.instance.AutoLogin((bool success) =>
                                     {
-                                        UserManager.instance.AutoLogin((bool success) =>
+                                        if(success)
                                         {
-                                            if(success)
+                                            OnLogin(callback);
+                                        }
+                                        else
+                                        {
+                                            LoadingMenu.instance.Close(() =>
                                             {
-                                                OnLogin(callback);
-                                            }
-                                            else
-                                            {
-                                                LoadingMenu.instance.Close(() =>
+                                                UserLoginMenu.instance.Open((bool success) =>
                                                 {
-                                                    UserLoginMenu.instance.Open((bool success) =>
+                                                    if(success)
                                                     {
-                                                        if(success)
+                                                        LoadingMenu.instance.Open(() =>
                                                         {
-                                                            LoadingMenu.instance.Open(() =>
-                                                            {
-                                                                OnLogin(callback);
-                                                            });
-                                                        }
-                                                        else
-                                                        {
-                                                            Exit();
-                                                        }
-                                                    });
+                                                            OnLogin(callback);
+                                                        });
+                                                    }
+                                                    else
+                                                    {
+                                                        Exit();
+                                                    }
                                                 });
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        ShowError();
-                                    }
+                                            });
+                                        }
+                                    });
                                 });
                             });
 #if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)

@@ -7,7 +7,7 @@ namespace Devenant
         public Configuration configuration { get { return _configuration; } private set { _configuration = value; } }
         private Configuration _configuration;
 
-        public void Setup(Action<bool> callback)
+        public void Setup(Action callback)
         {
             Request.Get(ApplicationManager.instance.backend.configuration, ((Request.Response response) =>
             {
@@ -21,14 +21,12 @@ namespace Devenant
 
                             if(new Version(UnityEngine.Application.version).Compare(configuration.version) != Version.Comparison.Greater)
                             {
-                                callback?.Invoke(true);
+                                callback?.Invoke();
                             }
                             else
                             {
                                 MessageMenu.instance.Open("dialogue_version", ((bool success) =>
                                 {
-                                    callback?.Invoke(false);
-
                                     if(success)
                                     {
                                         UnityEngine.Application.OpenURL(ApplicationManager.instance.application.storeUrl);
@@ -46,7 +44,7 @@ namespace Devenant
 
                             MessageMenu.instance.Open("error_maintenance", () =>
                             {
-                                callback?.Invoke(false);
+                                ApplicationManager.instance.Exit();
                             });
 
                             break;
@@ -56,7 +54,7 @@ namespace Devenant
                 {
                     MessageMenu.instance.Open(response.message, () =>
                     {
-                        callback?.Invoke(false);
+                        ApplicationManager.instance.Exit();
                     });
                 }
             }));

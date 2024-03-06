@@ -25,6 +25,7 @@ This table is for base messages sent by Devenant Server and Devenant Core.
 This table is for base messages sent by Devenant Server and Devenant Core. It is recommended to use prefix like "dialogue" or "error" to categorize the messages.
 | Table | Key | Sample |
 | --- | --- | --- |
+| message | dialogue_exit | Are you sure you want to exit game? |
 | message | dialogue_logout | Are you sure you want to logout? |
 | message | dialogue_user_banned | Your account has been banned. Do you want to contact support? |
 | message | dialogue_user_deleted | This account is deleted. Do you want to recover it? |

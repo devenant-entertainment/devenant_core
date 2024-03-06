@@ -32,6 +32,7 @@ namespace Devenant
         [SerializeField] private Button gameUrlButton;
 
         [Header("Menu")]
+        [SerializeField] private Button exitButton;
         [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
@@ -62,6 +63,18 @@ namespace Devenant
             gameUrlButton.onClick.AddListener(() => 
             {
                 UnityEngine.Application.OpenURL(ApplicationManager.instance.application.gameUrl);
+            });
+
+            exitButton.onClick.RemoveAllListeners();
+            exitButton.onClick.AddListener(() =>
+            {
+                MessageMenu.instance.Open("dialogue_exit", (bool success) =>
+                {
+                    if(success)
+                    {
+                        ApplicationManager.instance.Exit();
+                    }
+                });
             });
 
             closeButton.onClick.RemoveAllListeners();
