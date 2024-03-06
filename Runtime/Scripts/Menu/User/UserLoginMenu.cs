@@ -14,6 +14,7 @@ namespace Devenant
         [SerializeField] private Button updatePasswordButton;
         [SerializeField] private Button registerButton;
         
+        [SerializeField] private Button settingsButton;
         [SerializeField] private Button closeButton;
 
         public void Open(Action<bool> callback = null)
@@ -89,6 +90,12 @@ namespace Devenant
             registerButton.onClick.AddListener(() =>
             {
                 UserRegisterMenu.instance.Open();
+            });
+
+            settingsButton.onClick.RemoveAllListeners();
+            settingsButton.onClick.AddListener(() => 
+            {
+                SettingsMenu.instance.Open();
             });
 
             closeButton.onClick.RemoveAllListeners();
