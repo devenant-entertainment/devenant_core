@@ -1,18 +1,16 @@
-using UnityEngine;
-
 namespace Devenant
 {
     [System.Serializable]
     public class Settings
     {
-        public int locale = 0;
+        public int locale;
 
-        public int resolution = Screen.resolutions.Length - 1;
-        public int fullScreenMode = (int)FullScreenMode.FullScreenWindow;
-        public float interfaceScale = 1.0f;
+        public int resolution;
+        public int fullScreenMode;
+        public float interfaceScale;
 
-        public int masterVolume = 100;
-        public int musicVolume = 100;
-        public int sfxVolume = 100;
+        public int masterVolume;
+        public int musicVolume;
+        public int sfxVolume;
     }
 }

@@ -16,5 +16,9 @@ namespace Devenant
         public string windowsStoreUrl;
         public string androidStoreUrl;
         public string iosStoreUrl;
+
+        [Header("Config")]
+        public float minInterfaceScale = 1.0f;
+        public float maxInterfaceScale = 1.5f;
     }
 }

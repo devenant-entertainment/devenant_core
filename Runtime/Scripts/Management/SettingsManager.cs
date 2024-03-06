@@ -7,7 +7,7 @@ namespace Devenant
         private const string dataKey = "SettingsManager.Data";
 
         public Settings settings { get { return _settings; } private set { _settings = value; } }
-        private Settings _settings = new Settings();
+        private Settings _settings;
 
         public void Load()
         {
@@ -24,6 +24,20 @@ namespace Devenant
                 SetMasterVolume(settings.masterVolume);
                 SetMusicVolume(settings.musicVolume);
                 SetSfxVolume(settings.sfxVolume);
+            }
+            else
+            {
+                settings = new Settings();
+
+                settings.locale = LocalizationManager.instance.locale;
+
+                settings.resolution = Screen.resolutions.Length - 1;
+                settings.fullScreenMode = (int)FullScreenMode.FullScreenWindow;
+                settings.interfaceScale = 1.0f;
+
+                settings.masterVolume = 100;
+                settings.musicVolume = 100;
+                settings.sfxVolume = 100;
             }
         }
 

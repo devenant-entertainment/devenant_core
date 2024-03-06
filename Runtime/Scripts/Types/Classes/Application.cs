@@ -24,6 +24,9 @@ namespace Devenant
 
         public readonly string storeUrl;
 
+        public readonly float minInterfaceScale;
+        public readonly float maxInterfaceScale;
+
         public Application(ApplicationData data)
         {
             environment = data.environment;
@@ -31,6 +34,9 @@ namespace Devenant
             gameUrl = data.gameUrl;
             legalUrl = data.legalUrl;
             supportUrl = data.supportUrl;
+
+            minInterfaceScale = data.minInterfaceScale;
+            maxInterfaceScale = data.maxInterfaceScale;
 
             switch(UnityEngine.Application.platform)
             {
