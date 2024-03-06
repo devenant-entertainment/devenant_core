@@ -167,16 +167,19 @@ namespace Devenant
 
         private void SetupInterfaceScale()
         {
-            interfaceScaleSlider.wholeNumbers = false;
-            interfaceScaleSlider.minValue = ApplicationManager.instance.application.minInterfaceScale;
-            interfaceScaleSlider.maxValue = ApplicationManager.instance.application.maxInterfaceScale;
+            float minInterfaceScale = ApplicationManager.instance.application.minInterfaceScale;
+            float maxInterfaceScale = ApplicationManager.instance.application.maxInterfaceScale;
 
-            interfaceScaleSlider.value = SettingsManager.instance.settings.interfaceScale;
+            interfaceScaleSlider.wholeNumbers = false;
+            interfaceScaleSlider.minValue = minInterfaceScale;
+            interfaceScaleSlider.maxValue = maxInterfaceScale;
+
+            interfaceScaleSlider.value = maxInterfaceScale - SettingsManager.instance.settings.interfaceScale + minInterfaceScale;
 
             interfaceScaleSlider.onValueChanged.RemoveAllListeners();
             interfaceScaleSlider.onValueChanged.AddListener((float value) =>
             {
-                SettingsManager.instance.SetInterfaceScale(value);
+                SettingsManager.instance.SetInterfaceScale(maxInterfaceScale - value + minInterfaceScale);
             });
         }
 

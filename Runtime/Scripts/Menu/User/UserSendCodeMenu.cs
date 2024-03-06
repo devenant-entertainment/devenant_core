@@ -7,7 +7,7 @@ namespace Devenant
     public class UserSendCodeMenu : Menu<UserSendCodeMenu>
     {
         [SerializeField] private TMP_InputField emailInputField;
-        [SerializeField] private Button acceptButton;
+        [SerializeField] private Button sendButton;
         
         [SerializeField] private Button closeButton;
 
@@ -17,8 +17,8 @@ namespace Devenant
             emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
             emailInputField.characterLimit = 256;
 
-            acceptButton.onClick.RemoveAllListeners();
-            acceptButton.onClick.AddListener(() =>
+            sendButton.onClick.RemoveAllListeners();
+            sendButton.onClick.AddListener(() =>
             {
                 if(string.IsNullOrEmpty(emailInputField.text))
                 {

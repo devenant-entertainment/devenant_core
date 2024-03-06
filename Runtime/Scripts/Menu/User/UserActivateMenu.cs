@@ -8,7 +8,7 @@ namespace Devenant
     {
         [SerializeField] private TMP_InputField codeInputField;
         
-        [SerializeField] private Button validateButton;
+        [SerializeField] private Button activateButton;
         
         [SerializeField] private Button closeButton;
 
@@ -18,8 +18,8 @@ namespace Devenant
             codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
             codeInputField.characterLimit = 6;
 
-            validateButton.onClick.RemoveAllListeners();
-            validateButton.onClick.AddListener(() =>
+            activateButton.onClick.RemoveAllListeners();
+            activateButton.onClick.AddListener(() =>
             {
                 if(string.IsNullOrEmpty(codeInputField.text))
                 {
