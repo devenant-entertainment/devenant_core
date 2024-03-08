@@ -49,7 +49,7 @@ namespace Devenant
 
         public void SetLocale(int locale)
         {
-            settings.locale = locale;
+            settings.locale = Mathf.Clamp(locale, 0, LocalizationManager.instance.locales.Length - 1);
 
             LocalizationManager.instance.locale = settings.locale;
         }
@@ -59,7 +59,7 @@ namespace Devenant
             if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
                 return;
 
-            settings.resolution = resolution;
+            settings.resolution = Mathf.Clamp(resolution, 0, Screen.resolutions.Length - 1);
 
             Screen.SetResolution(Screen.resolutions[settings.resolution].width, Screen.resolutions[settings.resolution].height, (FullScreenMode)settings.fullScreenMode);
         }
@@ -76,7 +76,7 @@ namespace Devenant
 
         public void SetQuality(int quality)
         {
-            settings.quality = Mathf.Clamp(quality,0, QualitySettings.names.Length);
+            settings.quality = Mathf.Clamp(quality, 0, QualitySettings.names.Length - 1);
 
             QualitySettings.SetQualityLevel(settings.quality);
         }
