@@ -31,6 +31,8 @@ namespace Devenant
 
                 LoadingMenu.instance.Open(() =>
                 {
+                    AudioManager.instance.Setup();
+
 #if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
                     SteamManager.instance.Setup((bool success) =>
                     {

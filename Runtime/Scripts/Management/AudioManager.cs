@@ -50,11 +50,11 @@ namespace Devenant
 
         public Channel music { get { return _music; } private set { _music = value; } }
         private Channel _music;
-
+            
         public Channel sfx { get { return _sfx; } private set { _sfx = value; } }
         private Channel _sfx;
 
-        private void Awake()
+        public void Setup()
         {
             master = new Channel("Master", audioMixer);
             music = new Channel("Music", audioMixer);

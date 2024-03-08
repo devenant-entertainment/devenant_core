@@ -8,6 +8,7 @@ namespace Devenant
 {
     public class NotificationMenu : Menu<NotificationMenu>
     {
+        [SerializeField] private float openTime = 3;
         [SerializeField] private RectTransform panelTransform;
         [SerializeField] private Button actionButton;
         [SerializeField] private TextMeshProUGUI messageText;
@@ -43,7 +44,7 @@ namespace Devenant
 
             IEnumerator CloseCoroutine()
             {
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(openTime);
 
                 Close(() =>
                 {
