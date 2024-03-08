@@ -9,7 +9,7 @@ namespace Devenant
     public class AchievementMenu : Menu<AchievementMenu>
     {
         [SerializeField] private RectTransform achievementHolder;
-        [SerializeField] private GameObject achievementElement;
+        [SerializeField] private AchievementMenuElement achievementElement;
         
         [SerializeField] private Button closeButton;
 
@@ -19,14 +19,14 @@ namespace Devenant
         {
             achievementContent?.Clear();
 
-            achievementContent = new Content(achievementHolder, achievementElement);
+            achievementContent = new Content(achievementHolder, achievementElement.gameObject);
 
             List<Achievement> sortedAchievements = AchievementManager.instance.achievements.ToList();
             sortedAchievements.Sort((a, b) => a.completed.CompareTo(b.completed));
 
             foreach(Achievement achievement in sortedAchievements)
             {
-                Create(achievement);
+                achievementContent.Create().GetComponent<AchievementMenuElement>().Setup(achievement);
             }
 
             closeButton.onClick.RemoveAllListeners();
@@ -36,22 +36,6 @@ namespace Devenant
             });
 
             base.Open(callback);
-        }
-
-        private void Create(Achievement achievement)
-        {
-            GameObject newAchievement = achievementContent.Create();
-
-            newAchievement.transform.Find("IconImage").GetComponent<Image>().sprite = achievement.icon; 
-            newAchievement.transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("Achievement", achievement.name + "_name");
-            newAchievement.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.Translate("Achievement", achievement.name + "_description");
-
-            newAchievement.transform.Find("Completed").gameObject.SetActive(achievement.completed);
-
-            newAchievement.transform.Find("ProgressBar").gameObject.SetActive(achievement.maxValue > 1);
-            newAchievement.transform.Find("ProgressBar/ProgressImage").GetComponent<Image>().fillAmount = (float)achievement.value / (float)achievement.maxValue;
-            newAchievement.transform.Find("ProgressBar/ProgressText").GetComponent<TextMeshProUGUI>().text = achievement.value.ToString() + "/" + achievement.maxValue.ToString();
-
         }
     }
 }
