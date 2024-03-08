@@ -23,6 +23,8 @@ namespace Devenant
 
                 settings.resolution = Screen.resolutions.Length - 1;
                 settings.fullScreenMode = (int)FullScreenMode.FullScreenWindow;
+                settings.quality = QualitySettings.GetQualityLevel();
+
                 settings.interfaceScale = 1.0f;
 
                 settings.masterVolume = 100;
@@ -36,6 +38,8 @@ namespace Devenant
 
             SetResolution(settings.resolution);
             SetFullScreenMode(settings.fullScreenMode);
+            SetQuality(settings.quality);
+
             SetInterfaceScale(settings.interfaceScale);
 
             SetMasterVolume(settings.masterVolume);
@@ -68,6 +72,13 @@ namespace Devenant
             settings.fullScreenMode = fullScreenMode;
 
             Screen.SetResolution(Screen.resolutions[settings.resolution].width, Screen.resolutions[settings.resolution].height, (FullScreenMode)settings.fullScreenMode);
+        }
+
+        public void SetQuality(int quality)
+        {
+            settings.quality = Mathf.Clamp(quality,0, QualitySettings.names.Length);
+
+            QualitySettings.SetQualityLevel(settings.quality);
         }
 
         public void SetInterfaceScale(float scale)

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +18,9 @@ namespace Devenant
         [SerializeField] private GameObject fullScreenModeHolder;
         [SerializeField] private TMP_Dropdown fullScreenModeDropdown;
 
+        [SerializeField] private Slider qualitySlider;
+
+        [Header("Interface")]
         [SerializeField] private Slider interfaceScaleSlider;
 
         [Header("Audio")]
@@ -41,6 +43,8 @@ namespace Devenant
 
             SetupResolution();
             SetupFullScreenMode();
+            SetupQuality();
+
             SetupInterfaceScale();
 
             SetupMasterVolume();
@@ -162,6 +166,21 @@ namespace Devenant
             fullScreenModeDropdown.onValueChanged.AddListener((int value) =>
             {
                 SettingsManager.instance.SetFullScreenMode(value);
+            });
+        }
+
+        private void SetupQuality()
+        {
+            qualitySlider.wholeNumbers = true;
+            qualitySlider.minValue = 0;
+            qualitySlider.maxValue = QualitySettings.names.Length - 1;
+
+            qualitySlider.value = SettingsManager.instance.settings.quality;
+
+            qualitySlider.onValueChanged.RemoveAllListeners();
+            qualitySlider.onValueChanged.AddListener((float value) =>
+            {
+                SettingsManager.instance.SetQuality(Mathf.RoundToInt(value));
             });
         }
 

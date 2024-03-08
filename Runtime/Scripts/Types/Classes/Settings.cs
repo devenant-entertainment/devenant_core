@@ -7,6 +7,8 @@ namespace Devenant
 
         public int resolution;
         public int fullScreenMode;
+        public int quality;
+
         public float interfaceScale;
 
         public int masterVolume;
