@@ -4,7 +4,6 @@ using Steamworks;
 
 namespace Devenant
 {
-    [DisallowMultipleComponent]
     public class SteamManager : Singleton<SteamManager>
     {
         public bool initialized { get { return _initialized; } private set { _initialized = value; } }

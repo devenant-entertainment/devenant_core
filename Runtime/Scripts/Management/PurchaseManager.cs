@@ -84,6 +84,19 @@ namespace Devenant
             });
         }
 
+        public bool Has(string name)
+        {
+            foreach(Purchase purchase in purchases)
+            {
+                if(purchase.name == name)
+                {
+                    return purchase.purchased;
+                }
+            }
+
+            return false;
+        }
+
         public void Purchase(string name, Action<bool> callback = null)
         {
             if(storeController == null)

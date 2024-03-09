@@ -52,6 +52,19 @@ namespace Devenant
             });
         }
 
+        public bool Has(string name)
+        {
+            foreach(Achievement achievement in achievements)
+            {
+                if(achievement.name == name)
+                {
+                    return achievement.completed;
+                }
+            }
+
+            return false;
+        }
+
         public void Set(string name, int value, Action<bool> callback = null)
         {
             foreach(Achievement achievement in achievements)
