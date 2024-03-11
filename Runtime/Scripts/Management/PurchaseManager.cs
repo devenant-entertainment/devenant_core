@@ -12,7 +12,7 @@ namespace Devenant
 
         private StoreController storeController;
 
-        public void Setup(PurchaseData[] purchases, Action<bool> callback)
+        public void Setup(SOPurchase[] purchases, Action<bool> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
@@ -82,6 +82,19 @@ namespace Devenant
                     callback?.Invoke(false);
                 }
             });
+        }
+
+        public Purchase Find(string name)
+        {
+            foreach(Purchase purchase in purchases)
+            {
+                if(purchase.name == name)
+                {
+                    return purchase;
+                }
+            }
+
+            return null;
         }
 
         public bool Has(string name)

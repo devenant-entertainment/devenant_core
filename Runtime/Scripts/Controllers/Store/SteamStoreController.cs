@@ -2,10 +2,11 @@ namespace Devenant
 {
     public class SteamStoreController : StoreController
     {
-        private PurchaseData[] purchases;
+        private SOPurchase[] purchases;
 
-        public override void Setup(PurchaseData[] purchases, Action<bool> callback)
+        public override void Setup(SOPurchase[] purchases, Action<bool> callback)
         {
+            
             //TODO
 
             this.purchases = purchases;

@@ -12,7 +12,7 @@ namespace Devenant
         public Backend backend { get { return _backend; } private set { _backend = value; } }
         private Backend _backend;
 
-        public void Initialize(ApplicationData application, BackendData backend, PurchaseData[] purchases, AchievementData[] achievements, AvatarData[] avatars, Action callback = null)
+        public void Initialize(SOApplication application, SOBackend backend, SOPurchase[] purchases, SOAchievement[] achievements, SOAvatar[] avatars, Action callback = null)
         {
             this.application = new Application(application);
 

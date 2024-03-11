@@ -11,7 +11,7 @@ namespace Devenant
         public Achievement[] achievements { get { return _achievements; } private set { _achievements = value; } }
         private Achievement[] _achievements;
 
-        public void Setup(AchievementData[] achievements, Action<bool> callback) 
+        public void Setup(SOAchievement[] achievements, Action<bool> callback) 
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>()
             {
@@ -50,6 +50,19 @@ namespace Devenant
                     callback?.Invoke(false);
                 }
             });
+        }
+
+        public Achievement Find(string name)
+        {
+            foreach(Achievement achievement in achievements)
+            {
+                if(achievement.name == name)
+                {
+                    return achievement;
+                }
+            }
+
+            return null;
         }
 
         public bool Has(string name)

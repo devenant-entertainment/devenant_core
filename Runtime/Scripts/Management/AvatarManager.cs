@@ -7,7 +7,7 @@ namespace Devenant
         public Avatar[] avatars { get { return _avatars; } private set { _avatars = value; } }
         private Avatar[] _avatars;
 
-        public void Setup(AvatarData[] avatars)
+        public void Setup(SOAvatar[] avatars)
         {
             this.avatars = new Avatar[avatars.Length];
 

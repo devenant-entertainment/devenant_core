@@ -21,7 +21,7 @@ namespace Devenant
         public readonly string userUpdateNickname;
         public readonly string userUpdatePassword;
 
-        public Backend(BackendData data)
+        public Backend(SOBackend data)
         {
             achievementGet = data.achievementGet;
             achievementSet = data.achievementSet;

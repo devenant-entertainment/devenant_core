@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Devenant
 {
     [CreateAssetMenu(fileName = "application", menuName = "Devenant/Core/Application", order = 0)]
-    public class ApplicationData : ScriptableObject
+    public class SOApplication : ScriptableObject
     {
         public ApplicationEnvironment environment;
 
