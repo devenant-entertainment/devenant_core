@@ -8,14 +8,14 @@ namespace Devenant
         public ApplicationEnvironment environment;
 
         [Header("URLs")]
-        public string gameUrl;
-        public string legalUrl;
-        public string supportUrl;
+        [Required] public string gameUrl;
+        [Required] public string legalUrl;
+        [Required] public string supportUrl;
 
         [Header("Stores")]
-        public string windowsStoreUrl;
-        public string androidStoreUrl;
-        public string iosStoreUrl;
+        [Required] public string windowsStoreUrl;
+        [Required] public string androidStoreUrl;
+        [Required] public string iosStoreUrl;
 
         [Header("Config")]
         public float minInterfaceScale = 1.0f;

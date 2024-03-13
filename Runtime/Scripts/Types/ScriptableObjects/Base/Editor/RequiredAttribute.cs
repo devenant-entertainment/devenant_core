@@ -3,7 +3,34 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class RequiredAttribute : PropertyAttribute { }
+    public class RequiredAttribute : PropertyAttribute
+    {
+        public static bool ValidateProperty(SerializedProperty serializedProperty)
+        {
+            switch(serializedProperty.propertyType)
+            {
+                case SerializedPropertyType.ObjectReference:
+
+                    if(serializedProperty.objectReferenceValue == null)
+                    {
+                        return false;
+                    }
+
+                    break;
+
+                case SerializedPropertyType.String:
+
+                    if(string.IsNullOrEmpty(serializedProperty.stringValue))
+                    {
+                        return false;
+                    }
+
+                    break;
+            }
+
+            return true;
+        }
+    }
 
 #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(RequiredAttribute))]
@@ -13,7 +40,7 @@ namespace Devenant
         {
             EditorGUI.PropertyField(position, property, label);
 
-            if(property.propertyType == SerializedPropertyType.ObjectReference && property.objectReferenceValue == null)
+            if(!RequiredAttribute.ValidateProperty(property))
             {
                 GUIStyle warningStyle = new GUIStyle(GUI.skin.label);
 

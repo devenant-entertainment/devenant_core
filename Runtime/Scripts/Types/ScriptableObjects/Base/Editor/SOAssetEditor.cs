@@ -1,13 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
-using UnityEditor.VersionControl;
-using System;
-using System.IO;
-using static Codice.Client.BaseCommands.WkStatus.Printers.StatusChangeInfo;
 
 namespace Devenant
 {
@@ -60,6 +57,7 @@ namespace Devenant
             AddressableAssetEntry entry = settings.CreateOrMoveEntry(guid, group, false, false);
             List<AddressableAssetEntry> entriesAdded = new List<AddressableAssetEntry> { entry };
 
+            entry.SetAddress(asset.name);
             entry.SetLabel(groupName, true, true, false);
 
             group.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entriesAdded, false, true);
@@ -76,8 +74,6 @@ namespace Devenant
 
         private void CheckRequiredProperties()
         {
-            List<string> emptyProperties = new List<string>();
-
             foreach(string guid in AssetDatabase.FindAssets(string.Format("t:{0}", typeof(SOAsset))))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -90,33 +86,19 @@ namespace Devenant
 
                 while(serializedProperty.NextVisible(true))
                 {
-                    if (serializedProperty.propertyType == SerializedPropertyType.ObjectReference && serializedProperty.objectReferenceValue == null)
+                    if(!RequiredAttribute.ValidateProperty(serializedProperty))
                     {
                         if(Attribute.IsDefined(asset.GetType().GetField(serializedProperty.name), typeof(RequiredAttribute)))
                         {
                             Selection.activeObject = asset;
 
-                            emptyProperties.Add(path + ": " + serializedProperty.displayName);
+                            return;
                         }
                     }
                 }
             }
 
-            if(emptyProperties.Count > 0)
-            {
-                string message = string.Empty;
-
-                foreach(string fieldName in emptyProperties)
-                {
-                    message += "- " + fieldName + "\n";
-                }
-
-                EditorUtility.DisplayDialog("Required properties empty", message, "Accept");
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Congratulations!", "All required fields are filled", "Accept");
-            }
+            Debug.Log("Required properties done!");
         }
     }
 }
