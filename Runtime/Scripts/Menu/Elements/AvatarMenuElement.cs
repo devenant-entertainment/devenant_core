@@ -12,12 +12,10 @@ namespace Devenant
 
         public void Setup(Avatar avatar, Action callback)
         {
-            bool isLocked = IsLocked(avatar);
-
             selectButton.onClick.RemoveAllListeners();
             selectButton.onClick.AddListener(() =>
             {
-                if(!isLocked)
+                if(avatar.IsUnlocked())
                 {
                     LoadingMenu.instance.Open(() =>
                     {
@@ -39,45 +37,12 @@ namespace Devenant
                 }
             });
 
-            avatarImage.sprite = avatar.sprite;
+            avatarImage.sprite = avatar.icon;
 
-            lockedIndicator.SetActive(isLocked);
+            lockedIndicator.SetActive(avatar.IsUnlocked());
 
             selectedIndicator.SetActive(UserManager.instance.user.avatar == avatar.name);
 
-        }
-
-        private bool IsLocked(Avatar avatar)
-        {
-            bool locked = false;
-
-            if(!string.IsNullOrEmpty(avatar.purchase))
-            {
-                locked = true;
-
-                foreach(Purchase purchase in PurchaseManager.instance.purchases)
-                {
-                    if(purchase.name == avatar.purchase && purchase.purchased)
-                    {
-                        locked = false;
-                    }
-                }
-            }
-
-            if(!string.IsNullOrEmpty(avatar.achievement))
-            {
-                locked = true;
-
-                foreach(Achievement achievement in AchievementManager.instance.achievements)
-                {
-                    if(achievement.name == avatar.achievement && achievement.completed)
-                    {
-                        locked = false;
-                    }
-                }
-            }
-
-            return locked;
         }
     }
 }

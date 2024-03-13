@@ -10,20 +10,16 @@ namespace Devenant
 
         public int value;
 
-        public bool completed
-        {
-            get 
-            {
-                return value == maxValue; 
-            }
-        }
-
-        public Achievement(string name, Sprite icon, int maxValue, int value)
+        public Achievement(string name, Sprite icon, int maxValue)
         {
             this.name = name;
             this.icon = icon;
             this.maxValue = maxValue;
-            this.value = value;
+        }
+
+        public bool IsCompleted()
+        {
+            return value == maxValue;
         }
     }
 }

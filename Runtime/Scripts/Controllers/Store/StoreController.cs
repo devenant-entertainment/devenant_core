@@ -28,7 +28,7 @@ namespace Devenant
 
     public abstract class StoreController
     {
-        public abstract void Setup(SOPurchase[] purchases, Action<bool> callback);
+        public abstract void Setup(Purchase[] purchases, Action<bool> callback);
         public abstract void Purchase(string id, Action<StorePurchaseResponse> callback);
         public abstract StorePurchase[] GetStorePurchases();
     }

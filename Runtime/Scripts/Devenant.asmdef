@@ -5,6 +5,7 @@
         "com.rlabrecque.steamworks.net",
         "Unity.Netcode.Runtime",
         "Unity.Addressables",
+        "Unity.Addressables.Editor",
         "Unity.Localization",
         "Unity.ResourceManager",
         "Unity.Services.Authentication",

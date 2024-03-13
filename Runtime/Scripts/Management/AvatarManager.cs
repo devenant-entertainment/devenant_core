@@ -1,36 +1,15 @@
-using UnityEngine;
-
 namespace Devenant
 {
     public class AvatarManager : Singleton<AvatarManager>
     {
-        public Avatar[] avatars { get { return _avatars; } private set { _avatars = value; } }
-        private Avatar[] _avatars;
+        public AvatarDataContent avatars = new AvatarDataContent();
 
-        public void Setup(SOAvatar[] avatars)
+        public void Setup(Action callback)
         {
-            this.avatars = new Avatar[avatars.Length];
-
-            for (int i = 0; i < avatars.Length; i ++)
+            avatars.Setup((Avatar[] avatars) =>
             {
-                string purchase = avatars[i].purchase != null ? avatars[i].purchase.name : string.Empty;
-                string achievement = avatars[i].achievement != null ? avatars[i].achievement.name : string.Empty;
-
-                this.avatars[i] = new Avatar(avatars[i].name, avatars[i].sprite, purchase, achievement);
-            }
-        }
-
-        public Sprite Get(string avatar)
-        {
-            for(int i = 0; i < avatars.Length; i ++)
-            {
-                if(avatars[i].name == avatar)
-                {
-                    return avatars[i].sprite;
-                }
-            }
-
-            return avatars[0].sprite;
+                callback?.Invoke();
+            });
         }
     }
 }

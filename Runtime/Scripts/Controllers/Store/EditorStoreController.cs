@@ -2,9 +2,9 @@ namespace Devenant
 {
     public class EditorStoreController : StoreController
     {
-        private SOPurchase[] purchases;
+        private Purchase[] purchases;
 
-        public override void Setup(SOPurchase[] purchases, Action<bool> callback)
+        public override void Setup(Purchase[] purchases, Action<bool> callback)
         {
             this.purchases = purchases;
 

@@ -21,7 +21,7 @@ namespace Devenant
             nameText.text = LocalizationManager.instance.Translate("Achievement", achievement.name + "_name");
             descriptionText.text = LocalizationManager.instance.Translate("Achievement", achievement.name + "_description");
 
-            completedIndicator.SetActive(achievement.completed);
+            completedIndicator.SetActive(achievement.IsCompleted());
 
             progressIndicator.SetActive(achievement.maxValue > 1);
             progressBar.fillAmount = (float)achievement.value / (float)achievement.maxValue;

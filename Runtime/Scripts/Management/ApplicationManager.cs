@@ -12,13 +12,19 @@ namespace Devenant
         public Backend backend { get { return _backend; } private set { _backend = value; } }
         private Backend _backend;
 
-        public void Initialize(SOApplication application, SOBackend backend, SOPurchase[] purchases, SOAchievement[] achievements, SOAvatar[] avatars, Action callback = null)
+        public void Initialize(Action callback = null)
         {
-            this.application = new Application(application);
+            AssetManager.instance.Get((SOApplication application) =>
+            {
+                this.application = new Application(application);
 
-            this.backend = new Backend(backend);
+                AssetManager.instance.Get((SOBackend backend) =>
+                {
+                    this.backend = new Backend(backend);
 
-            Setup(callback);
+                    Setup(callback);
+                });
+            });
 
             async void Setup(Action callback)
             {
@@ -80,124 +86,125 @@ namespace Devenant
 
             void OnLogin(Action callback)
             {
-                AvatarManager.instance.Setup(avatars);
-
-                PurchaseManager.instance.Setup(purchases, (bool success) =>
+                PurchaseManager.instance.Setup((bool success) =>
                 {
                     if(success)
                     {
-                        AchievementManager.instance.Setup(achievements, (bool success) =>
+                        AchievementManager.instance.Setup((bool success) =>
                         {
                             if(success)
                             {
-                                GameManager.instance.Setup((bool success) =>
+                                AvatarManager.instance.Setup(() =>
                                 {
-                                    if(success)
+                                    GameManager.instance.Setup((bool success) =>
                                     {
-                                        LoadingMenu.instance.Close(() =>
+                                        if(success)
                                         {
-                                            switch(UserManager.instance.user.status)
+                                            LoadingMenu.instance.Close(() =>
                                             {
-                                                case UserStatus.Active:
+                                                switch(UserManager.instance.user.status)
+                                                {
+                                                    case UserStatus.Active:
 
-                                                    callback?.Invoke();
+                                                        callback?.Invoke();
 
-                                                    break;
+                                                        break;
 
-                                                case UserStatus.Unvalidated:
+                                                    case UserStatus.Unvalidated:
 
-                                                    MessageMenu.instance.Open("dialogue_user_unvalidated", (bool success) =>
-                                                    {
-                                                        if(success)
+                                                        MessageMenu.instance.Open("dialogue_user_unvalidated", (bool success) =>
                                                         {
-                                                            UserSendCodeMenu.instance.Open((bool success) =>
+                                                            if(success)
                                                             {
-                                                                if(success)
+                                                                UserSendCodeMenu.instance.Open((bool success) =>
                                                                 {
-                                                                    UserActivateMenu.instance.Open((bool success) =>
+                                                                    if(success)
                                                                     {
-                                                                        if(success)
+                                                                        UserActivateMenu.instance.Open((bool success) =>
                                                                         {
-                                                                            callback?.Invoke();
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            Exit();
-                                                                        }
-                                                                    });
-                                                                }
-                                                                else
-                                                                {
-                                                                    Exit();
-                                                                }
-                                                            });
-                                                        }
-                                                        else
-                                                        {
-                                                            Exit();
-                                                        }
-                                                    });
-
-                                                    break;
-
-                                                case UserStatus.Banned:
-
-                                                    MessageMenu.instance.Open("dialogue_user_banned", (bool success) =>
-                                                    {
-                                                        if(success)
-                                                        {
-                                                            UnityEngine.Application.OpenURL(application.supportUrl);
-                                                        }
-                                                        else
-                                                        {
-                                                            Exit();
-                                                        }
-                                                    });
-
-                                                    break;
-
-                                                case UserStatus.Deleted:
-
-                                                    MessageMenu.instance.Open("dialogue_user_deleted", (bool success) =>
-                                                    {
-                                                        if(success)
-                                                        {
-                                                            UserSendCodeMenu.instance.Open((bool success) =>
+                                                                            if(success)
+                                                                            {
+                                                                                callback?.Invoke();
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                Exit();
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        Exit();
+                                                                    }
+                                                                });
+                                                            }
+                                                            else
                                                             {
-                                                                if(success)
-                                                                {
-                                                                    UserActivateMenu.instance.Open((bool success) =>
-                                                                    {
-                                                                        if(success)
-                                                                        {
-                                                                            callback?.Invoke();
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            Exit();
-                                                                        }
-                                                                    });
-                                                                }
-                                                                else
-                                                                {
-                                                                    ShowError();
-                                                                }
-                                                            });
-                                                        }
-                                                        else
-                                                        {
-                                                            Exit();
-                                                        }
-                                                    });
+                                                                Exit();
+                                                            }
+                                                        });
 
-                                                    break;
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        ShowError();
-                                    }
+                                                        break;
+
+                                                    case UserStatus.Banned:
+
+                                                        MessageMenu.instance.Open("dialogue_user_banned", (bool success) =>
+                                                        {
+                                                            if(success)
+                                                            {
+                                                                UnityEngine.Application.OpenURL(application.supportUrl);
+                                                            }
+                                                            else
+                                                            {
+                                                                Exit();
+                                                            }
+                                                        });
+
+                                                        break;
+
+                                                    case UserStatus.Deleted:
+
+                                                        MessageMenu.instance.Open("dialogue_user_deleted", (bool success) =>
+                                                        {
+                                                            if(success)
+                                                            {
+                                                                UserSendCodeMenu.instance.Open((bool success) =>
+                                                                {
+                                                                    if(success)
+                                                                    {
+                                                                        UserActivateMenu.instance.Open((bool success) =>
+                                                                        {
+                                                                            if(success)
+                                                                            {
+                                                                                callback?.Invoke();
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                Exit();
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        ShowError();
+                                                                    }
+                                                                });
+                                                            }
+                                                            else
+                                                            {
+                                                                Exit();
+                                                            }
+                                                        });
+
+                                                        break;
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            ShowError();
+                                        }
+                                    });
                                 });
                             }
                             else

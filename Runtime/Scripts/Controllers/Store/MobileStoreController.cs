@@ -13,13 +13,13 @@ namespace Devenant
         private Action<bool> setupCallback;
         private Action<StorePurchaseResponse> purchaseCallback;
 
-        public override void Setup(SOPurchase[] purchases, Action<bool> callback)
+        public override void Setup(Purchase[] purchases, Action<bool> callback)
         {
             setupCallback = callback;
 
             ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-            foreach(SOPurchase purchaseInfo in purchases)
+            foreach(Purchase purchaseInfo in purchases)
             {
                 builder.AddProduct(purchaseInfo.name, ProductType.NonConsumable);
             }

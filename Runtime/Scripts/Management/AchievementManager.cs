@@ -8,122 +8,83 @@ namespace Devenant
         public static Action<Achievement> onProgressed;
         public static Action<Achievement> onCompleted;
 
-        public Achievement[] achievements { get { return _achievements; } private set { _achievements = value; } }
-        private Achievement[] _achievements;
+        public AchievementDataContent achievements = new AchievementDataContent();
 
-        public void Setup(SOAchievement[] achievements, Action<bool> callback) 
+        public void Setup(Action<bool> callback) 
         {
-            Dictionary<string, string> formFields = new Dictionary<string, string>()
+            achievements.Setup((Achievement[] achievements) =>
             {
-                { "token", UserManager.instance.user.token }
-            };
-
-            Request.Post(ApplicationManager.instance.backend.achievementGet, formFields, (Request.Response response) =>
-            {
-                if(response.success)
+                Dictionary<string, string> formFields = new Dictionary<string, string>()
                 {
-                    AchievementResponse data = JsonUtility.FromJson<AchievementResponse>(response.data);
+                    { "token", UserManager.instance.user.token }
+                };
 
-                    this.achievements = new Achievement[achievements.Length];
-
-                    for(int i = 0; i < this.achievements.Length; i++)
+                Request.Post(ApplicationManager.instance.backend.achievementGet, formFields, (Request.Response response) =>
+                {
+                    if(response.success)
                     {
-                        int value = 0;
+                        AchievementResponse data = JsonUtility.FromJson<AchievementResponse>(response.data);
 
                         foreach(AchievementResponse.Achievement achievement in data.achievements)
                         {
-                            if (achievement.name == achievements[i].name)
-                            {
-                                value = achievement.value;
-
-                                break;
-                            }
+                            this.achievements.Get(achievement.name).value = achievement.value;
                         }
 
-                        this.achievements[i] = new Achievement(achievements[i].name, achievements[i].icon, achievements[i].maxValue, value);
+                        callback?.Invoke(true);
                     }
-
-                    callback?.Invoke(true);
-                }
-                else
-                {
-                    callback?.Invoke(false);
-                }
+                    else
+                    {
+                        callback?.Invoke(false);
+                    }
+                });
             });
-        }
-
-        public Achievement Find(string name)
-        {
-            foreach(Achievement achievement in achievements)
-            {
-                if(achievement.name == name)
-                {
-                    return achievement;
-                }
-            }
-
-            return null;
-        }
-
-        public bool Has(string name)
-        {
-            foreach(Achievement achievement in achievements)
-            {
-                if(achievement.name == name)
-                {
-                    return achievement.completed;
-                }
-            }
-
-            return false;
         }
 
         public void Set(string name, int value, Action<bool> callback = null)
         {
-            foreach(Achievement achievement in achievements)
+            Achievement achievement = achievements.Get(name);
+
+            if(achievement == null)
             {
-                if(achievement.name == name)
-                {
-                    if(value > achievement.maxValue)
-                    {
-                        callback?.Invoke(false);
+                callback?.Invoke(false);
 
-                        return;
-                    }
-
-                    if(value <= achievement.value)
-                    {
-                        callback?.Invoke(false);
-
-                        return;
-                    }
-
-                    achievement.value = value;
-
-                    onProgressed?.Invoke(achievement);
-
-                    if(achievement.value == achievement.maxValue)
-                    {
-                        onCompleted?.Invoke(achievement);
-                    }
-
-                    Dictionary<string, string> formFields = new Dictionary<string, string>()
-                    {
-                        { "token", UserManager.instance.user.token },
-                        { "name", name },
-                        { "value", value.ToString() }
-                    };
-
-                    Request.Post(ApplicationManager.instance.backend.achievementSet, formFields, (Request.Response response) =>
-                    {
-                        callback?.Invoke(response.success);
-                    });
-
-                    return;
-                }
+                return;
             }
 
-            callback?.Invoke(false);
+            if(value > achievement.maxValue)
+            {
+                callback?.Invoke(false);
+
+                return;
+            }
+
+            if(value <= achievement.value)
+            {
+                callback?.Invoke(false);
+
+                return;
+            }
+
+            achievement.value = value;
+
+            onProgressed?.Invoke(achievement);
+
+            if(achievement.IsCompleted())
+            {
+                onCompleted?.Invoke(achievement);
+            }
+
+            Dictionary<string, string> formFields = new Dictionary<string, string>()
+            {
+                { "token", UserManager.instance.user.token },
+                { "name", name },
+                { "value", value.ToString() }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.achievementSet, formFields, (Request.Response response) =>
+            {
+                callback?.Invoke(response.success);
+            });
         }
     }
 }
