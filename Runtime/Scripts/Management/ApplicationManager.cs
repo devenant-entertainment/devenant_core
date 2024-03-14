@@ -96,7 +96,7 @@ namespace Devenant
                             {
                                 AvatarManager.instance.Setup(() =>
                                 {
-                                    GameManager.instance.Setup((bool success) =>
+                                    DataManager.instance.Setup((bool success) =>
                                     {
                                         if(success)
                                         {

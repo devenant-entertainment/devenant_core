@@ -1,10 +1,10 @@
 namespace Devenant
 {
-    public class Game
+    public class Data
     {
         public readonly string name;
 
-        public Game(GameResponse.Game data)
+        public Data(DataResponse.Data data)
         {
             name = data.name;
         }

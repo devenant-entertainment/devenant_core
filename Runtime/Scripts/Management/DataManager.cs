@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class GameManager : Singleton<GameManager>
+    public class DataManager : Singleton<DataManager>
     {
-        public Game[] games { get { return _games; } private set { _games = value; } }
-        private Game[] _games;
+        public Data[] datas { get { return _datas; } private set { _datas = value; } }
+        private Data[] _datas;
 
         public void Setup(Action<bool> callback)
         {
@@ -15,17 +15,17 @@ namespace Devenant
                 { "token", UserManager.instance.user.token }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameGet, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.dataGet, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    GameResponse data = JsonUtility.FromJson<GameResponse>(response.data);
+                    DataResponse data = JsonUtility.FromJson<DataResponse>(response.data);
 
-                    games = new Game[data.games.Length];
+                    datas = new Data[data.datas.Length];
 
-                    for(int i = 0; i < games.Length; i++)
+                    for(int i = 0; i < datas.Length; i++)
                     {
-                        games[i] = new Game(data.games[i]);
+                        datas[i] = new Data(data.datas[i]);
                     }
 
                     callback?.Invoke(true);
@@ -45,7 +45,7 @@ namespace Devenant
                 { "name", name }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameDelete, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.dataDelete, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -66,7 +66,7 @@ namespace Devenant
                 { "name", name }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameLoad, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.dataLoad, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -88,7 +88,7 @@ namespace Devenant
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(ApplicationManager.instance.backend.gameSave, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.dataSave, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {

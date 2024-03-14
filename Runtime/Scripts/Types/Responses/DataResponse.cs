@@ -1,12 +1,12 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class GameResponse
+    public class DataResponse
     {
-        public Game[] games;
+        public Data[] datas;
 
         [System.Serializable]
-        public class Game
+        public class Data
         {
             public string name;
         }
