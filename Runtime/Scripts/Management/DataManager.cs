@@ -50,6 +50,21 @@ namespace Devenant
             return null;
         }
 
+        public Data[] Get<T>()
+        {
+            List<Data> datas = new List<Data>();
+
+            foreach(Data data in _datas)
+            {
+                if(data.type == typeof(T).Name)
+                {
+                    datas.Add(data);
+                }
+            }
+
+            return datas.ToArray();
+        }
+
         public bool Has<T>(string name)
         {
             return Get<T>(name) != null;
