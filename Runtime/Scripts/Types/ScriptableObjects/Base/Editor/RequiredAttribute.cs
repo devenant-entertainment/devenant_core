@@ -5,6 +5,7 @@ namespace Devenant
 {
     public class RequiredAttribute : PropertyAttribute
     {
+#if UNITY_EDITOR
         public static bool ValidateProperty(SerializedProperty serializedProperty)
         {
             switch(serializedProperty.propertyType)
@@ -30,6 +31,7 @@ namespace Devenant
 
             return true;
         }
+#endif
     }
 
 #if UNITY_EDITOR
