@@ -5,7 +5,6 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Services.Relay.Models;
 using Unity.Services.Relay;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Devenant
 {
@@ -75,7 +74,7 @@ namespace Devenant
             }
         }
 
-        public async void StartHost(int maxPlayers, UnityAction<bool> callback = null)
+        public async void StartHost(int maxPlayers, Action<bool> callback = null)
         {
             if(session != null)
                 Disconnect();
@@ -107,7 +106,7 @@ namespace Devenant
             }
         }
 
-        public async void StartClient(string code, UnityAction<bool> callback = null)
+        public async void StartClient(string code, Action<bool> callback = null)
         {
             if(session != null)
                 Disconnect();

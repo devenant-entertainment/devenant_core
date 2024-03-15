@@ -5,8 +5,8 @@ namespace Devenant
 {
     public class DataManager : Singleton<DataManager>
     {
-        public Data[] datas { get { return _datas; } private set { _datas = value; } }
-        private Data[] _datas;
+        public Data[] datas { get { return _datas.ToArray(); } }
+        private List<Data> _datas;
 
         public void Setup(Action<bool> callback)
         {
@@ -19,13 +19,13 @@ namespace Devenant
             {
                 if(response.success)
                 {
-                    DataResponse data = JsonUtility.FromJson<DataResponse>(response.data);
+                    DataResponse dataResponse = JsonUtility.FromJson<DataResponse>(response.data);
 
-                    datas = new Data[data.datas.Length];
+                    _datas = new List<Data>();
 
-                    for(int i = 0; i < datas.Length; i++)
+                    foreach(DataResponse.Data data in dataResponse.datas)
                     {
-                        datas[i] = new Data(data.datas[i]);
+                        _datas.Add(new Data(data.name, data.type));
                     }
 
                     callback?.Invoke(true);
@@ -37,25 +37,53 @@ namespace Devenant
             });
         }
 
-        public void Delete(string name, Action<bool> callback)
+        public Data Get<T>(string name)
         {
-            Dictionary<string, string> formFields = new Dictionary<string, string>
+            foreach(Data data in _datas)
             {
-                { "token", UserManager.instance.user.token },
-                { "name", name }
-            };
+                if(data.name == name && data.type == typeof(T).Name)
+                {
+                    return data;
+                }
+            }
 
-            Request.Post(ApplicationManager.instance.backend.dataDelete, formFields, (Request.Response response) =>
+            return null;
+        }
+
+        public bool Has<T>(string name)
+        {
+            return Get<T>(name) != null;
+        }
+
+        public void Delete<T>(string name, Action<bool> callback)
+        {
+            if(Has<T>(name))
             {
-                if(response.success)
+                Dictionary<string, string> formFields = new Dictionary<string, string>
                 {
-                    callback?.Invoke(true);
-                }
-                else
+                    { "token", UserManager.instance.user.token },
+                    { "name", name },
+                    { "type", typeof(T).Name }
+                };
+
+                Request.Post(ApplicationManager.instance.backend.dataDelete, formFields, (Request.Response response) =>
                 {
-                    callback?.Invoke(false);
-                }
-            });
+                    if(response.success)
+                    {
+                        _datas.Remove(Get<T>(name));
+
+                        callback?.Invoke(true);
+                    }
+                    else
+                    {
+                        callback?.Invoke(false);
+                    }
+                });
+            }
+            else
+            {
+                callback?.Invoke(false);
+            }
         }
 
         public void Load<T>(string name, Action<T> callback)
@@ -63,7 +91,8 @@ namespace Devenant
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "token", UserManager.instance.user.token },
-                { "name", name }
+                { "name", name },
+                { "type", typeof(T).Name }
             };
 
             Request.Post(ApplicationManager.instance.backend.dataLoad, formFields, (Request.Response response) =>
@@ -85,6 +114,7 @@ namespace Devenant
             {
                 { "token", UserManager.instance.user.token },
                 { "name", name },
+                { "type", typeof(T).Name },
                 { "data", JsonUtility.ToJson(data) }
             };
 
@@ -92,6 +122,11 @@ namespace Devenant
             {
                 if(response.success)
                 {
+                    if (_datas.Find((x)=>x.name == name && x.type == typeof(T).Name) == null)
+                    {
+                        _datas.Add(new Data(name, typeof(T).Name));
+                    }
+
                     callback?.Invoke(true);
                 }
                 else

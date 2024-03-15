@@ -26,10 +26,10 @@ namespace Devenant
             achievementGet = data.achievementGet;
             achievementSet = data.achievementSet;
             configuration = data.configuration;
-            dataDelete = data.gameDelete;
-            dataGet = data.gameGet;
-            dataLoad = data.gameLoad;
-            dataSave = data.gameSave;
+            dataDelete = data.dataDelete;
+            dataGet = data.dataGet;
+            dataLoad = data.dataLoad;
+            dataSave = data.dataSave;
             purchaseGet = data.purchaseGet;
             purchaseSet = data.purchaseSet;
             userActivate = data.userActivate;

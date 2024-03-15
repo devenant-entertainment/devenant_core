@@ -12,11 +12,11 @@ namespace Devenant
         [Header("Config")]
         [Required] public string configuration;
 
-        [Header("Game")]
-        [Required] public string gameDelete;
-        [Required] public string gameGet;
-        [Required] public string gameLoad;
-        [Required] public string gameSave;
+        [Header("Data")]
+        [Required] public string dataDelete;
+        [Required] public string dataGet;
+        [Required] public string dataLoad;
+        [Required] public string dataSave;
 
         [Header("Purchase")]
         [Required] public string purchaseGet;

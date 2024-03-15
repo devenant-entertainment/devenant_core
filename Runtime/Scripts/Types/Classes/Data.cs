@@ -3,10 +3,12 @@ namespace Devenant
     public class Data
     {
         public readonly string name;
+        public readonly string type;
 
-        public Data(DataResponse.Data data)
+        public Data(string name, string type)
         {
-            name = data.name;
+            this.name = name;
+            this.type = type;
         }
     }
 }
