@@ -3,10 +3,10 @@ namespace Devenant
     [System.Serializable]
     public class StorageResponse
     {
-        public Data[] datas;
+        public Storage[] storages;
 
         [System.Serializable]
-        public class Data
+        public class Storage
         {
             public string name;
             public string type;

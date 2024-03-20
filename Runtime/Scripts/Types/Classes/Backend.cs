@@ -5,10 +5,10 @@ namespace Devenant
         public readonly string achievementGet;
         public readonly string achievementSet;
 
-        public readonly string status;
-
         public readonly string purchaseGet;
         public readonly string purchaseSet;
+
+        public readonly string status;
 
         public readonly string storageDelete;
         public readonly string storageGet;
@@ -30,10 +30,10 @@ namespace Devenant
             achievementGet = data.achievementGet;
             achievementSet = data.achievementSet;
 
-            status = data.status;
-
             purchaseGet = data.purchaseGet;
             purchaseSet = data.purchaseSet;
+
+            status = data.status;
 
             storageDelete = data.storageDelete;
             storageGet = data.storageGet;

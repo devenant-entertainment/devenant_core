@@ -33,7 +33,8 @@ namespace Devenant
             async void Setup(Action callback)
             {
                 InitializationOptions options = new InitializationOptions();
-                options.SetEnvironmentName(this.application.environment.ToString().ToLower());
+
+                options.SetEnvironmentName(application.environment.ToString().ToLower());
 
                 await UnityServices.InitializeAsync(options);
 

@@ -23,7 +23,7 @@ namespace Devenant
 
                     _storages = new List<Storage>();
 
-                    foreach(StorageResponse.Data storage in storageResponse.datas)
+                    foreach(StorageResponse.Storage storage in storageResponse.storages)
                     {
                         _storages.Add(new Storage(storage.name, storage.type));
                     }
