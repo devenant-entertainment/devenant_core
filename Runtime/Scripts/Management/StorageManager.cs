@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class DataManager : Singleton<DataManager>
+    public class StorageManager : Singleton<StorageManager>
     {
-        public Data[] datas { get { return _datas.ToArray(); } }
-        private List<Data> _datas;
+        public Storage[] storages { get { return _storages.ToArray(); } }
+        private List<Storage> _storages;
 
         public void Setup(Action<bool> callback)
         {
@@ -15,17 +15,17 @@ namespace Devenant
                 { "token", UserManager.instance.user.token }
             };
 
-            Request.Post(ApplicationManager.instance.backend.dataGet, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.storageGet, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    DataResponse dataResponse = JsonUtility.FromJson<DataResponse>(response.data);
+                    StorageResponse storageResponse = JsonUtility.FromJson<StorageResponse>(response.data);
 
-                    _datas = new List<Data>();
+                    _storages = new List<Storage>();
 
-                    foreach(DataResponse.Data data in dataResponse.datas)
+                    foreach(StorageResponse.Data storage in storageResponse.datas)
                     {
-                        _datas.Add(new Data(data.name, data.type));
+                        _storages.Add(new Storage(storage.name, storage.type));
                     }
 
                     callback?.Invoke(true);
@@ -37,32 +37,32 @@ namespace Devenant
             });
         }
 
-        public Data Get<T>(string name)
+        public Storage Get<T>(string name)
         {
-            foreach(Data data in _datas)
+            foreach(Storage storage in _storages)
             {
-                if(data.name == name && data.type == typeof(T).Name)
+                if(storage.name == name && storage.type == typeof(T).Name)
                 {
-                    return data;
+                    return storage;
                 }
             }
 
             return null;
         }
 
-        public Data[] Get<T>()
+        public Storage[] Get<T>()
         {
-            List<Data> datas = new List<Data>();
+            List<Storage> storages = new List<Storage>();
 
-            foreach(Data data in _datas)
+            foreach(Storage storage in _storages)
             {
-                if(data.type == typeof(T).Name)
+                if(storage.type == typeof(T).Name)
                 {
-                    datas.Add(data);
+                    storages.Add(storage);
                 }
             }
 
-            return datas.ToArray();
+            return storages.ToArray();
         }
 
         public bool Has<T>(string name)
@@ -81,11 +81,11 @@ namespace Devenant
                     { "type", typeof(T).Name }
                 };
 
-                Request.Post(ApplicationManager.instance.backend.dataDelete, formFields, (Request.Response response) =>
+                Request.Post(ApplicationManager.instance.backend.storageDelete, formFields, (Request.Response response) =>
                 {
                     if(response.success)
                     {
-                        _datas.Remove(Get<T>(name));
+                        _storages.Remove(Get<T>(name));
 
                         callback?.Invoke(true);
                     }
@@ -110,7 +110,7 @@ namespace Devenant
                 { "type", typeof(T).Name }
             };
 
-            Request.Post(ApplicationManager.instance.backend.dataLoad, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.storageLoad, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -133,13 +133,13 @@ namespace Devenant
                 { "data", JsonUtility.ToJson(data) }
             };
 
-            Request.Post(ApplicationManager.instance.backend.dataSave, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.storageSave, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
-                    if (_datas.Find((x)=>x.name == name && x.type == typeof(T).Name) == null)
+                    if (_storages.Find((x)=>x.name == name && x.type == typeof(T).Name) == null)
                     {
-                        _datas.Add(new Data(name, typeof(T).Name));
+                        _storages.Add(new Storage(name, typeof(T).Name));
                     }
 
                     callback?.Invoke(true);

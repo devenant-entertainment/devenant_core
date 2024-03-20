@@ -1,3 +1,6 @@
+using Codice.Client.Commands;
+using System;
+
 namespace Devenant
 {
     public enum ApplicationPlatform
@@ -11,6 +14,12 @@ namespace Devenant
     {
         Production,
         Development
+    }
+
+    public enum ApplicationStatus
+    {
+        Active,
+        Inactive
     }
 
     public class Application

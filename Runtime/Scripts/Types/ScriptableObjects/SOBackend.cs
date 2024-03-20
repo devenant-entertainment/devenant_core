@@ -9,18 +9,18 @@ namespace Devenant
         [Required] public string achievementGet;
         [Required] public string achievementSet;
 
-        [Header("Config")]
-        [Required] public string configuration;
-
-        [Header("Data")]
-        [Required] public string dataDelete;
-        [Required] public string dataGet;
-        [Required] public string dataLoad;
-        [Required] public string dataSave;
-
         [Header("Purchase")]
         [Required] public string purchaseGet;
         [Required] public string purchaseSet;
+
+        [Header("Status")]
+        [Required] public string status;
+
+        [Header("Storage")]
+        [Required] public string storageDelete;
+        [Required] public string storageGet;
+        [Required] public string storageLoad;
+        [Required] public string storageSave;
 
         [Header("User")]
         [Required] public string userActivate;

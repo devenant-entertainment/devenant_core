@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class DataResponse
+    public class StorageResponse
     {
         public Data[] datas;
 

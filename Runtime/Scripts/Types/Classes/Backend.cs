@@ -1,16 +1,20 @@
 namespace Devenant
 {
-    public class Backend 
+    public class Backend
     {
         public readonly string achievementGet;
         public readonly string achievementSet;
-        public readonly string configuration;
-        public readonly string dataDelete;
-        public readonly string dataGet;
-        public readonly string dataLoad;
-        public readonly string dataSave;
+
+        public readonly string status;
+
         public readonly string purchaseGet;
         public readonly string purchaseSet;
+
+        public readonly string storageDelete;
+        public readonly string storageGet;
+        public readonly string storageLoad;
+        public readonly string storageSave;
+
         public readonly string userActivate;
         public readonly string userDelete;
         public readonly string userLogin;
@@ -25,13 +29,17 @@ namespace Devenant
         {
             achievementGet = data.achievementGet;
             achievementSet = data.achievementSet;
-            configuration = data.configuration;
-            dataDelete = data.dataDelete;
-            dataGet = data.dataGet;
-            dataLoad = data.dataLoad;
-            dataSave = data.dataSave;
+
+            status = data.status;
+
             purchaseGet = data.purchaseGet;
             purchaseSet = data.purchaseSet;
+
+            storageDelete = data.storageDelete;
+            storageGet = data.storageGet;
+            storageLoad = data.storageLoad;
+            storageSave = data.storageSave;
+
             userActivate = data.userActivate;
             userDelete = data.userDelete;
             userLogin = data.userLogin;

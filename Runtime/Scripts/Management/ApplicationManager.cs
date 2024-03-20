@@ -1,6 +1,7 @@
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
+using UnityEngine;
 
 namespace Devenant
 {
@@ -11,6 +12,9 @@ namespace Devenant
 
         public Backend backend { get { return _backend; } private set { _backend = value; } }
         private Backend _backend;
+
+        public Status status { get { return _status; } private set { _status = value; } }
+        private Status _status;
 
         public void Initialize(Action callback = null)
         {
@@ -49,27 +53,14 @@ namespace Devenant
                             {
                                 SettingsManager.instance.Setup();
 
-                                ConfigurationManager.instance.Setup(() =>
+                                SetupStatus(() =>
                                 {
-                                    UserManager.instance.AutoLogin((bool success) =>
+                                    Login(() =>
                                     {
-                                        if(success)
+                                        SetupData(() =>
                                         {
-                                            OnLogin(callback);
-                                        }
-                                        else
-                                        {
-                                            LoadingMenu.instance.Close(() =>
-                                            {
-                                                UserLoginMenu.instance.Open(() =>
-                                                {
-                                                    LoadingMenu.instance.Open(() =>
-                                                    {
-                                                        OnLogin(callback);
-                                                    });
-                                                });
-                                            });
-                                        }
+                                            SetupUser(callback);
+                                        });
                                     });
                                 });
                             });
@@ -77,158 +68,244 @@ namespace Devenant
                         }
                         else
                         {
-                            ShowError();
+                            LoadingMenu.instance.Close(() =>
+                            {
+                                MessageMenu.instance.Open("error", () =>
+                                {
+                                    Exit();
+                                });
+                            });
                         }
                     });
 #endif
                 });
             }
+        }
 
-            void OnLogin(Action callback)
+        private void SetupStatus(Action callback)
+        {
+            Request.Get(backend.status, ((Request.Response response) =>
             {
-                PurchaseManager.instance.Setup((bool success) =>
+                if(response.success)
                 {
-                    if(success)
+                    status = new Status(JsonUtility.FromJson<ConfigurationResponse>(response.data));
+
+                    switch(status.status)
                     {
-                        AchievementManager.instance.Setup((bool success) =>
-                        {
-                            if(success)
+                        case ApplicationStatus.Active:
+
+                            if(new Version(UnityEngine.Application.version).Compare(status.version) != Version.Comparison.Greater)
                             {
-                                AvatarManager.instance.Setup(() =>
-                                {
-                                    DataManager.instance.Setup((bool success) =>
-                                    {
-                                        if(success)
-                                        {
-                                            LoadingMenu.instance.Close(() =>
-                                            {
-                                                switch(UserManager.instance.user.status)
-                                                {
-                                                    case UserStatus.Active:
-
-                                                        callback?.Invoke();
-
-                                                        break;
-
-                                                    case UserStatus.Unvalidated:
-
-                                                        MessageMenu.instance.Open("dialogue_user_unvalidated", (bool success) =>
-                                                        {
-                                                            if(success)
-                                                            {
-                                                                UserSendCodeMenu.instance.Open((bool success) =>
-                                                                {
-                                                                    if(success)
-                                                                    {
-                                                                        UserActivateMenu.instance.Open((bool success) =>
-                                                                        {
-                                                                            if(success)
-                                                                            {
-                                                                                callback?.Invoke();
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                Exit();
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        Exit();
-                                                                    }
-                                                                });
-                                                            }
-                                                            else
-                                                            {
-                                                                Exit();
-                                                            }
-                                                        });
-
-                                                        break;
-
-                                                    case UserStatus.Banned:
-
-                                                        MessageMenu.instance.Open("dialogue_user_banned", (bool success) =>
-                                                        {
-                                                            if(success)
-                                                            {
-                                                                UnityEngine.Application.OpenURL(application.supportUrl);
-                                                            }
-                                                            else
-                                                            {
-                                                                Exit();
-                                                            }
-                                                        });
-
-                                                        break;
-
-                                                    case UserStatus.Deleted:
-
-                                                        MessageMenu.instance.Open("dialogue_user_deleted", (bool success) =>
-                                                        {
-                                                            if(success)
-                                                            {
-                                                                UserSendCodeMenu.instance.Open((bool success) =>
-                                                                {
-                                                                    if(success)
-                                                                    {
-                                                                        UserActivateMenu.instance.Open((bool success) =>
-                                                                        {
-                                                                            if(success)
-                                                                            {
-                                                                                callback?.Invoke();
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                Exit();
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        ShowError();
-                                                                    }
-                                                                });
-                                                            }
-                                                            else
-                                                            {
-                                                                Exit();
-                                                            }
-                                                        });
-
-                                                        break;
-                                                }
-                                            });
-                                        }
-                                        else
-                                        {
-                                            ShowError();
-                                        }
-                                    });
-                                });
+                                callback?.Invoke();
                             }
                             else
                             {
-                                ShowError();
+                                MessageMenu.instance.Open("dialogue_version", ((bool success) =>
+                                {
+                                    if(success)
+                                    {
+                                        UnityEngine.Application.OpenURL(application.storeUrl);
+                                    }
+                                    else
+                                    {
+                                        Exit();
+                                    }
+                                }));
                             }
-                        });
-                    }
-                    else
-                    {
-                        ShowError();
-                    }
-                });
-            }
 
-            void ShowError()
+                            break;
+
+                        case ApplicationStatus.Inactive:
+
+                            MessageMenu.instance.Open("error_maintenance", () =>
+                            {
+                                Exit();
+                            });
+
+                            break;
+                    }
+                }
+                else
+                {
+                    MessageMenu.instance.Open(response.message, () =>
+                    {
+                        Exit();
+                    });
+                }
+            }));
+        }
+
+        private void Login(Action callback)
+        {
+            UserManager.instance.AutoLogin((bool success) =>
             {
-                LoadingMenu.instance.Close(() =>
+                if(success)
+                {
+                    callback?.Invoke();
+                }
+                else
+                {
+                    LoadingMenu.instance.Close(() =>
+                    {
+                        UserLoginMenu.instance.Open(() =>
+                        {
+                            LoadingMenu.instance.Open(() =>
+                            {
+                                callback?.Invoke();
+                            });
+                        });
+                    });
+                }
+            });
+        }
+
+        private void SetupData(Action callback)
+        {
+            PurchaseManager.instance.Setup((bool success) =>
+            {
+                if(success)
+                {
+                    AchievementManager.instance.Setup((bool success) =>
+                    {
+                        if(success)
+                        {
+                            AvatarManager.instance.Setup(() =>
+                            {
+                                StorageManager.instance.Setup((bool success) =>
+                                {
+                                    if(success)
+                                    {
+                                        LoadingMenu.instance.Close(() =>
+                                        {
+                                            callback?.Invoke();
+                                        });
+                                    }
+                                    else
+                                    {
+                                        MessageMenu.instance.Open("error", () =>
+                                        {
+                                            Exit();
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                        else
+                        {
+                            MessageMenu.instance.Open("error", () =>
+                            {
+                                Exit();
+                            });
+                        }
+                    });
+                }
+                else
                 {
                     MessageMenu.instance.Open("error", () =>
                     {
                         Exit();
                     });
-                });
+                }
+            });
+        }
+
+        private void SetupUser(Action callback)
+        {
+            switch(UserManager.instance.user.status)
+            {
+                case UserStatus.Active:
+
+                    callback?.Invoke();
+
+                    break;
+
+                case UserStatus.Unvalidated:
+
+                    MessageMenu.instance.Open("dialogue_user_unvalidated", (bool success) =>
+                    {
+                        if(success)
+                        {
+                            UserSendCodeMenu.instance.Open((bool success) =>
+                            {
+                                if(success)
+                                {
+                                    UserActivateMenu.instance.Open((bool success) =>
+                                    {
+                                        if(success)
+                                        {
+                                            callback?.Invoke();
+                                        }
+                                        else
+                                        {
+                                            Exit();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    Exit();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Exit();
+                        }
+                    });
+
+                    break;
+
+                case UserStatus.Banned:
+
+                    MessageMenu.instance.Open("dialogue_user_banned", (bool success) =>
+                    {
+                        if(success)
+                        {
+                            UnityEngine.Application.OpenURL(application.supportUrl);
+                        }
+                        else
+                        {
+                            Exit();
+                        }
+                    });
+
+                    break;
+
+                case UserStatus.Deleted:
+
+                    MessageMenu.instance.Open("dialogue_user_deleted", (bool success) =>
+                    {
+                        if(success)
+                        {
+                            UserSendCodeMenu.instance.Open((bool success) =>
+                            {
+                                if(success)
+                                {
+                                    UserActivateMenu.instance.Open((bool success) =>
+                                    {
+                                        if(success)
+                                        {
+                                            callback?.Invoke();
+                                        }
+                                        else
+                                        {
+                                            Exit();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    Exit();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Exit();
+                        }
+                    });
+
+                    break;
             }
         }
 
