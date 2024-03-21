@@ -31,7 +31,7 @@ namespace Devenant
 
             avatarContent = new Content(avatarHolder, avatarElement.gameObject);
 
-            foreach(Avatar avatar in AvatarManager.instance.avatars.Get())
+            foreach(Avatar avatar in AvatarManager.instance.avatars)
             {
                 avatarContent.Create().GetComponent<AvatarMenuElement>().Setup(avatar, () =>
                 {

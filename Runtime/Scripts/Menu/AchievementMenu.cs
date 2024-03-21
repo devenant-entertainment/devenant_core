@@ -21,7 +21,7 @@ namespace Devenant
 
             achievementContent = new Content(achievementHolder, achievementElement.gameObject);
 
-            List<Achievement> sortedAchievements = AchievementManager.instance.achievements.Get().ToList();
+            List<Achievement> sortedAchievements = AchievementManager.instance.achievements.ToList();
             sortedAchievements.Sort((a, b) => a.IsCompleted().CompareTo(b.IsCompleted()));
 
             foreach(Achievement achievement in sortedAchievements)

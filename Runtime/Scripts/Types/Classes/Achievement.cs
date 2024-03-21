@@ -2,18 +2,14 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class Achievement
+    public class Achievement : Asset
     {
-        public readonly string name;
-        public readonly Sprite icon;
         public readonly int maxValue;
 
         public int value;
 
-        public Achievement(string name, Sprite icon, int maxValue)
+        public Achievement(string name, Sprite icon, int maxValue) : base (name, icon)
         {
-            this.name = name;
-            this.icon = icon;
             this.maxValue = maxValue;
         }
 

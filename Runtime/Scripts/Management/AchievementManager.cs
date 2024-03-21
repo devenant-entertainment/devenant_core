@@ -8,12 +8,15 @@ namespace Devenant
         public static Action<Achievement> onProgressed;
         public static Action<Achievement> onCompleted;
 
-        public AchievementDataContent achievements = new AchievementDataContent();
+        public Achievement[] achievements { get { return _achievements; } private set { _achievements = value; } }
+        private Achievement[] _achievements;
 
         public void Setup(Action<bool> callback) 
         {
-            achievements.Setup((Achievement[] achievements) =>
+            DataManager.instance.achievementDataController.Get((Achievement[] achievements) =>
             {
+                this.achievements = achievements;
+
                 Dictionary<string, string> formFields = new Dictionary<string, string>()
                 {
                     { "token", UserManager.instance.user.token }
@@ -27,7 +30,7 @@ namespace Devenant
 
                         foreach(AchievementResponse.Achievement achievement in data.achievements)
                         {
-                            this.achievements.Get(achievement.name).value = achievement.value;
+                            Get(achievement.name).value = achievement.value;
                         }
 
                         callback?.Invoke(true);
@@ -40,9 +43,22 @@ namespace Devenant
             });
         }
 
+        public Achievement Get(string name)
+        {
+            foreach(Achievement achievement in achievements)
+            {
+                if(name == achievement.name)
+                {
+                    return achievement;
+                }
+            }
+
+            return null;
+        }
+
         public void Set(string name, int value, Action<bool> callback = null)
         {
-            Achievement achievement = achievements.Get(name);
+            Achievement achievement = Get(name);
 
             if(achievement == null)
             {

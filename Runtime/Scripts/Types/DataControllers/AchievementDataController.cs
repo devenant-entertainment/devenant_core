@@ -2,14 +2,9 @@ using System.Collections.Generic;
 
 namespace Devenant
 {
-    public class AchievementDataContent : DataContent<Achievement, SOAchievement>
+    public class AchievementDataController : AssetDataController<Achievement, SOAchievement>
     {
-        protected override Achievement Find(string name)
-        {
-            return values.Find((x) => x.name == name);
-        }
-
-        protected override List<Achievement> SetupData(SOAchievement[] data)
+        protected override List<Achievement> NormalizeData(SOAchievement[] data)
         {
             List<Achievement> result = new List<Achievement>();
 

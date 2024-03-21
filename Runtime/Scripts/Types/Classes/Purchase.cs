@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Devenant
 {
     public enum PurchaseType
@@ -5,17 +7,15 @@ namespace Devenant
         Purchase
     }
 
-    public class Purchase
+    public class Purchase : Asset
     {
-        public readonly string name;
         public readonly PurchaseType type;
 
         public string price;
         public bool purchased;
 
-        public Purchase(string name, PurchaseType type)
+        public Purchase(string name, Sprite icon, PurchaseType type) : base (name, icon)
         {
-            this.name = name;
             this.type = type;
         }
     }

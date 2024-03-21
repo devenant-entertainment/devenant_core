@@ -137,7 +137,7 @@ namespace Devenant
 
         private void OnUserUpdated(User user)
         {
-            avatarImage.sprite = AvatarManager.instance.avatars.Get(user.avatar).icon;
+            avatarImage.sprite = AvatarManager.instance.Get(user.avatar).icon;
 
             nicknameText.text = user.nickname;  
 

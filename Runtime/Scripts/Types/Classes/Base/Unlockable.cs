@@ -1,11 +1,13 @@
+using UnityEngine;
+
 namespace Devenant
 {
-    public abstract class Unlockable
+    public abstract class Unlockable : Asset
     {
         public readonly Achievement achievement;
         public readonly Purchase purchase;
 
-        public Unlockable(Achievement achievement, Purchase purchase)
+        public Unlockable(string name, Sprite icon, Achievement achievement, Purchase purchase) : base (name, icon)
         {
             this.achievement = achievement;
             this.purchase = purchase;
@@ -17,12 +19,12 @@ namespace Devenant
 
             if(achievement != null)
             {
-                result = AchievementManager.instance.achievements.Get(achievement.name).IsCompleted();
+                result = achievement.IsCompleted();
             }
 
             if(purchase != null && result)
             {
-                result = PurchaseManager.instance.purchases.Get(purchase.name).purchased;
+                result = purchase.purchased;
             }
 
             return result;
