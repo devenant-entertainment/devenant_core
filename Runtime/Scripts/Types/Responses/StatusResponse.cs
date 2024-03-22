@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class ConfigurationResponse 
+    public class StatusResponse 
     {
         public string version;
         public string status;

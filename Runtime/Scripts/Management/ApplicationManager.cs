@@ -89,7 +89,7 @@ namespace Devenant
             {
                 if(response.success)
                 {
-                    status = new Status(JsonUtility.FromJson<ConfigurationResponse>(response.data));
+                    status = new Status(JsonUtility.FromJson<StatusResponse>(response.data));
 
                     switch(status.status)
                     {

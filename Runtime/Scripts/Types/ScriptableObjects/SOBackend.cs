@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Devenant
 {
-    [CreateAssetMenu(fileName = "backend", menuName = "Devenant/Core/Backend", order = 1)]
+    [CreateAssetMenu(fileName = "backend", menuName = "Devenant/Core/Backend")]
     public class SOBackend : SOAsset
     {
         [Header("Achievement")]

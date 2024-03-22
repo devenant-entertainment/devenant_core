@@ -8,5 +8,10 @@ namespace Devenant
         {
 
         }
+
+        public Avatar (SOAvatar avatar) : base(avatar)
+        {
+
+        }
     }
 }

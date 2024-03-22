@@ -7,16 +7,22 @@ namespace Devenant
     {
         public static Action<Purchase> onPurchased;
 
-        public Purchase[] purchases { get { return _purchases; } private set { _purchases = value; } }
-        private Purchase[] _purchases;
+        public AssetArray<Purchase> purchases;
 
         private StoreController storeController;
 
         public void Setup(Action<bool> callback)
         {
-            DataManager.instance.purchaseDataController.Get((Purchase[] purchases) =>
+            AssetManager.instance.GetAll((SOPurchase[] soPurchases) =>
             {
-                this.purchases = purchases;
+                List<Purchase> purchaseList = new List<Purchase>();
+
+                foreach(SOPurchase purchase in soPurchases)
+                {
+                    purchaseList.Add(new Purchase(purchase));
+                }
+
+                purchases = new AssetArray<Purchase>(purchaseList.ToArray());
 
                 Dictionary<string, string> formFields = new Dictionary<string, string>
                 {
@@ -34,7 +40,7 @@ namespace Devenant
 #else
                         storeController = new SteamStoreController();
 #endif
-                        storeController.Setup(this.purchases, (bool success) =>
+                        storeController.Setup(purchases.Get(), (bool success) =>
                         {
                             if(success)
                             {
@@ -44,12 +50,12 @@ namespace Devenant
 
                                 foreach(StorePurchase storePurchase in storePurchases)
                                 {
-                                    Get(storePurchase.id).price = storePurchase.price;
+                                    purchases.Get(storePurchase.id).price = storePurchase.price;
                                 }
 
                                 foreach(PurchaseResponse.Purchase purchase in responseData.purchases)
                                 {
-                                    Get(purchase.name).purchased = purchase.value;
+                                    purchases.Get(purchase.name).purchased = purchase.value;
                                 }
 
                                 callback?.Invoke(true);
@@ -68,19 +74,6 @@ namespace Devenant
             });
         }
 
-        public Purchase Get(string name)
-        {
-            foreach(Purchase purchase in purchases)
-            {
-                if(name == purchase.name)
-                {
-                    return purchase;
-                }
-            }
-
-            return null;
-        }
-
         public void Purchase(string name, Action<bool> callback = null)
         {
             if(storeController == null)
@@ -90,7 +83,7 @@ namespace Devenant
                 return;
             }
 
-            Purchase purchase = Get(name);
+            Purchase purchase = purchases.Get(name);
 
             if(purchase == null)
             {

@@ -8,14 +8,20 @@ namespace Devenant
         public static Action<Achievement> onProgressed;
         public static Action<Achievement> onCompleted;
 
-        public Achievement[] achievements { get { return _achievements; } private set { _achievements = value; } }
-        private Achievement[] _achievements;
+        public AssetArray<Achievement> achievements;
 
         public void Setup(Action<bool> callback) 
         {
-            DataManager.instance.achievementDataController.Get((Achievement[] achievements) =>
+            AssetManager.instance.GetAll((SOAchievement[] soAchievements) =>
             {
-                this.achievements = achievements;
+                List<Achievement> achievementList = new List<Achievement>();
+
+                foreach(SOAchievement achievement in soAchievements)
+                {
+                    achievementList.Add(new Achievement(achievement));
+                }
+
+                achievements = new AssetArray<Achievement>(achievementList.ToArray());
 
                 Dictionary<string, string> formFields = new Dictionary<string, string>()
                 {
@@ -30,7 +36,7 @@ namespace Devenant
 
                         foreach(AchievementResponse.Achievement achievement in data.achievements)
                         {
-                            Get(achievement.name).value = achievement.value;
+                            achievements.Get(achievement.name).value = achievement.value;
                         }
 
                         callback?.Invoke(true);
@@ -43,22 +49,9 @@ namespace Devenant
             });
         }
 
-        public Achievement Get(string name)
-        {
-            foreach(Achievement achievement in achievements)
-            {
-                if(name == achievement.name)
-                {
-                    return achievement;
-                }
-            }
-
-            return null;
-        }
-
         public void Set(string name, int value, Action<bool> callback = null)
         {
-            Achievement achievement = Get(name);
+            Achievement achievement = achievements.Get(name);
 
             if(achievement == null)
             {
@@ -85,7 +78,7 @@ namespace Devenant
 
             onProgressed?.Invoke(achievement);
 
-            if(achievement.IsCompleted())
+            if(achievement.completed)
             {
                 onCompleted?.Invoke(achievement);
             }

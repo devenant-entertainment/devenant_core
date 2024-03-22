@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Devenant
 {
-    [CreateAssetMenu(fileName = "application", menuName = "Devenant/Core/Application", order = 0)]
+    [CreateAssetMenu(fileName = "application", menuName = "Devenant/Core/Application")]
     public class SOApplication : SOAsset
     {
         public ApplicationEnvironment environment;

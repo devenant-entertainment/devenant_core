@@ -1,15 +1,23 @@
+using System.Collections.Generic;
+
 namespace Devenant
 {
     public class AvatarManager : Singleton<AvatarManager>
     {
-        public Avatar[] avatars { get { return _avatars; } private set { _avatars = value; } }
-        private Avatar[] _avatars;
+        public AssetArray<Avatar> avatars;
 
         public void Setup(Action callback)
         {
-            DataManager.instance.avatarDataController.Get((Avatar[] avatars) =>
+            AssetManager.instance.GetAll((SOAvatar[] soAvatars) =>
             {
-                this.avatars = avatars;
+                List<Avatar> avatarList = new List<Avatar>();
+
+                foreach(SOAvatar avatar in soAvatars)
+                {
+                    avatarList.Add(new Avatar(avatar));
+                }
+
+                avatars = new AssetArray<Avatar>(avatarList.ToArray());
 
                 callback?.Invoke();
             });
@@ -17,7 +25,7 @@ namespace Devenant
 
         public Avatar Get(string name)
         {
-            foreach(Avatar avatar in avatars)
+            foreach(Avatar avatar in avatars.Get())
             {
                 if (name == avatar.name)
                 {

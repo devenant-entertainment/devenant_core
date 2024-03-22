@@ -7,7 +7,7 @@ namespace Devenant
         Purchase
     }
 
-    public class Purchase : Asset
+    public class Purchase : Icon
     {
         public readonly PurchaseType type;
 
@@ -17,6 +17,11 @@ namespace Devenant
         public Purchase(string name, Sprite icon, PurchaseType type) : base (name, icon)
         {
             this.type = type;
+        }
+
+        public Purchase(SOPurchase purchase) : base(purchase) 
+        {
+            type = purchase.type;
         }
     }
 }

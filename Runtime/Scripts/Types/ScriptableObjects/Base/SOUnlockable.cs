@@ -1,6 +1,6 @@
 namespace Devenant
 {
-    public abstract class SOUnlockable : SOAsset
+    public abstract class SOUnlockable : SOIcon
     {
         public SOPurchase purchase;
         public SOAchievement achievement;

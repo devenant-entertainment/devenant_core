@@ -7,7 +7,7 @@ namespace Devenant
         public readonly ApplicationStatus status;
         public readonly Version version;
 
-        public Status (ConfigurationResponse response)
+        public Status (StatusResponse response)
         {
             status = Enum.Parse<ApplicationStatus>(response.status);
             version = new Version(response.version);

@@ -25,7 +25,7 @@ namespace Devenant
 
                     foreach(StorageResponse.Storage storage in storageResponse.storages)
                     {
-                        _storages.Add(new Storage(storage.name, storage.type));
+                        _storages.Add(new Storage(storage));
                     }
 
                     callback?.Invoke(true);

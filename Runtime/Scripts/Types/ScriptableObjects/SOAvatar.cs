@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Devenant
 {
-    [CreateAssetMenu(fileName = "avatar_", menuName = "Devenant/Core/Avatar", order = 22)]
+    [CreateAssetMenu(fileName = "avatar_", menuName = "Devenant/Core/Avatar")]
     public class SOAvatar : SOUnlockable
     {
 
