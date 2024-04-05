@@ -33,6 +33,14 @@ namespace Devenant
                 }
             }
 
+            foreach(Avatar avatar in avatars.Get())
+            {
+                if(avatar.IsUnlocked())
+                {
+                    return avatar;
+                }
+            }
+
             return null;
         }
     }
