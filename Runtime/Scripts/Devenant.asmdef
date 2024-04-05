@@ -6,6 +6,7 @@
         "Unity.Netcode.Runtime",
         "Unity.Addressables",
         "Unity.Addressables.Editor",
+        "Unity.Collections",
         "Unity.Localization",
         "Unity.ResourceManager",
         "Unity.Services.Authentication",

@@ -20,7 +20,7 @@ namespace Devenant
 
             public Session(string code)
             {
-                this.code = code;
+                this.code = code.ToUpper();
             }
 
             public void AddPlayer(Player player)
@@ -68,7 +68,7 @@ namespace Devenant
 
             onPlayersUpdated?.Invoke();
 
-            if(player.IsHost)
+            if(player.type == PlayerType.Host)
             {
                 Disconnect();
             }
@@ -77,7 +77,9 @@ namespace Devenant
         public async void StartHost(int maxPlayers, Action<bool> callback = null)
         {
             if(session != null)
+            {
                 Disconnect();
+            }
 
             try
             {
@@ -109,7 +111,9 @@ namespace Devenant
         public async void StartClient(string code, Action<bool> callback = null)
         {
             if(session != null)
+            {
                 Disconnect();
+            }
 
             try
             {
