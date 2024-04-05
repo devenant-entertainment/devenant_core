@@ -98,7 +98,7 @@ namespace Devenant
             }
             catch(RelayServiceException e)
             {
-                Debug.LogError(e);
+                Debug.LogWarning(e);
 
                 session = null;
 
@@ -130,7 +130,7 @@ namespace Devenant
             }
             catch(RelayServiceException e)
             {
-                Debug.LogError(e);
+                Debug.LogWarning(e);
 
                 session = null;
 
