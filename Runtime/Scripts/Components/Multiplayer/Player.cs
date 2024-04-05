@@ -2,10 +2,12 @@ using Unity.Netcode;
 
 namespace Devenant
 {
-    public class NetworkPlayer : NetworkBehaviour
+    public class Player : NetworkBehaviour
     {
-        public static Action<NetworkPlayer> onPlayerConnected;
-        public static Action<NetworkPlayer> onPlayerDisconnected;
+        public static Player instance;
+
+        public static Action<Player> onPlayerConnected;
+        public static Action<Player> onPlayerDisconnected;
 
         public string nickname { get { return _nickname; } private set { _nickname = value; } }
         private string _nickname;
@@ -18,6 +20,8 @@ namespace Devenant
             if (IsLocalPlayer)
             {
                 SetupServerRpc(UserManager.instance.user.nickname, UserManager.instance.user.avatar);
+
+                instance = this;
             }
         }
 

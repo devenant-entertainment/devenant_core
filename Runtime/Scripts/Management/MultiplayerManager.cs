@@ -16,14 +16,14 @@ namespace Devenant
         public class Session
         {
             public readonly string code;
-            public readonly List<NetworkPlayer> players = new List<NetworkPlayer>();
+            public readonly List<Player> players = new List<Player>();
 
             public Session(string code)
             {
                 this.code = code;
             }
 
-            public void AddPlayer(NetworkPlayer player)
+            public void AddPlayer(Player player)
             {
                 if(!players.Contains(player))
                 {
@@ -31,7 +31,7 @@ namespace Devenant
                 }
             }
 
-            public void RemovePlayer(NetworkPlayer player)
+            public void RemovePlayer(Player player)
             {
                 if(players.Contains(player))
                 {
@@ -45,24 +45,24 @@ namespace Devenant
 
         private void OnEnable()
         {
-            NetworkPlayer.onPlayerConnected += PlayerConnected;
-            NetworkPlayer.onPlayerDisconnected += PlayerDisconnected;
+            Player.onPlayerConnected += PlayerConnected;
+            Player.onPlayerDisconnected += PlayerDisconnected;
         }
 
         private void OnDisable()
         {
-            NetworkPlayer.onPlayerConnected -= PlayerConnected;
-            NetworkPlayer.onPlayerDisconnected -= PlayerDisconnected;
+            Player.onPlayerConnected -= PlayerConnected;
+            Player.onPlayerDisconnected -= PlayerDisconnected;
         }
 
-        private void PlayerConnected(NetworkPlayer player)
+        private void PlayerConnected(Player player)
         {
             session?.AddPlayer(player);
 
             onPlayersUpdated?.Invoke();
         }
 
-        private void PlayerDisconnected(NetworkPlayer player)
+        private void PlayerDisconnected(Player player)
         {
             session?.RemovePlayer(player);
 

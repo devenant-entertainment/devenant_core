@@ -136,14 +136,15 @@ namespace Devenant
             private RectTransform holder;
             private GameObject reference;
 
-            private List<GameObject> elements;
+            public GameObject[] elements { get { return _elements.ToArray(); } }
+            private List<GameObject> _elements;
 
             public Content(RectTransform holder, GameObject reference)
             {
                 this.holder = holder;
                 this.reference = reference;
 
-                elements = new List<GameObject>();
+                _elements = new List<GameObject>();
 
                 reference.SetActive(false);
             }
@@ -153,26 +154,26 @@ namespace Devenant
                 GameObject newElement = Instantiate(reference, holder);
                 newElement.SetActive(true);
 
-                elements.Add(newElement);
+                _elements.Add(newElement);
 
                 return newElement;
             }
 
             public void Remove(GameObject element)
             {
-                elements.Remove(element);
+                _elements.Remove(element);
 
                 Destroy(element);
             }
 
             public void Clear()
             {
-                foreach(GameObject element in elements)
+                foreach(GameObject element in _elements)
                 {
                     Destroy(element);
                 }
 
-                elements = new List<GameObject>();
+                _elements = new List<GameObject>();
             }
         }
     }
