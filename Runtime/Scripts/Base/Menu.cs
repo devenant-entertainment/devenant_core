@@ -175,6 +175,18 @@ namespace Devenant
 
                 _elements = new List<GameObject>();
             }
+
+            public C[] GetComponents<C>() where C : Object
+            {
+                List<C> results = new List<C>();
+
+                foreach(GameObject element in elements)
+                {
+                    results.Add(element.GetComponent<C>());
+                }
+
+                return results.ToArray();
+            }
         }
     }
 }

@@ -54,36 +54,40 @@ namespace Devenant
             droppableObject = GetComponentInParent<DroppableObject>();
         }
 
-        protected virtual void OnBeginDrag(PointerEventData pointerEventData)
+        protected virtual bool OnBeginDrag(PointerEventData pointerEventData)
         {
             if (droppableObject == null)
             {
-                return;
+                return false;
             }
 
             isDragging = true;
 
             rectTransform.SetParent(canvasRectTransform);
+
+            return true;
         }
 
-        protected virtual void OnDrag(PointerEventData pointerEventData)
+        protected virtual bool OnDrag(PointerEventData pointerEventData)
         {
             if(droppableObject == null)
             {
-                return;
+                return false;
             }
 
             if(isDragging)
             {
                 rectTransform.position = pointerEventData.position;
             }
+
+            return true;
         }
 
-        protected virtual void OneEndDrag(PointerEventData pointerEventData)
+        protected virtual bool OneEndDrag(PointerEventData pointerEventData)
         {
             if(droppableObject == null)
             {
-                return;
+                return false;
             }
 
             isDragging = false;
@@ -111,12 +115,14 @@ namespace Devenant
                             oldDroppableObject.draggableObject = null;
                         }
 
-                        return;
+                        return true;
                     }
                 }
             }
 
             ResetPosition();
+
+            return false;
         }
 
         public bool SetDroppableObject(DroppableObject newDroppableObject)
