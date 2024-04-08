@@ -13,6 +13,12 @@ namespace Devenant
         Development
     }
 
+    public enum ApplicationMultiplayerMode
+    {
+        Local,
+        Online
+    }
+
     public enum ApplicationStatus
     {
         Active,
@@ -23,6 +29,7 @@ namespace Devenant
     {
         public readonly ApplicationPlatform platform;
         public readonly ApplicationEnvironment environment;
+        public readonly ApplicationMultiplayerMode multiplayerMode;
 
         public readonly string gameUrl;
         public readonly string legalUrl;
@@ -36,6 +43,7 @@ namespace Devenant
         public Application(SOApplication data)
         {
             environment = data.environment;
+            multiplayerMode = data.multiplayerMode;
 
             gameUrl = data.gameUrl;
             legalUrl = data.legalUrl;

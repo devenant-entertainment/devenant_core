@@ -8,6 +8,7 @@
         "Unity.Addressables.Editor",
         "Unity.Collections",
         "Unity.Localization",
+        "Unity.Networking.Transport",
         "Unity.ResourceManager",
         "Unity.Services.Authentication",
         "Unity.Services.Core",

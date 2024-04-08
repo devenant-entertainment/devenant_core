@@ -81,30 +81,49 @@ namespace Devenant
                 Disconnect();
             }
 
-            try
+            switch(ApplicationManager.instance.application.multiplayerMode)
             {
-                string code = await Host(maxPlayers);
+                case ApplicationMultiplayerMode.Local:
 
-                if (!string.IsNullOrEmpty(code))
-                {
-                    session = new Session(code);
+                    session = new Session(string.Empty);
+
+                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", 7777);
+
+                    NetworkManager.Singleton.StartHost();
 
                     callback?.Invoke(true);
-                }
-                else
-                {
-                    session = null;
 
-                    callback?.Invoke(false);
-                }
-            }
-            catch(RelayServiceException e)
-            {
-                Debug.LogWarning(e);
+                    break;
 
-                session = null;
+                case ApplicationMultiplayerMode.Online:
 
-                callback?.Invoke(false);
+                    try
+                    {
+                        string code = await Host(maxPlayers);
+
+                        if(!string.IsNullOrEmpty(code))
+                        {
+                            session = new Session(code);
+
+                            callback?.Invoke(true);
+                        }
+                        else
+                        {
+                            session = null;
+
+                            callback?.Invoke(false);
+                        }
+                    }
+                    catch(RelayServiceException e)
+                    {
+                        Debug.LogWarning(e);
+
+                        session = null;
+
+                        callback?.Invoke(false);
+                    }
+
+                    break;
             }
         }
 
@@ -115,30 +134,47 @@ namespace Devenant
                 Disconnect();
             }
 
-            try
+            switch(ApplicationManager.instance.application.multiplayerMode)
             {
-                bool success = await Join(code);
+                case ApplicationMultiplayerMode.Local:
 
-                if(success)
-                {
                     session = new Session(code);
 
+                    NetworkManager.Singleton.StartClient();
+
                     callback?.Invoke(true);
-                }
-                else
-                {
-                    session = null;
 
-                    callback?.Invoke(false);
-                }
-            }
-            catch(RelayServiceException e)
-            {
-                Debug.LogWarning(e);
+                    break;
 
-                session = null;
+                case ApplicationMultiplayerMode.Online:
 
-                callback?.Invoke(false);
+                    try
+                    {
+                        bool success = await Join(code);
+
+                        if(success)
+                        {
+                            session = new Session(code);
+
+                            callback?.Invoke(true);
+                        }
+                        else
+                        {
+                            session = null;
+
+                            callback?.Invoke(false);
+                        }
+                    }
+                    catch(RelayServiceException e)
+                    {
+                        Debug.LogWarning(e);
+
+                        session = null;
+
+                        callback?.Invoke(false);
+                    }
+
+                    break;
             }
         }
 

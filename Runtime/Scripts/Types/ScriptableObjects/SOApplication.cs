@@ -6,6 +6,7 @@ namespace Devenant
     public class SOApplication : SOAsset
     {
         public ApplicationEnvironment environment;
+        public ApplicationMultiplayerMode multiplayerMode;
 
         [Header("URLs")]
         [Required] public string gameUrl;
