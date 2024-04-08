@@ -125,7 +125,7 @@ namespace Devenant
             return false;
         }
 
-        public bool SetDroppableObject(DroppableObject newDroppableObject)
+        public virtual bool SetDroppableObject(DroppableObject newDroppableObject)
         {
             if(newDroppableObject == null)
             {
@@ -152,7 +152,7 @@ namespace Devenant
             return true;
         }
 
-        private void ResetPosition()
+        protected virtual void ResetPosition()
         {
             rectTransform.SetParent(droppableObject.transform);
             rectTransform.position = droppableObject.transform.position;

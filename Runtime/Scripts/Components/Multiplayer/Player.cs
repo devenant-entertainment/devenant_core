@@ -1,6 +1,5 @@
 using Unity.Collections;
 using Unity.Netcode;
-using UnityEngine;
 
 namespace Devenant
 {
@@ -41,8 +40,6 @@ namespace Devenant
             _type.OnValueChanged += (int previousValue, int newValue) => { onPlayerUpdated?.Invoke(this); };
             _nickname.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onPlayerUpdated?.Invoke(this); };
             _avatar.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onPlayerUpdated?.Invoke(this); };
-
-            onPlayerConnected?.Invoke(this);
         }
 
         private void OnDisable()
@@ -56,6 +53,14 @@ namespace Devenant
             this.type = (PlayerType)type;
             this.nickname = nickname;
             this.avatar = avatar;
+
+            SetupClientRpc();
+        }
+
+        [ClientRpc]
+        private void SetupClientRpc()
+        {
+            onPlayerConnected?.Invoke(this);
         }
     }
 }
