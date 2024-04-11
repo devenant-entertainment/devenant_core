@@ -78,6 +78,8 @@ namespace Devenant
                 {
                     user = new User(JsonUtility.FromJson<UserResponse>(response.data));
 
+                    FixAvatar();
+
                     onUserUpdated?.Invoke(user);
 
                     if(rememberData)
@@ -89,6 +91,24 @@ namespace Devenant
 
                 callback?.Invoke(response);
             });
+
+            void FixAvatar()
+            {
+                if (string.IsNullOrEmpty(user.avatar))
+                {
+                    foreach(Avatar avatar in AvatarManager.instance.avatars.Get())
+                    {
+                        if(avatar.IsUnlocked())
+                        {
+                            user.avatar = avatar.name;
+
+                            return;
+                        }
+                    }
+
+                    Debug.LogError("UserManager.Login.FixAvatar > Could not find an available avatar");
+                }
+            }
         }
 
         public void Register(string nickname, string email, string password, Action<Request.Response> callback)
