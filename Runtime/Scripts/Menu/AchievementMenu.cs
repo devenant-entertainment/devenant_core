@@ -13,13 +13,13 @@ namespace Devenant
         
         [SerializeField] private Button closeButton;
 
-        private Content achievementContent;
+        private MenuContent achievementContent;
 
         public override void Open(Action callback = null)
         {
             achievementContent?.Clear();
 
-            achievementContent = new Content(achievementHolder, achievementElement.gameObject);
+            achievementContent = new MenuContent(achievementHolder, achievementElement.gameObject);
 
             List<Achievement> sortedAchievements = AchievementManager.instance.achievements.Get().ToList();
             sortedAchievements.Sort((a, b) => a.completed.CompareTo(b.completed));

@@ -23,13 +23,13 @@ namespace Devenant
         
         [SerializeField] private Button closeButton;
 
-        private Content optionContent;
+        private MenuContent optionContent;
 
         public void Open(ContextualMenuOption[] options)
         {
             optionContent?.Clear();
 
-            optionContent = new Content(optionHolder, optionElement);
+            optionContent = new MenuContent(optionHolder, optionElement);
 
             foreach(ContextualMenuOption option in options)
             {

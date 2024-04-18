@@ -10,7 +10,7 @@ namespace Devenant
         
         [SerializeField] private Button closeButton;
 
-        private Content avatarContent;
+        private MenuContent avatarContent;
 
         public override void Open(Action callback = null)
         {
@@ -29,7 +29,7 @@ namespace Devenant
         {
             avatarContent?.Clear();
 
-            avatarContent = new Content(avatarHolder, avatarElement.gameObject);
+            avatarContent = new MenuContent(avatarHolder, avatarElement.gameObject);
 
             foreach(Avatar avatar in AvatarManager.instance.avatars.Get())
             {
