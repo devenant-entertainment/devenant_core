@@ -47,36 +47,30 @@ namespace Devenant
 #if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
                     SteamManager.instance.Setup((bool success) =>
                     {
-                        if(success)
+                        if (application.environment == ApplicationEnvironment.Production && !success)
                         {
-#endif
-                            LocalizationManager.instance.Setup(() =>
+                            MessageMenu.instance.Open("error", () =>
                             {
-                                SettingsManager.instance.Setup();
+                                Exit();
+                            });
+                        }
+#endif
+                        LocalizationManager.instance.Setup(() =>
+                        {
+                            SettingsManager.instance.Setup();
 
-                                SetupStatus(() =>
+                            SetupStatus(() =>
+                            {
+                                Login(() =>
                                 {
-                                    Login(() =>
+                                    SetupData(() =>
                                     {
-                                        SetupData(() =>
-                                        {
-                                            SetupUser(callback);
-                                        });
+                                        SetupUser(callback);
                                     });
                                 });
                             });
-#if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
-                        }
-                        else
-                        {
-                            LoadingMenu.instance.Close(() =>
-                            {
-                                MessageMenu.instance.Open("error", () =>
-                                {
-                                    Exit();
-                                });
-                            });
-                        }
+                        });
+#if(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX) 
                     });
 #endif
                 });
