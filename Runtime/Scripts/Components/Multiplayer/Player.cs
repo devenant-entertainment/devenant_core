@@ -15,7 +15,8 @@ namespace Devenant
 
         public static Action<Player> onPlayerConnected;
         public static Action<Player> onPlayerDisconnected;
-        public static Action<Player> onPlayerUpdated;
+
+        public Action<Player> onUpdated;
 
         public PlayerType type { get { return (PlayerType)_type.Value; } private set { _type.Value = (int)value; } }
         private NetworkVariable<int> _type = new NetworkVariable<int>();
@@ -37,9 +38,9 @@ namespace Devenant
                 instance = this;
             }
 
-            _type.OnValueChanged += (int previousValue, int newValue) => { onPlayerUpdated?.Invoke(this); };
-            _nickname.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onPlayerUpdated?.Invoke(this); };
-            _avatar.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onPlayerUpdated?.Invoke(this); };
+            _type.OnValueChanged += (int previousValue, int newValue) => { onUpdated?.Invoke(this); };
+            _nickname.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onUpdated?.Invoke(this); };
+            _avatar.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onUpdated?.Invoke(this); };
         }
 
         private void OnDisable()
