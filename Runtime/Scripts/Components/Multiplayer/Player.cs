@@ -1,5 +1,7 @@
+using Codice.Client.Common.GameUI;
 using Unity.Collections;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Devenant
 {
@@ -15,32 +17,27 @@ namespace Devenant
 
         public static Action<Player> onPlayerConnected;
         public static Action<Player> onPlayerDisconnected;
+        public static Action<Player> onPlayerUpdated;
 
         public Action<Player> onUpdated;
 
-        public PlayerType type { get { return (PlayerType)_type.Value; } private set { _type.Value = (int)value; } }
-        private NetworkVariable<int> _type = new NetworkVariable<int>();
-
-        public string nickname { get { return _nickname.Value.ToString(); } private set { _nickname.Value = new FixedString32Bytes(value); } }
-        private NetworkVariable<FixedString32Bytes> _nickname = new NetworkVariable<FixedString32Bytes>();
-
-        public string avatar { get { return _avatar.Value.ToString(); } private set { _avatar.Value = new FixedString32Bytes(value); } }
-        private NetworkVariable<FixedString32Bytes> _avatar = new NetworkVariable<FixedString32Bytes>();
+        public PlayerNetworkData data { get { return JsonUtility.FromJson<PlayerNetworkData>(_data.Value.ToString()); } private set { _data.Value = JsonUtility.ToJson(value); } }
+        private NetworkVariable<FixedString64Bytes> _data = new NetworkVariable<FixedString64Bytes>();
 
         private void Start()
         {
+            _data.OnValueChanged += (FixedString64Bytes previousValue, FixedString64Bytes newValue) => { onUpdated?.Invoke(this); onPlayerUpdated?.Invoke(this); };
+
             if (IsLocalPlayer)
             {
                 PlayerType type = IsHost || IsServer ? PlayerType.Host : PlayerType.Client;
 
-                SetupServerRpc((int)type, UserManager.instance.user.nickname, UserManager.instance.user.avatar);
+                Setup(new PlayerNetworkData(type, UserManager.instance.user.nickname, UserManager.instance.user.avatar));
 
                 instance = this;
             }
 
-            _type.OnValueChanged += (int previousValue, int newValue) => { onUpdated?.Invoke(this); };
-            _nickname.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onUpdated?.Invoke(this); };
-            _avatar.OnValueChanged += (FixedString32Bytes previousValue, FixedString32Bytes newValue) => { onUpdated?.Invoke(this); };
+            onPlayerConnected?.Invoke(this);
         }
 
         private void OnDisable()
@@ -48,20 +45,19 @@ namespace Devenant
             onPlayerDisconnected?.Invoke(this);
         }
 
-        [ServerRpc]
-        private void SetupServerRpc(int type, string nickname, string avatar)
+        private void Setup(PlayerNetworkData data)
         {
-            this.type = (PlayerType)type;
-            this.nickname = nickname;
-            this.avatar = avatar;
+            SetupServerRpc(JsonUtility.ToJson(data));
 
-            SetupClientRpc();
+            Debug.Log("Player.Setup > " + JsonUtility.ToJson(data));
         }
 
-        [ClientRpc]
-        private void SetupClientRpc()
+        [ServerRpc]
+        private void SetupServerRpc(string data)
         {
-            onPlayerConnected?.Invoke(this);
+            this.data = JsonUtility.FromJson<PlayerNetworkData>(data);
+
+            Debug.Log("Player.SetupServerRpc > " + data);
         }
     }
 }
