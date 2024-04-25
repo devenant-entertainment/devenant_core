@@ -23,10 +23,13 @@ namespace Devenant
         public PlayerNetworkData data { get { return JsonUtility.FromJson<PlayerNetworkData>(_data.Value.ToString()); } private set { _data.Value = JsonUtility.ToJson(value); } }
         private NetworkVariable<FixedString64Bytes> _data = new NetworkVariable<FixedString64Bytes>();
 
-        private void Start()
+        private void OnEnable()
         {
             _data.OnValueChanged += (FixedString64Bytes previousValue, FixedString64Bytes newValue) => { onUpdated?.Invoke(this); onPlayerUpdated?.Invoke(this); };
+        }
 
+        private void Start()
+        {
             if (IsLocalPlayer)
             {
                 PlayerType type = IsHost || IsServer ? PlayerType.Host : PlayerType.Client;
