@@ -68,7 +68,7 @@ namespace Devenant
 
             onPlayersUpdated?.Invoke();
 
-            if(player.data.type == PlayerType.Host)
+            if(player.type == PlayerType.Host)
             {
                 Disconnect();
             }
