@@ -8,7 +8,7 @@ namespace Devenant
     [RequireComponent(typeof(CanvasGroup))]
     public class DraggableObject : Eventable
     {
-        public static Action<DraggableObject> onUpdated;
+        public Action<DraggableObject> onUpdated;
 
         public string type { get { return _type; } }
         [SerializeField] private string _type;

@@ -4,7 +4,7 @@ namespace Devenant
 {
     public class DroppableObject : MonoBehaviour
     {
-        public static Action<DroppableObject> onUpdated;
+        public Action<DroppableObject> onUpdated;
 
         public string type { get { return _type; } }
         [SerializeField] private string _type;
