@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+
+using UnityEditor;
 using UnityEngine;
 
 namespace Devenant
@@ -8,26 +8,43 @@ namespace Devenant
     {
         public readonly IMenu[] tabs;
 
+        public int tab { get { return _tab; } private set { _tab = value; } }
+        private int _tab;
+
         public MenuGroup(IMenu[] tabs, Action callback = null)
         {
             this.tabs = tabs;
 
-            Open(0, callback);
+            tabs[0].Open(callback);
         }
 
         public void Open(int index, Action callback = null)
         {
-            for(int i = 0; i < tabs.Length; i++)
+            if(tab == index)
             {
-                if(i == index)
-                {
-                    tabs[i].Open(callback);
-                }
-                else
-                {
-                    tabs[i].Close();
-                }
+                return;
             }
+
+            if(index < 0 || index >= tabs.Length)
+            {
+                return;
+            }
+
+            if (tab != -1)
+            {
+                tabs[tab].Close();
+            }
+
+            tabs[index].Open(callback);
+
+            tab = index;
+        }
+
+        public void Close()
+        {
+            tabs[tab].Close();
+
+            tab = -1;
         }
     }
 }
