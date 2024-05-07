@@ -43,6 +43,9 @@ namespace Devenant
         public Session session { get { return _session; } private set { _session = value; } }
         private Session _session;
 
+        [SerializeField] private NetworkObject networkManagers;
+        private NetworkObject currentNetworkManagers;
+
         private void OnEnable()
         {
             Player.onPlayerConnected += PlayerConnected;
@@ -90,6 +93,9 @@ namespace Devenant
                     NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", 7777);
 
                     NetworkManager.Singleton.StartHost();
+
+                    currentNetworkManagers = Instantiate(networkManagers).GetComponent<NetworkObject>();
+                    currentNetworkManagers.Spawn();
 
                     callback?.Invoke(true);
 
@@ -213,9 +219,14 @@ namespace Devenant
 
         public void Disconnect()
         {
-            NetworkManager.Singleton.Shutdown();
+            if(session != null)
+            {
+                session = null;
 
-            onDisconnected?.Invoke();
+                onDisconnected?.Invoke();
+
+                NetworkManager.Singleton.Shutdown();
+            }
         }
     }
 }

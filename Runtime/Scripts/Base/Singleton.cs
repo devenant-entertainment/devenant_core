@@ -17,9 +17,9 @@ namespace Devenant
                         GameObject gameObject = new GameObject(typeof(T).Name);
 
                         _instance = gameObject.AddComponent<T>();
-
-                        DontDestroyOnLoad(gameObject);
                     }
+
+                    DontDestroyOnLoad(_instance.gameObject);
                 }
 
                 return _instance;
