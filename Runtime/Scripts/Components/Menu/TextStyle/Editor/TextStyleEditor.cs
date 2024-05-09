@@ -1,8 +1,6 @@
-using JetBrains.Annotations;
-using System.Threading;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 namespace Devenant
 {
@@ -74,3 +72,4 @@ namespace Devenant
         }
     }
 }
+#endif
