@@ -1,14 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Devenant
+namespace Devenant.Menu
 {
-    public interface IMenu
-    {
-        public void Open(Action callback = null);
-        public void Close(Action callback = null);
-    }
-
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class Menu<T> : MonoBehaviour, IMenu where T : Menu<T>
