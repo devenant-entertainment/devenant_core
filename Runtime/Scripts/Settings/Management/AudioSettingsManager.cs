@@ -61,7 +61,7 @@ namespace Devenant
             sfx = new Channel("Sfx", audioMixer);
         }
 
-        public void PlayMusic(AudioClip audioClip, float time, Action callback)
+        public void PlayMusic(AudioClip audioClip, float time, Action callback = null)
         {
             float musicVolume = musicSource.volume;
 
