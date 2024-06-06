@@ -39,7 +39,7 @@ namespace Devenant
 
             avatarImage.sprite = avatar.icon;
 
-            lockedIndicator.SetActive(avatar.IsUnlocked());
+            lockedIndicator.SetActive(!avatar.IsUnlocked());
 
             selectedIndicator.SetActive(UserManager.instance.user.avatar == avatar.name);
 
