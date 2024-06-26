@@ -39,9 +39,9 @@ namespace Devenant
                             {
                                 if(response.success)
                                 {
-                                    ProductResponse responseData = JsonUtility.FromJson<ProductResponse>(response.data);
+                                    PurchaseResponse responseData = JsonUtility.FromJson<PurchaseResponse>(response.data);
 
-                                    foreach(ProductResponse.Purchase purchase in responseData.purchases)
+                                    foreach(PurchaseResponse.Purchase purchase in responseData.purchases)
                                     {
                                         foreach(StoreProduct product in this.storeProducts)
                                         {

@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class ProductResponse
+    public class PurchaseResponse
     {
         public Purchase[] purchases;
 
