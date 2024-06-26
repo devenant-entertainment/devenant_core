@@ -4,6 +4,7 @@ namespace Devenant
 {
     public enum UserType
     {
+        Guest,
         Player,
         Admin
     }

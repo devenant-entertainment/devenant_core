@@ -18,6 +18,7 @@
         public readonly string userActivate;
         public readonly string userDelete;
         public readonly string userLogin;
+        public readonly string userPlay;
         public readonly string userRegister;
         public readonly string userSendCode;
         public readonly string userUpdateAvatar;
@@ -43,6 +44,7 @@
             userActivate = data.userActivate;
             userDelete = data.userDelete;
             userLogin = data.userLogin;
+            userPlay = data.userPlay;
             userRegister = data.userRegister;
             userSendCode = data.userSendCode;
             userUpdateAvatar = data.userUpdateAvatar;

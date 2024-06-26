@@ -8,17 +8,27 @@ namespace Devenant
     {
         public static Action<User> onUserUpdated;
 
+        private const string rememberKey = "UserManager.Remember";
         private const string emailKey = "UserManager.Email";
         private const string passwordKey = "UserManager.Password";
+
+        private const string identifierKey = "UserManager.Identifier";
 
         public User user { get { return _user; } private set { _user = value; } }
         private User _user;
 
         public void AutoLogin(Action<bool> callback)
         {
-            if(PlayerPrefs.HasKey(emailKey) && PlayerPrefs.HasKey(passwordKey))
+            if(PlayerPrefs.HasKey(rememberKey) && PlayerPrefs.HasKey(emailKey) && PlayerPrefs.HasKey(passwordKey))
             {
-                Login(PlayerPrefs.GetString(emailKey), PlayerPrefs.GetString(passwordKey), false, (Request.Response response) => 
+                Login(PlayerPrefs.GetString(emailKey), PlayerPrefs.GetString(passwordKey), false, (Request.Response response) =>
+                {
+                    callback?.Invoke(response.success);
+                });
+            }
+            else if(PlayerPrefs.HasKey(identifierKey))
+            {
+                Play((Request.Response response) =>
                 {
                     callback?.Invoke(response.success);
                 });
@@ -82,9 +92,38 @@ namespace Devenant
 
                     if(rememberData)
                     {
+                        PlayerPrefs.SetString(rememberKey, "remember");
                         PlayerPrefs.SetString(emailKey, email);
                         PlayerPrefs.SetString(passwordKey, password);
                     }
+
+                    PlayerPrefs.DeleteKey(identifierKey);
+                }
+
+                callback?.Invoke(response);
+            });
+        }
+
+        public void Play(Action<Request.Response> callback)
+        {
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "identifier", SystemInfo.deviceUniqueIdentifier }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.userPlay, formFields, (Request.Response response) =>
+            {
+                if(response.success)
+                {
+                    user = new User(JsonUtility.FromJson<UserResponse>(response.data));
+
+                    onUserUpdated?.Invoke(user);
+
+                    PlayerPrefs.DeleteKey(rememberKey);
+                    PlayerPrefs.DeleteKey(emailKey);
+                    PlayerPrefs.DeleteKey(passwordKey);
+
+                    PlayerPrefs.SetString(identifierKey, SystemInfo.deviceUniqueIdentifier);
                 }
 
                 callback?.Invoke(response);
@@ -155,6 +194,13 @@ namespace Devenant
                 {
                     user.email = email;
 
+                    if(PlayerPrefs.HasKey(rememberKey))
+                    {
+                        PlayerPrefs.SetString(emailKey, email);
+                    }
+
+                    PlayerPrefs.DeleteKey(identifierKey);
+
                     onUserUpdated?.Invoke(user);
                 }
 
@@ -172,6 +218,11 @@ namespace Devenant
 
             Request.Post(ApplicationManager.instance.backend.userUpdatePassword, formFields, (Request.Response response) =>
             {
+                if(PlayerPrefs.HasKey(rememberKey))
+                {
+                    PlayerPrefs.SetString(passwordKey, passwordKey);
+                }
+
                 callback?.Invoke(response);
             });
         }
@@ -202,8 +253,10 @@ namespace Devenant
         {
             user = null;
 
+            PlayerPrefs.DeleteKey(rememberKey);
             PlayerPrefs.DeleteKey(emailKey);
             PlayerPrefs.DeleteKey(passwordKey);
+            PlayerPrefs.DeleteKey(identifierKey);
         }
 
         public bool ValidateNickname(string nickname)

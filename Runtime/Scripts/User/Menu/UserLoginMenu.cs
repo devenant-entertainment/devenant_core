@@ -14,7 +14,9 @@ namespace Devenant
         [SerializeField] private Button loginButton;
         [SerializeField] private Button updatePasswordButton;
         [SerializeField] private Button registerButton;
-        
+
+        [SerializeField] private Button playButton;
+
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button closeButton;
 
@@ -91,6 +93,31 @@ namespace Devenant
             registerButton.onClick.AddListener(() =>
             {
                 UserRegisterMenu.instance.Open();
+            });
+
+            playButton.onClick.RemoveAllListeners();
+            playButton.onClick.AddListener(() =>
+            {
+                LoadingMenu.instance.Open(() =>
+                {
+                    UserManager.instance.Play((Request.Response response) =>
+                    {
+                        LoadingMenu.instance.Close(() =>
+                        {
+                            if(response.success)
+                            {
+                                Close(() =>
+                                {
+                                    callback?.Invoke();
+                                });
+                            }
+                            else
+                            {
+                                NotificationMenu.instance.Open(new Notification(response.message));
+                            }
+                        });
+                    });
+                });
             });
 
             settingsButton.onClick.RemoveAllListeners();

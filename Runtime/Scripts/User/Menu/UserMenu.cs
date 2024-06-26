@@ -33,12 +33,14 @@ namespace Devenant
 
             OnUserUpdated(UserManager.instance.user);
 
+            updateAvatarButton.interactable = UserManager.instance.user.type != UserType.Guest;
             updateAvatarButton.onClick.RemoveAllListeners();
             updateAvatarButton.onClick.AddListener(() =>
             {
                 UserUpdateAvatarMenu.instance.Open();
             });
 
+            updateNicknameButton.interactable = UserManager.instance.user.type != UserType.Guest;
             updateNicknameButton.onClick.RemoveAllListeners();
             updateNicknameButton.onClick.AddListener(() =>
             {
@@ -68,6 +70,7 @@ namespace Devenant
                 });
             });
 
+            updatePasswordButton.interactable = UserManager.instance.user.type != UserType.Guest;
             updatePasswordButton.onClick.RemoveAllListeners();
             updatePasswordButton.onClick.AddListener(() =>
             {

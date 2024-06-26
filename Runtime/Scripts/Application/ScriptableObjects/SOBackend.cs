@@ -26,6 +26,7 @@ namespace Devenant
         [Required] public string userActivate;
         [Required] public string userDelete;
         [Required] public string userLogin;
+        [Required] public string userPlay;
         [Required] public string userRegister;
         [Required] public string userSendCode;
         [Required] public string userUpdateAvatar;
