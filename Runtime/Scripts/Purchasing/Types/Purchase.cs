@@ -1,27 +1,18 @@
-using UnityEngine;
-
 namespace Devenant
 {
-    public enum PurchaseType
+    public struct Purchase
     {
-        Purchase
-    }
+        public bool success;
+        public StoreProduct product;
+        public string transaction;
+        public string receipt;
 
-    public class Purchase : Asset
-    {
-        public readonly PurchaseType type;
-
-        public string price;
-        public bool purchased;
-
-        public Purchase(string name, Sprite icon, PurchaseType type) : base (name, icon)
+        public Purchase(bool success, StoreProduct product, string transaction, string receipt)
         {
-            this.type = type;
-        }
-
-        public Purchase(SOPurchase purchase) : base(purchase) 
-        {
-            type = purchase.type;
+            this.success = success;
+            this.product = product;
+            this.transaction = transaction;
+            this.receipt = receipt;
         }
     }
 }

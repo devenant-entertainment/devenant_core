@@ -2,9 +2,11 @@ namespace Devenant
 {
     public enum ApplicationPlatform
     {
+        Editor,
         Steam,
-        Android,
-        IOS,
+        MicrosoftStore,
+        GooglePlay,
+        AppStore
     }
 
     public enum ApplicationEnvironment
@@ -42,6 +44,7 @@ namespace Devenant
 
         public Application(SOApplication data)
         {
+            platform = data.platform;
             environment = data.environment;
             multiplayerMode = data.multiplayerMode;
 
@@ -49,35 +52,35 @@ namespace Devenant
             legalUrl = data.legalUrl;
             supportUrl = data.supportUrl;
 
-            minInterfaceScale = data.minInterfaceScale;
-            maxInterfaceScale = data.maxInterfaceScale;
-
-            switch(UnityEngine.Application.platform)
+            switch(platform)
             {
-                default:
+                case ApplicationPlatform.Steam:
 
-                    platform = ApplicationPlatform.Steam;
-
-                    storeUrl = data.windowsStoreUrl;
+                    storeUrl = data.steamUrl;
 
                     break;
 
-                case UnityEngine.RuntimePlatform.Android:
+                case ApplicationPlatform.MicrosoftStore:
 
-                    platform = ApplicationPlatform.Android;
-
-                    storeUrl = data.androidStoreUrl;
+                    storeUrl = data.microsoftStoreUrl;
 
                     break;
 
-                case UnityEngine.RuntimePlatform.IPhonePlayer:
+                case ApplicationPlatform.GooglePlay:
 
-                    platform = ApplicationPlatform.IOS;
+                    storeUrl = data.googlePlayUrl;
 
-                    storeUrl = data.iosStoreUrl;
+                    break;
+
+                case ApplicationPlatform.AppStore:
+
+                    storeUrl = data.appStoreUrl;
 
                     break;
             }
+
+            minInterfaceScale = data.minInterfaceScale;
+            maxInterfaceScale = data.maxInterfaceScale;
         }
     }
 }

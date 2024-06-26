@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class Settings
+    public class SettingsData
     {
         public int locale;
 

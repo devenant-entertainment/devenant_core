@@ -2,7 +2,7 @@ namespace Devenant
 {
     public abstract class SOUnlockableAsset : SOAsset
     {
-        public SOPurchase purchase;
+        public SOProduct purchase;
         public SOAchievement achievement;
     }
 }

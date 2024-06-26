@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class PurchaseResponse
+    public class ProductResponse
     {
         public Purchase[] purchases;
 
@@ -9,7 +9,6 @@ namespace Devenant
         public class Purchase
         {
             public string name;
-            public bool value;
         }
     }
 }

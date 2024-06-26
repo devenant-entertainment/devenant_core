@@ -1,31 +1,24 @@
+using System.Collections.Generic;
+
 namespace Devenant
 {
     public class EditorStoreController : StoreController
     {
-        private Purchase[] purchases;
-
-        public override void Setup(Purchase[] purchases, Action<bool> callback)
+        public override void Setup(Product[] products, Action<StoreProduct[]> callback)
         {
-            this.purchases = purchases;
+            List<StoreProduct> storeProducts = new List<StoreProduct>();
 
-            callback?.Invoke(true);
-        }
-
-        public override void Purchase(string id, Action<StorePurchaseResponse> callback)
-        {
-            callback?.Invoke(new StorePurchaseResponse(true, "EditorTransaction"));
-        }
-
-        public override StorePurchase[] GetStorePurchases()
-        {
-            StorePurchase[] storePurchases = new StorePurchase[purchases.Length];
-
-            for(int i = 0; i < storePurchases.Length; i ++)
+            foreach(Product product in products)
             {
-                storePurchases[i] = new StorePurchase(purchases[i].name, "0,00$", false);
+                storeProducts.Add(new StoreProduct(product, "0.00$"));
             }
 
-            return storePurchases;
+            callback?.Invoke(storeProducts.ToArray());
+        }
+
+        public override void Purchase(StoreProduct product, Action<Purchase> callback)
+        {
+            callback?.Invoke(new Purchase(true, product, "editorTransactionData", "editorReceiptData"));
         }
     }
 }

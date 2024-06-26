@@ -122,7 +122,10 @@ namespace Devenant
 
         private void SetupResolution()
         {
-            resolutionHolder.SetActive(ApplicationManager.instance.application.platform == ApplicationPlatform.Steam);
+            resolutionHolder.SetActive(
+                ApplicationManager.instance.application.platform == ApplicationPlatform.Editor || 
+                ApplicationManager.instance.application.platform == ApplicationPlatform.Steam || 
+                ApplicationManager.instance.application.platform == ApplicationPlatform.MicrosoftStore);
 
             if(!resolutionHolder.activeSelf)
                 return;
@@ -147,7 +150,10 @@ namespace Devenant
 
         private void SetupFullScreenMode()
         {
-            fullScreenModeHolder.SetActive(ApplicationManager.instance.application.platform == ApplicationPlatform.Steam);
+            fullScreenModeHolder.SetActive(
+                ApplicationManager.instance.application.platform == ApplicationPlatform.Editor ||
+                ApplicationManager.instance.application.platform == ApplicationPlatform.Steam ||
+                ApplicationManager.instance.application.platform == ApplicationPlatform.MicrosoftStore);
 
             if(!fullScreenModeHolder.activeSelf)
                 return;

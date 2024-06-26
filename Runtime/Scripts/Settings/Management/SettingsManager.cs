@@ -6,18 +6,18 @@ namespace Devenant
     {
         private const string dataKey = "SettingsManager.Data";
 
-        public Settings settings { get { return _settings; } private set { _settings = value; } }
-        private Settings _settings;
+        public SettingsData settings { get { return _settings; } private set { _settings = value; } }
+        private SettingsData _settings;
 
         public void Setup()
         {
             if(PlayerPrefs.HasKey(dataKey))
             {
-                settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString(dataKey));
+                settings = JsonUtility.FromJson<SettingsData>(PlayerPrefs.GetString(dataKey));
             }
             else
             {
-                settings = new Settings();
+                settings = new SettingsData();
 
                 settings.locale = LocalizationSettingsManager.instance.locale;
 
@@ -56,7 +56,7 @@ namespace Devenant
 
         public void SetResolution(int resolution)
         {
-            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+            if(ApplicationManager.instance.application.platform != ApplicationPlatform.MicrosoftStore)
                 return;
 
             settings.resolution = Mathf.Clamp(resolution, 0, Screen.resolutions.Length - 1);
@@ -66,7 +66,7 @@ namespace Devenant
 
         public void SetFullScreenMode(int fullScreenMode)
         {
-            if(ApplicationManager.instance.application.platform != ApplicationPlatform.Steam)
+            if(ApplicationManager.instance.application.platform != ApplicationPlatform.MicrosoftStore)
                 return;
 
             settings.fullScreenMode = fullScreenMode;

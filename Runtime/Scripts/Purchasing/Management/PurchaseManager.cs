@@ -5,76 +5,75 @@ namespace Devenant
 {
     public class PurchaseManager : Singleton<PurchaseManager>
     {
-        public static Action<Purchase> onPurchased;
+        public static Action<StoreProduct> onPurchased;
 
-        public AssetArray<Purchase> purchases;
+        public AssetArray<Product> products;
+
+        public StoreProduct[] storeProducts { get { return _storeProducts; } private set { _storeProducts = value; } }
+        private StoreProduct[] _storeProducts;
 
         private StoreController storeController;
 
         public void Setup(Action<bool> callback)
         {
-            AssetManager.instance.GetAll((SOPurchase[] soPurchases) =>
+            AssetManager.instance.GetAll((SOProduct[] soProducts) =>
             {
-                List<Purchase> purchaseList = new List<Purchase>();
-
-                foreach(SOPurchase purchase in soPurchases)
+                if(soProducts.Length > 0)
                 {
-                    purchaseList.Add(new Purchase(purchase));
-                }
+                    SetupProducts(soProducts);
 
-                purchases = new AssetArray<Purchase>(purchaseList.ToArray());
+                    SetupController();
 
-                Dictionary<string, string> formFields = new Dictionary<string, string>
-                {
-                    { "token", UserManager.instance.user.token }
-                };
-
-                Request.Post(ApplicationManager.instance.backend.purchaseGet, formFields, (Request.Response response) =>
-                {
-                    if(response.success)
+                    storeController.Setup(products.Get(), (StoreProduct[] products) =>
                     {
-#if UNITY_EDITOR
-                        storeController = new EditorStoreController();
-#elif UNITY_ANDROID || UNITY_IOS
-                        storeController = new MobileStoreController();
-#else
-                        storeController = new SteamStoreController();
-#endif
-                        storeController.Setup(purchases.Get(), (bool success) =>
+                        if(products.Length > 0)
                         {
-                            if(success)
+                            this.storeProducts = products;
+
+                            Dictionary<string, string> formFields = new Dictionary<string, string>
                             {
-                                PurchaseResponse responseData = JsonUtility.FromJson<PurchaseResponse>(response.data);
+                                { "token", UserManager.instance.user.token }
+                            };
 
-                                StorePurchase[] storePurchases = storeController.GetStorePurchases();
-
-                                foreach(StorePurchase storePurchase in storePurchases)
-                                {
-                                    purchases.Get(storePurchase.id).price = storePurchase.price;
-                                }
-
-                                foreach(PurchaseResponse.Purchase purchase in responseData.purchases)
-                                {
-                                    purchases.Get(purchase.name).purchased = purchase.value;
-                                }
-
-                                callback?.Invoke(true);
-                            }
-                            else
+                            Request.Post(ApplicationManager.instance.backend.purchaseGet, formFields, (Request.Response response) =>
                             {
-                                callback?.Invoke(false);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        callback?.Invoke(false);
-                    }
-                });
+                                if(response.success)
+                                {
+                                    ProductResponse responseData = JsonUtility.FromJson<ProductResponse>(response.data);
+
+                                    foreach(ProductResponse.Purchase purchase in responseData.purchases)
+                                    {
+                                        foreach(StoreProduct product in this.storeProducts)
+                                        {
+                                            if(purchase.name == product.product.name)
+                                            {
+                                                product.value = true;
+                                            }
+                                        }
+                                    }
+
+                                    callback?.Invoke(true);
+                                }
+                                else
+                                {
+                                    callback?.Invoke(false);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            callback?.Invoke(false);
+                        }
+                    });
+                }
+                else
+                {
+                    callback?.Invoke(false);
+                }
             });
         }
 
-        public void Purchase(string name, Action<bool> callback = null)
+        public void Purchase(StoreProduct product, Action<bool> callback = null)
         {
             if(storeController == null)
             {
@@ -83,42 +82,42 @@ namespace Devenant
                 return;
             }
 
-            Purchase purchase = purchases.Get(name);
-
-            if(purchase == null)
+            if(product == null)
             {
                 callback?.Invoke(false);
 
                 return;
             }
 
-            if(purchase.purchased == true)
+            if(product.value == true)
             {
                 callback?.Invoke(false);
 
                 return;
             }
 
-            storeController.Purchase(purchase.name, (StorePurchaseResponse response) =>
+            storeController.Purchase(product, (Purchase purchase) =>
             {
-                if(response.success)
+                if(purchase.success)
                 {
-                    purchase.purchased = true;
+                    product.value = true;
 
-                    onPurchased?.Invoke(purchase);
-
-                    Dictionary<string, string> formFields = new Dictionary<string, string>()
+                    Dictionary<string, string> purchaseFormFields = new Dictionary<string, string>()
                     {
                         { "token", UserManager.instance.user.token },
-                        { "name", purchase.name },
-                        { "transaction", response.transaction },
-                        { "platform", UnityEngine.Application.platform.ToString() },
-                        { "value", purchase.purchased.ToString() }
+                        { "name", product.product.name },
+                        { "type", product.product.type.ToString() },
+                        { "identifier", UnityEngine.Application.identifier },
+                        { "platform", ApplicationManager.instance.application.platform.ToString() },
+                        { "transaction", purchase.transaction },
+                        { "receipt", purchase.receipt }
                     };
 
-                    Request.Post(ApplicationManager.instance.backend.purchaseSet, formFields, (Request.Response response) =>
+                    Request.Post(ApplicationManager.instance.backend.purchaseSet, purchaseFormFields, (Request.Response response) =>
                     {
                         callback?.Invoke(response.success);
+
+                        onPurchased?.Invoke(product);
                     });
                 }
                 else
@@ -126,6 +125,36 @@ namespace Devenant
                     callback?.Invoke(false);
                 }
             });
+        }
+
+        private void SetupProducts(SOProduct[] soProducts)
+        {
+            List<Product> products = new List<Product>();
+
+            foreach(SOProduct soProduct in soProducts)
+            {
+                products.Add(new Product(soProduct));
+            }
+
+            this.products = new AssetArray<Product>(products.ToArray());
+        }
+
+        private void SetupController()
+        {
+            switch(ApplicationManager.instance.application.platform)
+            {
+                case ApplicationPlatform.Editor:
+
+                    storeController = new EditorStoreController();
+
+                    break;
+
+                default:
+
+                    storeController = new NativeStoreController();
+
+                    break;
+            }
         }
     }
 }

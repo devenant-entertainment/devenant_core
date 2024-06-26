@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Devenant
@@ -5,12 +6,12 @@ namespace Devenant
     public abstract class UnlockableAsset : Asset
     {
         public readonly Achievement achievement;
-        public readonly Purchase purchase;
+        public readonly Product product;
 
-        public UnlockableAsset(string name, Sprite icon, Achievement achievement, Purchase purchase) : base (name, icon)
+        public UnlockableAsset(string name, Sprite icon, Achievement achievement, Product product) : base (name, icon)
         {
             this.achievement = achievement;
-            this.purchase = purchase;
+            this.product = product;
         }
 
         public UnlockableAsset(SOUnlockableAsset unlockable) : base(unlockable)
@@ -22,7 +23,7 @@ namespace Devenant
 
             if(unlockable.purchase != null)
             {
-                purchase = PurchaseManager.instance.purchases.Get(unlockable.purchase.name);
+                product = PurchaseManager.instance.products.Get(unlockable.purchase.name);
             }
         }
 
@@ -35,9 +36,9 @@ namespace Devenant
                 result = achievement.completed;
             }
 
-            if(purchase != null && result)
+            if(product != null && result)
             {
-                result = purchase.purchased;
+                result = PurchaseManager.instance.storeProducts.ToList().Find((x)=>x.product == product).value;
             }
 
             return result;
