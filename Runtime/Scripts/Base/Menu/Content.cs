@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Devenant.Menu
+namespace Devenant
 {
     public class Content
     {

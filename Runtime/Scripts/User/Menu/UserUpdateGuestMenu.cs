@@ -4,58 +4,46 @@ using UnityEngine.UI;
 
 namespace Devenant
 {
-    public class UserUpdateNicknameMenu : Menu<UserUpdateNicknameMenu>
+    public class UserUpdateGuestMenu : Menu<UserUpdateGuestMenu>
     {
-        [SerializeField] private TMP_InputField codeInputField;
-        [SerializeField] private TMP_InputField nicknameInputField;
-        
+        [SerializeField] private TMP_InputField emailInputField;
+
         [SerializeField] private Button updateButton;
-        
+
         [SerializeField] private Button closeButton;
 
         public override void Open(Action callback = null)
         {
-            codeInputField.text = string.Empty;
-            codeInputField.contentType = TMP_InputField.ContentType.Alphanumeric;
-            codeInputField.characterLimit = 6;
-
-            nicknameInputField.text = string.Empty;
-            nicknameInputField.contentType = TMP_InputField.ContentType.Name;
-            nicknameInputField.characterLimit = 32;
+            emailInputField.text = string.Empty;
+            emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
+            emailInputField.characterLimit = 256;
 
             updateButton.onClick.RemoveAllListeners();
             updateButton.onClick.AddListener(() =>
             {
-                if(string.IsNullOrEmpty(codeInputField.text))
+                if(string.IsNullOrEmpty(emailInputField.text))
                 {
                     NotificationMenu.instance.Open(new Notification("error_field_empty"));
 
                     return;
                 }
 
-                if(string.IsNullOrEmpty(nicknameInputField.text))
+                if(!UserManager.instance.ValidateEmail(emailInputField.text))
                 {
-                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
-
-                    return;
-                }
-
-                if(!UserManager.instance.ValidateNickname(nicknameInputField.text))
-                {
-                    NotificationMenu.instance.Open(new Notification("error_field_nickname"));
+                    NotificationMenu.instance.Open(new Notification("error_field_email"));
 
                     return;
                 }
 
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.UpdateNickname(codeInputField.text, nicknameInputField.text, (Request.Response response) =>
+                    UserManager.instance.UpdateGuest(emailInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
                             if(response.success)
                             {
-                                MessageMenu.instance.Open("info_user_update_nickname", () =>
+                                MessageMenu.instance.Open("info_user_code", () =>
                                 {
                                     Close(() =>
                                     {

@@ -1,5 +1,3 @@
-using Devenant.Menu;
-
 namespace Devenant
 {
     public abstract class LoadingMenu : Menu<LoadingMenu>

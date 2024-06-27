@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Devenant.Menu
+namespace Devenant
 {
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasGroup))]

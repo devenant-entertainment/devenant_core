@@ -1,4 +1,3 @@
-using Devenant.Menu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -100,7 +99,7 @@ namespace Devenant
             {
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.Play((Request.Response response) =>
+                    UserManager.instance.LoginGuest((Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {

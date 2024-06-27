@@ -1,4 +1,3 @@
-using Devenant.Menu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,18 +55,37 @@ namespace Devenant
             updateEmailButton.onClick.RemoveAllListeners();
             updateEmailButton.onClick.AddListener(() =>
             {
-                UserSendCodeMenu.instance.Open((bool success) =>
+                switch(UserManager.instance.user.type)
                 {
-                    if(success)
-                    {
+                    case UserType.Player:
+
+                        UserSendCodeMenu.instance.Open((bool success) =>
+                        {
+                            if(success)
+                            {
+                                UserUpdateEmailMenu.instance.Open(() =>
+                                {
+                                    UserManager.instance.Logout();
+
+                                    ApplicationManager.instance.Exit();
+                                });
+                            }
+                        });
+
+                        break;
+
+                    case UserType.Guest:
+
                         UserUpdateEmailMenu.instance.Open(() =>
                         {
                             UserManager.instance.Logout();
 
                             ApplicationManager.instance.Exit();
                         });
-                    }
-                });
+
+                        break;
+                }
+                
             });
 
             updatePasswordButton.interactable = UserManager.instance.user.type != UserType.Guest;

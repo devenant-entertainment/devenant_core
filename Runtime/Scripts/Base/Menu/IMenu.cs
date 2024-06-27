@@ -1,4 +1,4 @@
-namespace Devenant.Menu
+namespace Devenant
 {
     public interface IMenu
     {

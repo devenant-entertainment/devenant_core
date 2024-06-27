@@ -28,7 +28,7 @@ namespace Devenant
             }
             else if(PlayerPrefs.HasKey(identifierKey))
             {
-                Play((Request.Response response) =>
+                LoginGuest((Request.Response response) =>
                 {
                     callback?.Invoke(response.success);
                 });
@@ -104,14 +104,14 @@ namespace Devenant
             });
         }
 
-        public void Play(Action<Request.Response> callback)
+        public void LoginGuest(Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
                 { "identifier", SystemInfo.deviceUniqueIdentifier }
             };
 
-            Request.Post(ApplicationManager.instance.backend.userPlay, formFields, (Request.Response response) =>
+            Request.Post(ApplicationManager.instance.backend.userLoginGuest, formFields, (Request.Response response) =>
             {
                 if(response.success)
                 {
@@ -199,9 +199,32 @@ namespace Devenant
                         PlayerPrefs.SetString(emailKey, email);
                     }
 
-                    PlayerPrefs.DeleteKey(identifierKey);
-
                     onUserUpdated?.Invoke(user);
+                }
+
+                callback?.Invoke(response);
+            });
+        }
+
+        public void UpdateGuest(string email, Action<Request.Response> callback)
+        {
+            Dictionary<string, string> formFields = new Dictionary<string, string>
+            {
+                { "email", email }
+            };
+
+            Request.Post(ApplicationManager.instance.backend.userUpdateGuest, formFields, (Request.Response response) =>
+            {
+                if(response.success)
+                {
+                    user.email = email;
+
+                    if(PlayerPrefs.HasKey(rememberKey))
+                    {
+                        PlayerPrefs.SetString(emailKey, email);
+                    }
+
+                    PlayerPrefs.DeleteKey(identifierKey);
                 }
 
                 callback?.Invoke(response);

@@ -18,11 +18,12 @@
         public readonly string userActivate;
         public readonly string userDelete;
         public readonly string userLogin;
-        public readonly string userPlay;
+        public readonly string userLoginGuest;
         public readonly string userRegister;
         public readonly string userSendCode;
         public readonly string userUpdateAvatar;
         public readonly string userUpdateEmail;
+        public readonly string userUpdateGuest;
         public readonly string userUpdateNickname;
         public readonly string userUpdatePassword;
 
@@ -44,11 +45,12 @@
             userActivate = data.userActivate;
             userDelete = data.userDelete;
             userLogin = data.userLogin;
-            userPlay = data.userPlay;
+            userLoginGuest = data.userLoginGuest;
             userRegister = data.userRegister;
             userSendCode = data.userSendCode;
             userUpdateAvatar = data.userUpdateAvatar;
             userUpdateEmail = data.userUpdateEmail;
+            userUpdateGuest = data.userUpdateGuest;
             userUpdateNickname = data.userUpdateNickname;
             userUpdatePassword = data.userUpdatePassword;
         }
