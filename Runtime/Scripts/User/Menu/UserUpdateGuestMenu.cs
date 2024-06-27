@@ -7,6 +7,7 @@ namespace Devenant
     public class UserUpdateGuestMenu : Menu<UserUpdateGuestMenu>
     {
         [SerializeField] private TMP_InputField emailInputField;
+        [SerializeField] private TMP_InputField passwordInputField;
 
         [SerializeField] private Button updateButton;
 
@@ -17,6 +18,9 @@ namespace Devenant
             emailInputField.text = string.Empty;
             emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
             emailInputField.characterLimit = 256;
+
+            passwordInputField.text = string.Empty;
+            passwordInputField.contentType = TMP_InputField.ContentType.Password;
 
             updateButton.onClick.RemoveAllListeners();
             updateButton.onClick.AddListener(() =>
@@ -35,15 +39,29 @@ namespace Devenant
                     return;
                 }
 
+                if(string.IsNullOrEmpty(passwordInputField.text))
+                {
+                    NotificationMenu.instance.Open(new Notification("error_field_empty"));
+
+                    return;
+                }
+
+                if(!UserManager.instance.ValidatePassword(passwordInputField.text))
+                {
+                    NotificationMenu.instance.Open(new Notification("error_field_password"));
+
+                    return;
+                }
+
                 LoadingMenu.instance.Open(() =>
                 {
-                    UserManager.instance.UpdateGuest(emailInputField.text, (Request.Response response) =>
+                    UserManager.instance.UpdateGuest(emailInputField.text, passwordInputField.text, (Request.Response response) =>
                     {
                         LoadingMenu.instance.Close(() =>
                         {
                             if(response.success)
                             {
-                                MessageMenu.instance.Open("info_user_code", () =>
+                                MessageMenu.instance.Open("info_user_registered", () =>
                                 {
                                     Close(() =>
                                     {

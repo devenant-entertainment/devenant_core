@@ -76,7 +76,7 @@ namespace Devenant
 
                     case UserType.Guest:
 
-                        UserUpdateEmailMenu.instance.Open(() =>
+                        UserUpdateGuestMenu.instance.Open(() =>
                         {
                             UserManager.instance.Logout();
 

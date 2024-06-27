@@ -8,7 +8,6 @@ namespace Devenant
     {
         public static Action<User> onUserUpdated;
 
-        private const string rememberKey = "UserManager.Remember";
         private const string emailKey = "UserManager.Email";
         private const string passwordKey = "UserManager.Password";
 
@@ -19,7 +18,7 @@ namespace Devenant
 
         public void AutoLogin(Action<bool> callback)
         {
-            if(PlayerPrefs.HasKey(rememberKey) && PlayerPrefs.HasKey(emailKey) && PlayerPrefs.HasKey(passwordKey))
+            if(PlayerPrefs.HasKey(emailKey) && PlayerPrefs.HasKey(passwordKey))
             {
                 Login(PlayerPrefs.GetString(emailKey), PlayerPrefs.GetString(passwordKey), false, (Request.Response response) =>
                 {
@@ -92,7 +91,6 @@ namespace Devenant
 
                     if(rememberData)
                     {
-                        PlayerPrefs.SetString(rememberKey, "remember");
                         PlayerPrefs.SetString(emailKey, email);
                         PlayerPrefs.SetString(passwordKey, password);
                     }
@@ -119,7 +117,6 @@ namespace Devenant
 
                     onUserUpdated?.Invoke(user);
 
-                    PlayerPrefs.DeleteKey(rememberKey);
                     PlayerPrefs.DeleteKey(emailKey);
                     PlayerPrefs.DeleteKey(passwordKey);
 
@@ -194,10 +191,7 @@ namespace Devenant
                 {
                     user.email = email;
 
-                    if(PlayerPrefs.HasKey(rememberKey))
-                    {
-                        PlayerPrefs.SetString(emailKey, email);
-                    }
+                    PlayerPrefs.SetString(emailKey, email);
 
                     onUserUpdated?.Invoke(user);
                 }
@@ -206,11 +200,13 @@ namespace Devenant
             });
         }
 
-        public void UpdateGuest(string email, Action<Request.Response> callback)
+        public void UpdateGuest(string email, string password, Action<Request.Response> callback)
         {
             Dictionary<string, string> formFields = new Dictionary<string, string>
             {
-                { "email", email }
+                { "token", user.token },
+                { "email", email },
+                { "password", password }
             };
 
             Request.Post(ApplicationManager.instance.backend.userUpdateGuest, formFields, (Request.Response response) =>
@@ -219,10 +215,8 @@ namespace Devenant
                 {
                     user.email = email;
 
-                    if(PlayerPrefs.HasKey(rememberKey))
-                    {
-                        PlayerPrefs.SetString(emailKey, email);
-                    }
+                    PlayerPrefs.SetString(emailKey, email);
+                    PlayerPrefs.SetString(passwordKey, password);
 
                     PlayerPrefs.DeleteKey(identifierKey);
                 }
@@ -241,10 +235,7 @@ namespace Devenant
 
             Request.Post(ApplicationManager.instance.backend.userUpdatePassword, formFields, (Request.Response response) =>
             {
-                if(PlayerPrefs.HasKey(rememberKey))
-                {
-                    PlayerPrefs.SetString(passwordKey, passwordKey);
-                }
+                PlayerPrefs.SetString(passwordKey, password);
 
                 callback?.Invoke(response);
             });
@@ -276,7 +267,6 @@ namespace Devenant
         {
             user = null;
 
-            PlayerPrefs.DeleteKey(rememberKey);
             PlayerPrefs.DeleteKey(emailKey);
             PlayerPrefs.DeleteKey(passwordKey);
             PlayerPrefs.DeleteKey(identifierKey);
