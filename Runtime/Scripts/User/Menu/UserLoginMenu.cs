@@ -8,6 +8,8 @@ namespace Devenant
     {
         [SerializeField] private TMP_InputField emailInputField;
         [SerializeField] private TMP_InputField passwordInputField;
+        [SerializeField] private Button passwordShowButton;
+
         [SerializeField] private Toggle rememberToggle;
         
         [SerializeField] private Button loginButton;
@@ -27,6 +29,14 @@ namespace Devenant
 
             passwordInputField.text = string.Empty;
             passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
+            passwordShowButton.onClick.RemoveAllListeners();
+            passwordShowButton.onClick.AddListener(() =>
+            {
+                passwordInputField.DeactivateInputField();
+                passwordInputField.contentType = passwordInputField.contentType == TMP_InputField.ContentType.Password ? TMP_InputField.ContentType.Standard : TMP_InputField.ContentType.Password;
+                passwordInputField.ActivateInputField();
+            });
 
             rememberToggle.isOn = true;
 
