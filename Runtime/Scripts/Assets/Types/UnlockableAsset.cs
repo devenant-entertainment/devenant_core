@@ -8,12 +8,6 @@ namespace Devenant
         public readonly Achievement achievement;
         public readonly Product product;
 
-        public UnlockableAsset(string name, Sprite icon, Achievement achievement, Product product) : base (name, icon)
-        {
-            this.achievement = achievement;
-            this.product = product;
-        }
-
         public UnlockableAsset(SOUnlockableAsset unlockable) : base(unlockable)
         {
             if(unlockable.achievement != null)
