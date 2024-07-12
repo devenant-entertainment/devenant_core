@@ -274,7 +274,7 @@ namespace Devenant
 
         public bool ValidateNickname(string nickname)
         {
-            return Regex.IsMatch(nickname, "^(?=.*?[A-Z])(?=.*?[a-z]).{2,}$");
+            return Regex.IsMatch(nickname, "^[A-Za-z0-9._-]{2,}$");
         }
 
         public bool ValidateEmail(string email)

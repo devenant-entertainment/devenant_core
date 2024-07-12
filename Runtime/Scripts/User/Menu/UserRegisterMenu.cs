@@ -21,7 +21,7 @@ namespace Devenant
         public void Open(Action<bool> callback = null)
         {
             nicknameInputField.text = string.Empty;
-            nicknameInputField.contentType = TMP_InputField.ContentType.Name;
+            nicknameInputField.contentType = TMP_InputField.ContentType.Standard;
             nicknameInputField.characterLimit = 32;
 
             emailInputField.text = string.Empty;

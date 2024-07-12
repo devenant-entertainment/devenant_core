@@ -20,7 +20,7 @@ namespace Devenant
             codeInputField.characterLimit = 6;
 
             nicknameInputField.text = string.Empty;
-            nicknameInputField.contentType = TMP_InputField.ContentType.Name;
+            nicknameInputField.contentType = TMP_InputField.ContentType.Standard;
             nicknameInputField.characterLimit = 32;
 
             updateButton.onClick.RemoveAllListeners();
