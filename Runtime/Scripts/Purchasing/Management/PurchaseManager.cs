@@ -151,7 +151,20 @@ namespace Devenant
 
                 default:
 
-                    storeController = new NativeStoreController();
+                    switch(ApplicationManager.instance.application.environment)
+                    {
+                        case ApplicationEnvironment.Development:
+
+                            storeController = new EditorStoreController();
+
+                            break;
+
+                        case ApplicationEnvironment.Production:
+
+                            storeController = new NativeStoreController();
+
+                            break;
+                    }
 
                     break;
             }
