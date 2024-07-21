@@ -2,12 +2,12 @@
 	"name": "com.devenant.core",
 	"displayName": "Devenant Core",
 	"version": "1.0.0",
-	"unity": "6000.0.11f1",
+	"unity": "6000.0",
 	"description": "Base scripts and tools for all Devenant projects.",
 	"author": 
 	{
 		"name": "Devenant",
-		"email": "pablojaenromero@gmail.com",
+		"email": "devenant.net@gmail.com",
 		"url": "https://devenant.net"
     },
 	"dependencies": 
