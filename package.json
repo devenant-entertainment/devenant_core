@@ -15,7 +15,6 @@
 		"com.unity.localization": "1.5.2",
 		"com.unity.netcode.gameobjects": "1.9.1",
 		"com.unity.purchasing": "4.12.2",
-		"com.unity.services.relay": "1.0.5",
-		"com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net"
+		"com.unity.services.relay": "1.0.5"
 	}
 }
