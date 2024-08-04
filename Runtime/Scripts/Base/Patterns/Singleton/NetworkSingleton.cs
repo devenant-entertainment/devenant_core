@@ -2,7 +2,7 @@ using Unity.Netcode;
 
 namespace Devenant
 {
-    public abstract class NetworkSingleton<T> : NetworkBehaviour where T : Singleton<T>
+    public abstract class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T>
     {
         public static T instance
         {
