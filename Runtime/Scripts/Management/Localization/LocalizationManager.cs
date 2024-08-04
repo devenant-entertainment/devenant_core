@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class LocalizationManager : Singleton<LocalizationManager>, IInitializable
     {
         public int locale

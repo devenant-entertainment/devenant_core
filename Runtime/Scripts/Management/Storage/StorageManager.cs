@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class StorageManager : Singleton<StorageManager>, IInitializable
     {
         public Storage[] storages { get { return _storages.ToArray(); } }

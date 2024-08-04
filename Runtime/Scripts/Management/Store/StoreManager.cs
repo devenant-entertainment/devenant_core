@@ -6,6 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class StoreManager : Singleton<StoreManager>, IInitializable
     {
         public static Action<StoreControllerProduct> onPurchased;

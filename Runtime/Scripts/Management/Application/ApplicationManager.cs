@@ -13,7 +13,7 @@ namespace Devenant
         private ApplicationData _data;
         [SerializeField] private ApplicationDataAsset applicationData;
 
-        [SerializeField] private IInitializable[] initializables;
+        [SerializeField] private InitializableObject[] initializables;
 
         public async void Initialize(Action callback = null)
         {
@@ -39,9 +39,9 @@ namespace Devenant
 
         private async void InitializeInitializables(Action callback)
         {
-            foreach (IInitializable initializable in initializables)
+            foreach (InitializableObject initializable in initializables)
             {
-                InitializationResponse response = await Initialize(initializable);
+                InitializationResponse response = await Initialize(initializable.initializable);
 
                 if (!response.success)
                 {

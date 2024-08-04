@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class AvatarManager : Singleton<AvatarManager>, IInitializable
     {
         public AssetArray<AvatarData> avatars;

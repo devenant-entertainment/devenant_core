@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class UserManager : Singleton<UserManager>, IInitializable
     {
         public static Action<UserData> onUserUpdated;

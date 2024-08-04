@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class StatusManager : Singleton<StatusManager>, IInitializable
     {
         public StatusData data { get { return _data; } private set { _data = value; } }

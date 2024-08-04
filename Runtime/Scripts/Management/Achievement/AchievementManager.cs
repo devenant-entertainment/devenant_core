@@ -6,6 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Devenant
 {
+    [RequireComponent(typeof(InitializableObject))]
     public class AchievementManager : Singleton<AchievementManager>, IInitializable
     {
         public static Action<AchievementData> onProgressed;
