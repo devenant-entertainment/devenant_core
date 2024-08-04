@@ -16,7 +16,7 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            Addressables.LoadAssetsAsync<AchievementDataAsset>(typeof(AchievementDataAsset).ToString(), null).Completed += (AsyncOperationHandle<IList<AchievementDataAsset>> asyncOperationHandle) =>
+            Addressables.LoadAssetsAsync<AchievementDataAsset>(typeof(AchievementDataAsset).Name, null).Completed += (AsyncOperationHandle<IList<AchievementDataAsset>> asyncOperationHandle) =>
             {
                 List<AchievementData> achievementList = new List<AchievementData>();
 

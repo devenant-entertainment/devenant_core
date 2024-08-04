@@ -10,16 +10,9 @@ namespace Devenant
         [System.Serializable]
         public class Response
         {
-            public readonly bool success;
-            public readonly string message;
-            public readonly string data;
-
-            public Response(bool success, string message, string data)
-            {
-                this.success = success;
-                this.message = message;
-                this.data = data;
-            }
+            public bool success;
+            public string message;
+            public string data;
         }
 
         public static void Get(string uri, Action<Response> callback = null)

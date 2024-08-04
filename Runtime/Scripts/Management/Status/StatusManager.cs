@@ -32,7 +32,6 @@ namespace Devenant
                                     if (success)
                                     {
                                         Application.OpenURL(ApplicationManager.instance.data.storeUrl);
-
                                     }
 
                                     callback?.Invoke(new InitializationResponse(false));

@@ -13,7 +13,7 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            Addressables.LoadAssetsAsync<AvatarDataAsset>(typeof(AvatarDataAsset).ToString(), null).Completed += (AsyncOperationHandle<IList<AvatarDataAsset>> asyncOperationHandle) =>
+            Addressables.LoadAssetsAsync<AvatarDataAsset>(typeof(AvatarDataAsset).Name, null).Completed += (AsyncOperationHandle<IList<AvatarDataAsset>> asyncOperationHandle) =>
             {
                 List<AvatarData> avatarList = new List<AvatarData>();
 

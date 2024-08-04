@@ -20,7 +20,7 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            Addressables.LoadAssetsAsync<ProductDataAsset>(typeof(ProductDataAsset).ToString(), null).Completed += (AsyncOperationHandle<IList<ProductDataAsset>> asyncOperationHandle) =>
+            Addressables.LoadAssetsAsync<ProductDataAsset>(typeof(ProductDataAsset).Name, null).Completed += (AsyncOperationHandle<IList<ProductDataAsset>> asyncOperationHandle) =>
             {
                 List<ProductData> products = new List<ProductData>();
 

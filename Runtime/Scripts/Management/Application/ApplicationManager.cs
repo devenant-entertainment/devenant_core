@@ -45,12 +45,14 @@ namespace Devenant
 
                 if (!response.success)
                 {
+                    Debug.Log("Initialization failed at " + initializable.gameObject.name);
+
                     MessageMenu.instance.Open(response.error, () =>
                     {
                         Exit();
                     });
 
-                    break;
+                    return;
                 }
             }
 
