@@ -5,7 +5,8 @@ using UnityEngine.Audio;
 
 namespace Devenant
 {
-    public class AudioManager : Singleton<AudioManager>
+    [RequireComponent(typeof(InitializableObject))]
+    public class AudioManager : Singleton<AudioManager>, IInitializable
     {
         public class Channel
         {
@@ -55,11 +56,14 @@ namespace Devenant
         public Channel sfx { get { return _sfx; } private set { _sfx = value; } }
         private Channel _sfx;
 
-        public void Setup()
+
+        public void Initialize(Action<InitializationResponse> callback)
         {
             master = new Channel("Master", audioMixer);
             music = new Channel("Music", audioMixer);
             sfx = new Channel("Sfx", audioMixer);
+
+            callback?.Invoke(new InitializationResponse(true));
         }
 
         public void PlayMusic(AudioClip audioClip, float time, Action callback = null)

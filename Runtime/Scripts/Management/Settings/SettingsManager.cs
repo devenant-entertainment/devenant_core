@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class SettingsManager : Singleton<SettingsManager>
+    [RequireComponent(typeof(InitializableObject))]
+    public class SettingsManager : Singleton<SettingsManager>, IInitializable
     {
         private const string dataKey = "SettingsManager.Data";
 
