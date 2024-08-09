@@ -17,12 +17,9 @@ namespace Devenant
         [SerializeField] private Button updatePasswordButton;
         [SerializeField] private Button registerButton;
 
-        [SerializeField] private Button playButton;
-
-        [SerializeField] private Button settingsButton;
         [SerializeField] private Button closeButton;
 
-        public void Open(Action<bool> callback = null)
+        public override void Open(Action callback = null)
         {
             emailInputField.text = string.Empty;
             emailInputField.contentType = TMP_InputField.ContentType.EmailAddress;
@@ -75,7 +72,7 @@ namespace Devenant
                             {
                                 Close(() => 
                                 {
-                                    callback?.Invoke(true);
+                                    callback?.Invoke();
                                 });
                             }
                             else
@@ -105,47 +102,10 @@ namespace Devenant
                 UserRegisterMenu.instance.Open();
             });
 
-            playButton.onClick.RemoveAllListeners();
-            playButton.onClick.AddListener(() =>
-            {
-                LoadingMenu.instance.Open(() =>
-                {
-                    UserManager.instance.LoginGuest((Request.Response response) =>
-                    {
-                        LoadingMenu.instance.Close(() =>
-                        {
-                            if(response.success)
-                            {
-                                Close(() =>
-                                {
-                                    callback?.Invoke(true);
-                                });
-                            }
-                            else
-                            {
-                                NotificationMenu.instance.Open(new Notification(response.message));
-                            }
-                        });
-                    });
-                });
-            });
-
-            settingsButton.onClick.RemoveAllListeners();
-            settingsButton.onClick.AddListener(() => 
-            {
-                SettingsMenu.instance.Open();
-            });
-
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(() =>
             {
-                MessageMenu.instance.Open("dialogue_exit", (bool success) =>
-                {
-                    if(success)
-                    {
-                        callback?.Invoke(false);
-                    }
-                });
+                Close();
             });
 
             base.Open();

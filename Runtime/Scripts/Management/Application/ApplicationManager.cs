@@ -25,11 +25,11 @@ namespace Devenant
 
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-            LoadingMenu.instance.Open(() =>
+            InitialLoadingMenu.instance.Open(() =>
             {
                 InitializeInitializables(() =>
                 {
-                    LoadingMenu.instance.Close(() =>
+                    InitialLoadingMenu.instance.Close(() =>
                     {
                         callback?.Invoke();
                     });
@@ -39,13 +39,15 @@ namespace Devenant
 
         private async void InitializeInitializables(Action callback)
         {
-            foreach (InitializableObject initializable in initializables)
+            for (int i = 0; i < initializables.Length; i ++)
             {
-                InitializationResponse response = await Initialize(initializable.initializable);
+                InitializationResponse response = await Initialize(initializables[i].initializable);
+
+                InitialLoadingMenu.instance.SetValue((float)i / (float)initializables.Length);
 
                 if (!response.success)
                 {
-                    Debug.Log("Initialization failed at " + initializable.gameObject.name);
+                    Debug.Log("Initialization failed at " + initializables[i].gameObject.name);
 
                     MessageMenu.instance.Open(response.error, () =>
                     {

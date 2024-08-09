@@ -9,6 +9,12 @@ using UnityEngine;
 
 namespace Devenant
 {
+    public enum MultiplayerMode
+    {
+        Local,
+        Online
+    }
+
     public class MultiplayerManager : Singleton<MultiplayerManager>
     {
         public static Action onPlayersUpdated;
@@ -75,16 +81,16 @@ namespace Devenant
             }
         }
 
-        public async void StartHost(int maxPlayers, Action<bool> callback = null)
+        public async void StartHost(MultiplayerMode mode, int maxPlayers, Action<bool> callback = null)
         {
             if(session != null)
             {
                 Disconnect();
             }
 
-            switch(ApplicationManager.instance.data.multiplayerMode)
+            switch(mode)
             {
-                case ApplicationMultiplayerMode.Local:
+                case MultiplayerMode.Local:
 
                     session = new Session(string.Empty);
 
@@ -96,7 +102,7 @@ namespace Devenant
 
                     break;
 
-                case ApplicationMultiplayerMode.Online:
+                case MultiplayerMode.Online:
 
                     try
                     {
@@ -128,16 +134,16 @@ namespace Devenant
             }
         }
 
-        public async void StartClient(string code, Action<bool> callback = null)
+        public async void StartClient(MultiplayerMode mode, string code, Action<bool> callback = null)
         {
             if(session != null)
             {
                 Disconnect();
             }
 
-            switch(ApplicationManager.instance.data.multiplayerMode)
+            switch(mode)
             {
-                case ApplicationMultiplayerMode.Local:
+                case MultiplayerMode.Local:
 
                     session = new Session(code);
 
@@ -147,7 +153,7 @@ namespace Devenant
 
                     break;
 
-                case ApplicationMultiplayerMode.Online:
+                case MultiplayerMode.Online:
 
                     try
                     {

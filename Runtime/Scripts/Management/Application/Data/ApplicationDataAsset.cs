@@ -13,7 +13,6 @@ namespace Devenant
         }
 
         public ApplicationEnvironment environment;
-        public ApplicationMultiplayerMode multiplayerMode;
 
         [Header("URLs")]
         [Required] public string gameUrl;

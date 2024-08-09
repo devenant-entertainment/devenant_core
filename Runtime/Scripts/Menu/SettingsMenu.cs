@@ -12,12 +12,6 @@ namespace Devenant
         [SerializeField] private TMP_Dropdown localeDropdown;
 
         [Header("Graphics")]
-        [SerializeField] private GameObject resolutionHolder;
-        [SerializeField] private TMP_Dropdown resolutionDropdown;
-
-        [SerializeField] private GameObject fullScreenModeHolder;
-        [SerializeField] private TMP_Dropdown fullScreenModeDropdown;
-
         [SerializeField] private Slider qualitySlider;
 
         [Header("Interface")]

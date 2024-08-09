@@ -30,19 +30,12 @@ namespace Devenant
                 }
                 else
                 {
-                    UserLoginMenu.instance.Open((bool success) =>
+                    UserPlayMenu.instance.Open(() =>
                     {
-                        if (success)
-                        {
-                            ValidateUser((bool success) =>
-                            {
-                                callback?.Invoke(new InitializationResponse(success));
-                            });
-                        }
-                        else
+                        ValidateUser((bool success) =>
                         {
                             callback?.Invoke(new InitializationResponse(success));
-                        }
+                        });
                     });
                 }
             });
