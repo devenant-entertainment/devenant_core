@@ -26,6 +26,8 @@ namespace Devenant
             progressIndicator.SetActive(achievement.maxValue > 1);
             progressBar.fillAmount = (float)achievement.value / (float)achievement.maxValue;
             progressText.text = achievement.value.ToString() + "/" + achievement.maxValue.ToString();
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
         }
     }
 }

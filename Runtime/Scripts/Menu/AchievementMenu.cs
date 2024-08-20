@@ -29,6 +29,8 @@ namespace Devenant
                 achievementContent.Create().GetComponent<AchievementMenuElement>().Setup(achievement);
             }
 
+            LayoutRebuilder.ForceRebuildLayoutImmediate(achievementHolder);
+
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(() =>
             {
