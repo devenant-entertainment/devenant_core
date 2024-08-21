@@ -12,20 +12,20 @@ namespace Devenant
         public static Action<AchievementData> onProgressed;
         public static Action<AchievementData> onCompleted;
 
-        public AssetArray<AchievementData> achievements;
+        public EntityDataArray<AchievementData> achievements;
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            Addressables.LoadAssetsAsync<AchievementDataAsset>(typeof(AchievementDataAsset).Name, null).Completed += (AsyncOperationHandle<IList<AchievementDataAsset>> asyncOperationHandle) =>
+            Addressables.LoadAssetsAsync<AchievementAsset>(typeof(AchievementAsset).Name, null).Completed += (AsyncOperationHandle<IList<AchievementAsset>> asyncOperationHandle) =>
             {
                 List<AchievementData> achievementList = new List<AchievementData>();
 
-                foreach(AchievementDataAsset achievement in asyncOperationHandle.Result)
+                foreach(AchievementAsset achievement in asyncOperationHandle.Result)
                 {
                     achievementList.Add(new AchievementData(achievement));
                 }
 
-                achievements = new AssetArray<AchievementData>(achievementList.ToArray());
+                achievements = new EntityDataArray<AchievementData>(achievementList.ToArray());
 
                 Dictionary<string, string> formFields = new Dictionary<string, string>()
                 {
@@ -36,9 +36,9 @@ namespace Devenant
                 {
                     if(response.success)
                     {
-                        AchievementDataResponse data = JsonUtility.FromJson<AchievementDataResponse>(response.data);
+                        AchievementResponse data = JsonUtility.FromJson<AchievementResponse>(response.data);
 
-                        foreach(AchievementDataResponse.Achievement achievement in data.achievements)
+                        foreach(AchievementResponse.Achievement achievement in data.achievements)
                         {
                             achievements.Get(achievement.name).value = achievement.value;
                         }

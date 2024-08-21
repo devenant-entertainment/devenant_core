@@ -7,11 +7,11 @@ namespace Devenant
         Subscription
     }
 
-    public class ProductData : AssetData
+    public class ProductData : EntityData
     {
         public readonly ProductType type;
 
-        public ProductData(ProductDataAsset product) : base(product) 
+        public ProductData(ProductAsset product) : base(product) 
         {
             type = product.type;
         }

@@ -11,7 +11,7 @@ namespace Devenant
     {
         public static Action<StoreControllerProduct> onPurchased;
 
-        public AssetArray<ProductData> products;
+        public EntityDataArray<ProductData> products;
 
         public StoreControllerProduct[] storeProducts { get { return _storeProducts; } private set { _storeProducts = value; } }
         private StoreControllerProduct[] _storeProducts;
@@ -20,16 +20,16 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            Addressables.LoadAssetsAsync<ProductDataAsset>(typeof(ProductDataAsset).Name, null).Completed += (AsyncOperationHandle<IList<ProductDataAsset>> asyncOperationHandle) =>
+            Addressables.LoadAssetsAsync<ProductAsset>(typeof(ProductAsset).Name, null).Completed += (AsyncOperationHandle<IList<ProductAsset>> asyncOperationHandle) =>
             {
                 List<ProductData> products = new List<ProductData>();
 
-                foreach (ProductDataAsset soProduct in asyncOperationHandle.Result)
+                foreach (ProductAsset soProduct in asyncOperationHandle.Result)
                 {
                     products.Add(new ProductData(soProduct));
                 }
 
-                this.products = new AssetArray<ProductData>(products.ToArray());
+                this.products = new EntityDataArray<ProductData>(products.ToArray());
 
                 if (this.products.Get().Length > 0)
                 {

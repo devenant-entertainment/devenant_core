@@ -194,7 +194,7 @@ namespace Devenant
             {
                 if(response.success)
                 {
-                    data = new UserData(JsonUtility.FromJson<UserDataResponse>(response.data));
+                    data = new UserData(JsonUtility.FromJson<UserResponse>(response.data));
 
                     onUserUpdated?.Invoke(data);
 
@@ -222,7 +222,7 @@ namespace Devenant
             {
                 if(response.success)
                 {
-                    data = new UserData(JsonUtility.FromJson<UserDataResponse>(response.data));
+                    data = new UserData(JsonUtility.FromJson<UserResponse>(response.data));
 
                     onUserUpdated?.Invoke(data);
 

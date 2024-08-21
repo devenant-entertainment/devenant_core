@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class UserDataResponse 
+    public class UserResponse 
     {
         public string token;
         public string nickname;

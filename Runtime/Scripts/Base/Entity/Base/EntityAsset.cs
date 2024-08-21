@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public abstract class AssetDataAsset : ScriptableObject
+    public abstract class EntityAsset : ScriptableObject
     {
         public Sprite icon;
     }

@@ -9,20 +9,20 @@ namespace Devenant
     [RequireComponent(typeof(InitializableObject))]
     public class AvatarManager : Singleton<AvatarManager>, IInitializable
     {
-        public AssetArray<AvatarData> avatars;
+        public EntityDataArray<AvatarData> avatars;
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            Addressables.LoadAssetsAsync<AvatarDataAsset>(typeof(AvatarDataAsset).Name, null).Completed += (AsyncOperationHandle<IList<AvatarDataAsset>> asyncOperationHandle) =>
+            Addressables.LoadAssetsAsync<AvatarAsset>(typeof(AvatarAsset).Name, null).Completed += (AsyncOperationHandle<IList<AvatarAsset>> asyncOperationHandle) =>
             {
                 List<AvatarData> avatarList = new List<AvatarData>();
 
-                foreach(AvatarDataAsset avatar in asyncOperationHandle.Result)
+                foreach(AvatarAsset avatar in asyncOperationHandle.Result)
                 {
                     avatarList.Add(new AvatarData(avatar));
                 }
 
-                avatars = new AssetArray<AvatarData>(avatarList.ToArray());
+                avatars = new EntityDataArray<AvatarData>(avatarList.ToArray());
 
                 callback?.Invoke(new InitializationResponse(true));
             };

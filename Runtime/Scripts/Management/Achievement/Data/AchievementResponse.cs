@@ -1,7 +1,7 @@
 namespace Devenant
 {
     [System.Serializable]
-    public class AchievementDataResponse
+    public class AchievementResponse
     {
         public Achievement[] achievements;
 

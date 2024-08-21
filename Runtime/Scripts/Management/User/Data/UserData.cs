@@ -26,7 +26,7 @@ namespace Devenant
         public UserType type;
         public UserStatus status;
 
-        public UserData(UserDataResponse data)
+        public UserData(UserResponse data)
         {
             token = data.token;
             nickname = data.nickname;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class AchievementData : AssetData
+    public class AchievementData : EntityData
     {
         public readonly int maxValue;
 
@@ -10,7 +10,7 @@ namespace Devenant
 
         public bool completed { get { return value == maxValue; } }
 
-        public AchievementData(AchievementDataAsset achievement) : base(achievement)
+        public AchievementData(AchievementAsset achievement) : base(achievement)
         {
             maxValue = achievement.maxValue;
         }

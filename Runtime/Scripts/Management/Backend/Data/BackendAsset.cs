@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Devenant
 {
     [CreateAssetMenu(fileName = "BackendData", menuName = "Devenant/Core/Backend")]
-    public class BackendDataAsset : ScriptableObject
+    public class BackendAsset : ScriptableObject
     {
         [Header("Achievement")]
         [Required] public string achievementGet;

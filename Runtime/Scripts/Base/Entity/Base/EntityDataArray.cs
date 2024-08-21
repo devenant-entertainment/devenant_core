@@ -1,10 +1,10 @@
 namespace Devenant
 {
-    public class AssetArray<T> where T : AssetData
+    public class EntityDataArray<T> where T : EntityData
     {
         private readonly T[] values;
 
-        public AssetArray(T[] values)
+        public EntityDataArray(T[] values)
         {
             this.values = values;
         }

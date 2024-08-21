@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class AssetData
+    public class EntityData
     {
         public readonly string name;
         public readonly Sprite icon;
 
-        public AssetData (AssetDataAsset asset)
+        public EntityData (EntityAsset asset)
         {
             name = asset.name;
             icon = asset.icon;

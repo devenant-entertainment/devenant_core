@@ -10,8 +10,8 @@ using UnityEngine;
 namespace Devenant
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(AssetDataAsset), true)]
-    public class AssetDataAssetEditor : Editor
+    [CustomEditor(typeof(EntityAsset), true)]
+    public class EntityAssetEditor : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -23,7 +23,7 @@ namespace Devenant
 
             if(GUILayout.Button("Setup"))
             {
-                Setup((AssetDataAsset)target);
+                Setup((EntityAsset)target);
             }
 
             if(GUILayout.Button("Setup All"))
@@ -39,7 +39,7 @@ namespace Devenant
             }
         }
 
-        private void Setup(AssetDataAsset asset)
+        private void Setup(EntityAsset asset)
         {
             string groupName = asset.GetType().Name;
 
@@ -67,19 +67,19 @@ namespace Devenant
 
         private void SetupAll()
         {
-            foreach(string guid in AssetDatabase.FindAssets(string.Format("t:{0}", typeof(AssetDataAsset))))
+            foreach(string guid in AssetDatabase.FindAssets(string.Format("t:{0}", typeof(EntityAsset))))
             {
-                Setup(AssetDatabase.LoadAssetAtPath<AssetDataAsset>(AssetDatabase.GUIDToAssetPath(guid)));
+                Setup(AssetDatabase.LoadAssetAtPath<EntityAsset>(AssetDatabase.GUIDToAssetPath(guid)));
             }
         }
 
         private void CheckRequiredProperties()
         {
-            foreach(string guid in AssetDatabase.FindAssets(string.Format("t:{0}", typeof(AssetDataAsset))))
+            foreach(string guid in AssetDatabase.FindAssets(string.Format("t:{0}", typeof(EntityAsset))))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
 
-                AssetDataAsset asset = AssetDatabase.LoadAssetAtPath<AssetDataAsset>(path);
+                EntityAsset asset = AssetDatabase.LoadAssetAtPath<EntityAsset>(path);
 
                 SerializedObject serializedObject = new SerializedObject(asset);
 

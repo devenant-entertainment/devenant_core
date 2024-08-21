@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public abstract class UnlockableAsset : AssetData
+    public abstract class UnlockableEntityData : EntityData
     {
         public readonly AchievementData achievement;
         public readonly ProductData product;
 
-        public UnlockableAsset(UnlockableDataAsset unlockable) : base(unlockable)
+        public UnlockableEntityData(UnlockableEntityAsset unlockable) : base(unlockable)
         {
             if(unlockable.achievement != null)
             {

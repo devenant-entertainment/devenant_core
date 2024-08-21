@@ -27,7 +27,7 @@ namespace Devenant
         public readonly float minInterfaceScale;
         public readonly float maxInterfaceScale;
 
-        public ApplicationData(ApplicationDataAsset data)
+        public ApplicationData(ApplicationAsset data)
         {
             environment = data.environment;
 

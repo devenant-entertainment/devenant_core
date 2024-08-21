@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Devenant
 {
-    public class AvatarData : UnlockableAsset
+    public class AvatarData : UnlockableEntityData
     {
-        public AvatarData (AvatarDataAsset avatar) : base(avatar)
+        public AvatarData (AvatarAsset avatar) : base(avatar)
         {
 
         }

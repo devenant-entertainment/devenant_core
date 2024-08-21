@@ -27,7 +27,7 @@
         public readonly string userUpdateNickname;
         public readonly string userUpdatePassword;
 
-        public BackendData(BackendDataAsset data)
+        public BackendData(BackendAsset data)
         {
             achievementGet = data.achievementGet;
             achievementSet = data.achievementSet;

@@ -15,7 +15,7 @@ namespace Devenant
             {
                 if (response.success)
                 {
-                    data = new StatusData(JsonUtility.FromJson<StatusDataResponse>(response.data));
+                    data = new StatusData(JsonUtility.FromJson<StatusResponse>(response.data));
 
                     switch (data.status)
                     {

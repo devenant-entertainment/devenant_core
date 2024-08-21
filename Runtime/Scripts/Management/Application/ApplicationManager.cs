@@ -11,7 +11,7 @@ namespace Devenant
     {
         public ApplicationData data { get { if (_data == null) { _data = new ApplicationData(applicationData); } return _data; } }
         private ApplicationData _data;
-        [SerializeField] private ApplicationDataAsset applicationData;
+        [SerializeField] private ApplicationAsset applicationData;
 
         [SerializeField] private InitializableObject[] initializables;
 

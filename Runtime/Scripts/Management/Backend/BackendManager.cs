@@ -8,6 +8,6 @@ namespace Devenant
         public BackendData data { get { if (_data == null) { _data = new BackendData(backendData); } return _data; } }
         private BackendData _data;
 
-        [SerializeField] private BackendDataAsset backendData;
+        [SerializeField] private BackendAsset backendData;
     }
 }

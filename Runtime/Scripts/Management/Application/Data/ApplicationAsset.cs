@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Devenant
 {
     [CreateAssetMenu(fileName = "ApplicationData", menuName = "Devenant/Core/Application")]
-    public class ApplicationDataAsset : ScriptableObject
+    public class ApplicationAsset : ScriptableObject
     {
         [System.Serializable]
         public class StoreUrl
