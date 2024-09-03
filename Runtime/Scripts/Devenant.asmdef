@@ -7,6 +7,7 @@
         "Unity.Addressables",
         "Unity.Addressables.Editor",
         "Unity.Collections",
+        "Unity.LevelPlay",
         "Unity.Localization",
         "Unity.Networking.Transport",
         "Unity.ResourceManager",
