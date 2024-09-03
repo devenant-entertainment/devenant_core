@@ -17,6 +17,8 @@ namespace Devenant
             string appKey = iosKey;
 #else
             string appKey = "unexpected_platform";
+
+            callback?.Invoke(new InitializationResponse(true));
 #endif
             IronSourceEvents.onSdkInitializationCompletedEvent += () =>
             {
