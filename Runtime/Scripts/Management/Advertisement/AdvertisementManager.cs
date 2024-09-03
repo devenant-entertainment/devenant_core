@@ -11,21 +11,12 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-#if UNITY_EDITOR
-            string appKey = androidKey;
-
-            IronSource.Agent.validateIntegration();
-
-            IronSource.Agent.init(appKey);
-
-            callback?.Invoke(new InitializationResponse(true));
-
-            return;
-#else
 #if UNITY_ANDROID
-                string appKey = androidKey;
+            string appKey = androidKey;
+#elif UNITY_IPHONE
+            string appKey = iosKey;
 #else
-                string appKey = iosKey;
+            string appKey = "unexpected_platform";
 #endif
             IronSourceEvents.onSdkInitializationCompletedEvent += () =>
             {
@@ -35,7 +26,6 @@ namespace Devenant
             IronSource.Agent.validateIntegration();
 
             IronSource.Agent.init(appKey);
-#endif
         }
 
         private void OnApplicationPause(bool isPaused)
