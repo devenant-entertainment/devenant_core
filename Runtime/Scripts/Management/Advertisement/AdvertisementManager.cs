@@ -11,9 +11,9 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
             string appKey = androidKey;
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE && !UNITY_EDITOR
             string appKey = iosKey;
 #else
             string appKey = "unexpected_platform";
