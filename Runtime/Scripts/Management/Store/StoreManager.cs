@@ -113,7 +113,7 @@ namespace Devenant
                 return;
             }
 
-            if(product.value == true)
+            if(product.product.type != ProductType.Consumable && product.value == true)
             {
                 callback?.Invoke(false);
 
