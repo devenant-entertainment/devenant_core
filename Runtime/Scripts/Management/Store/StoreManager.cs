@@ -80,18 +80,24 @@ namespace Devenant
                                 }
                                 else
                                 {
+                                    Debug.LogError("StoreManager Error: There was an error during user purchase get call");
+
                                     callback?.Invoke(new InitializationResponse(false));
                                 }
                             });
                         }
                         else
                         {
+                            Debug.LogError("StoreManager Error: Store product list is empty");
+
                             callback?.Invoke(new InitializationResponse(false));
                         }
                     });
                 }
                 else
                 {
+                    Debug.LogError("StoreManager Error: Local product list is empty");
+
                     callback?.Invoke(new InitializationResponse(false));
                 }
             };
