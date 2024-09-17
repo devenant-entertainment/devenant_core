@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Purchasing.Extension;
 using UnityEngine.Purchasing;
 using System.Linq;
+using UnityEngine;
 
 namespace Devenant
 {
@@ -49,6 +50,8 @@ namespace Devenant
             }
 
             UnityPurchasing.Initialize(this, builder);
+
+            Debug.Log("NativeStoreController: Setup");
         }
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
@@ -70,6 +73,8 @@ namespace Devenant
 
             setupProducts = null;
             setupCallback = null;
+
+            Debug.Log("NativeStoreController: OnInitialized");
         }
 
         public void OnInitializeFailed(InitializationFailureReason error)
@@ -78,6 +83,8 @@ namespace Devenant
 
             setupProducts = null;
             setupCallback = null;
+
+            Debug.LogError("NativeStoreController: OnInitializeFailed => " + error.ToString());
         }
 
         public void OnInitializeFailed(InitializationFailureReason error, string message)
@@ -86,6 +93,8 @@ namespace Devenant
 
             setupProducts = null;
             setupCallback = null;
+
+            Debug.LogError("NativeStoreController: OnInitializeFailed => " + error.ToString() + ": " + message.ToString());
         }
 
         public override void Purchase(StoreControllerProduct product, Action<PurchaseResponse> callback)
@@ -94,6 +103,8 @@ namespace Devenant
             purchaseCallback = callback;
 
             controller.InitiatePurchase(product.product.name);
+
+            Debug.Log("NativeStoreController: Purchase");
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
@@ -102,6 +113,8 @@ namespace Devenant
 
             purchaseProduct = null;
             purchaseCallback = null;
+
+            Debug.Log("NativeStoreController: ProcessPurchase");
 
             return PurchaseProcessingResult.Complete;
         }
@@ -112,6 +125,8 @@ namespace Devenant
 
             purchaseProduct = null;
             purchaseCallback = null;
+
+            Debug.LogError("NativeStoreController: OnPurchaseFailed => " + failureDescription.reason.ToString() + ": " + failureDescription.message.ToString());
         }
 
         public void OnPurchaseFailed(UnityEngine.Purchasing.Product product, PurchaseFailureReason failureReason)
@@ -122,6 +137,8 @@ namespace Devenant
             purchaseCallback = null;
 
             purchaseCallback = null;
+
+            Debug.LogError("NativeStoreController: OnPurchaseFailed => " + failureReason.ToString());
         }
     }
 }
