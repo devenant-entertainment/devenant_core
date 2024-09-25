@@ -18,9 +18,11 @@ namespace Devenant
         
         [SerializeField] private TextMeshProUGUI passwordText;
         [SerializeField] private Button updatePasswordButton;
-        
+
         [SerializeField] private Button achievementsButton;
-        
+
+        [SerializeField] private Button settingsButon;
+
         [SerializeField] private Button logoutButton;
         
         [SerializeField] private Button deleteButton;
@@ -108,6 +110,12 @@ namespace Devenant
                 AchievementMenu.instance.Open();
             });
 
+            settingsButon.onClick.RemoveAllListeners();
+            settingsButon.onClick.AddListener(() =>
+            {
+                SettingsMenu.instance.Open();
+            });
+
             logoutButton.onClick.RemoveAllListeners();
             logoutButton.onClick.AddListener(() =>
             {
@@ -125,21 +133,40 @@ namespace Devenant
             deleteButton.onClick.RemoveAllListeners();
             deleteButton.onClick.AddListener(() =>
             {
-                UserSendCodeMenu.instance.Open((bool success) =>
+                switch (UserManager.instance.data.type)
                 {
-                    if(success)
-                    {
-                        UserDeleteMenu.instance.Open((bool success) =>
-                        {
-                            if(success)
-                            {
-                                UserManager.instance.Logout();
+                    case UserType.Guest:
 
-                                ApplicationManager.instance.Exit();
+                        MessageMenu.instance.Open("dialogue_deleteGuest", (bool success) =>
+                        {
+                            if (success)
+                            {
+                                UnityEngine.Application.OpenURL(ApplicationManager.instance.data.supportUrl);
                             }
                         });
-                    }
-                });
+
+                        break;
+
+                    case UserType.Player:
+
+                        UserSendCodeMenu.instance.Open((bool success) =>
+                        {
+                            if (success)
+                            {
+                                UserDeleteMenu.instance.Open((bool success) =>
+                                {
+                                    if (success)
+                                    {
+                                        UserManager.instance.Logout();
+
+                                        ApplicationManager.instance.Exit();
+                                    }
+                                });
+                            }
+                        });
+
+                        break;
+                }
             });
 
             closeButton.onClick.RemoveAllListeners();
