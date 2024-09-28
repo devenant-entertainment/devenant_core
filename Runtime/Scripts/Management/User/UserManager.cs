@@ -198,7 +198,7 @@ namespace Devenant
 
                     onUserUpdated?.Invoke(data);
 
-                    if(rememberData)
+                    if(rememberData && data.status != UserStatus.Unvalidated)
                     {
                         PlayerPrefs.SetString(emailKey, email);
                         PlayerPrefs.SetString(passwordKey, password);
