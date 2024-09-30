@@ -83,8 +83,8 @@ namespace Devenant
             Dictionary<string, string> formFields = new Dictionary<string, string>()
             {
                 { "token", UserManager.instance.data.token },
-                { "name", name },
-                { "value", value.ToString() }
+                { "name", achievement.name },
+                { "value", achievement.value.ToString() }
             };
 
             Request.Post(BackendManager.instance.data.achievementSet, formFields, (Request.Response response) =>
