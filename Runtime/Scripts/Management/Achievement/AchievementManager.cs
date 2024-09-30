@@ -64,13 +64,6 @@ namespace Devenant
                 return;
             }
 
-            if(value > achievement.maxValue)
-            {
-                callback?.Invoke(false);
-
-                return;
-            }
-
             if(value <= achievement.value)
             {
                 callback?.Invoke(false);
@@ -78,7 +71,7 @@ namespace Devenant
                 return;
             }
 
-            achievement.value = value;
+            achievement.value = Mathf.Clamp(value, 0, achievement.maxValue);
 
             onProgressed?.Invoke(achievement);
 
