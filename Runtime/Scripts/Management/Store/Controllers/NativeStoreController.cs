@@ -109,19 +109,19 @@ namespace Devenant
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
-            purchaseCallback?.Invoke(new PurchaseResponse(true, purchaseProduct, purchaseEvent.purchasedProduct.transactionID, purchaseEvent.purchasedProduct.receipt));
+            purchaseCallback?.Invoke(new PurchaseResponse(true, purchaseProduct, purchaseEvent.purchasedProduct.transactionID));
 
             purchaseProduct = null;
             purchaseCallback = null;
 
-            Debug.Log("NativeStoreController: ProcessPurchase");
+            Debug.Log("NativeStoreController: ProcessPurchase => " + purchaseProduct.product.name + " / " + purchaseEvent.purchasedProduct.transactionID);
 
             return PurchaseProcessingResult.Complete;
         }
 
         public void OnPurchaseFailed(UnityEngine.Purchasing.Product product, PurchaseFailureDescription failureDescription)
         {
-            purchaseCallback?.Invoke(new PurchaseResponse(false, purchaseProduct, product.transactionID, product.receipt));
+            purchaseCallback?.Invoke(new PurchaseResponse(false, purchaseProduct, product.transactionID));
 
             purchaseProduct = null;
             purchaseCallback = null;
@@ -131,7 +131,7 @@ namespace Devenant
 
         public void OnPurchaseFailed(UnityEngine.Purchasing.Product product, PurchaseFailureReason failureReason)
         {
-            purchaseCallback?.Invoke(new PurchaseResponse(false, purchaseProduct, product.transactionID, product.receipt));
+            purchaseCallback?.Invoke(new PurchaseResponse(false, purchaseProduct, product.transactionID));
 
             purchaseProduct = null;
             purchaseCallback = null;

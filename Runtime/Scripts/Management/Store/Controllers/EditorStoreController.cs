@@ -20,7 +20,7 @@ namespace Devenant
 
         public override void Purchase(StoreControllerProduct product, Action<PurchaseResponse> callback)
         {
-            callback?.Invoke(new PurchaseResponse(true, product, "editorTransactionData", "editorReceiptData"));
+            callback?.Invoke(new PurchaseResponse(true, product, "editorTransactionData"));
 
             Debug.Log("NativeStoreController: Purchassing " + product.product.name);
         }

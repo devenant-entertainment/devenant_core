@@ -139,8 +139,7 @@ namespace Devenant
                         { "type", product.product.type.ToString() },
                         { "identifier", Application.identifier },
                         { "platform", Application.platform.ToString() },
-                        { "transaction", purchase.transaction },
-                        { "receipt", purchase.receipt }
+                        { "transaction", purchase.transaction }
                     };
 
                     Request.Post(BackendManager.instance.data.purchaseSet, purchaseFormFields, (Request.Response response) =>
