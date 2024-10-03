@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Devenant
 {
@@ -20,6 +21,8 @@ namespace Devenant
         public override void Purchase(StoreControllerProduct product, Action<PurchaseResponse> callback)
         {
             callback?.Invoke(new PurchaseResponse(true, product, "editorTransactionData", "editorReceiptData"));
+
+            Debug.Log("NativeStoreController: Purchassing " + product.product.name);
         }
     }
 }

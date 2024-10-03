@@ -104,7 +104,7 @@ namespace Devenant
 
             controller.InitiatePurchase(product.product.name);
 
-            Debug.Log("NativeStoreController: Purchase");
+            Debug.Log("NativeStoreController: Purchassing " + product.product.name);
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
