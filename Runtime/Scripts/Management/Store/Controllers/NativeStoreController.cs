@@ -28,24 +28,17 @@ namespace Devenant
             {
                 switch(product.type)
                 {
-                    case ProductType.Consumable:
-
-                        builder.AddProduct(product.name, UnityEngine.Purchasing.ProductType.Consumable);
-
-                        break;
-
-                    case ProductType.Unlockable:
-
-                        builder.AddProduct(product.name, UnityEngine.Purchasing.ProductType.NonConsumable);
-
-                        break;
-
                     case ProductType.Subscription:
 
                         builder.AddProduct(product.name, UnityEngine.Purchasing.ProductType.Subscription);
 
                         break;
 
+                    default:
+
+                        builder.AddProduct(product.name, UnityEngine.Purchasing.ProductType.Consumable);
+
+                        break;
                 }
             }
 
