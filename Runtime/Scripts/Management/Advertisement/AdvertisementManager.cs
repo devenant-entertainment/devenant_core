@@ -182,6 +182,7 @@ namespace Devenant
 
             void Setup()
             {
+                IronSourceRewardedVideoEvents.onAdReadyEvent += RewardedOnAdReadyEvent;
                 IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
                 IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedVideoOnAdClosedEvent;
                 IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideoOnAdAvailable;
@@ -190,11 +191,11 @@ namespace Devenant
                 IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
                 IronSourceRewardedVideoEvents.onAdClickedEvent += RewardedVideoOnAdClickedEvent;
                 IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedOnAdLoadFailedEvent;
-                IronSourceRewardedVideoEvents.onAdReadyEvent += RewardedOnAdReadyEvent;
             }
 
             void Unsetup(bool success)
             {
+                IronSourceRewardedVideoEvents.onAdReadyEvent -= RewardedOnAdReadyEvent;
                 IronSourceRewardedVideoEvents.onAdOpenedEvent -= RewardedVideoOnAdOpenedEvent;
                 IronSourceRewardedVideoEvents.onAdClosedEvent -= RewardedVideoOnAdClosedEvent;
                 IronSourceRewardedVideoEvents.onAdAvailableEvent -= RewardedVideoOnAdAvailable;
@@ -203,9 +204,15 @@ namespace Devenant
                 IronSourceRewardedVideoEvents.onAdRewardedEvent -= RewardedVideoOnAdRewardedEvent;
                 IronSourceRewardedVideoEvents.onAdClickedEvent -= RewardedVideoOnAdClickedEvent;
                 IronSourceRewardedVideoEvents.onAdLoadFailedEvent -= RewardedOnAdLoadFailedEvent;
-                IronSourceRewardedVideoEvents.onAdReadyEvent -= RewardedOnAdReadyEvent;
 
                 callback?.Invoke(success);
+            }
+
+            void RewardedOnAdReadyEvent(IronSourceAdInfo info)
+            {
+                IronSource.Agent.showRewardedVideo(placement);
+
+                Debug.Log("AdvertisementManager: RewardedOnAdReadyEvent");
             }
 
             void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo info)
@@ -226,6 +233,8 @@ namespace Devenant
             void RewardedVideoOnAdUnavailable()
             {
                 Debug.Log("AdvertisementManager: RewardedVideoOnAdUnavailable");
+
+                Unsetup(false);
             }
 
             void RewardedVideoOnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo info)
@@ -252,11 +261,6 @@ namespace Devenant
                 Debug.Log("AdvertisementManager: RewardedOnAdLoadFailedEvent");
 
                 Unsetup(false);
-            }
-
-            void RewardedOnAdReadyEvent(IronSourceAdInfo info)
-            {
-                Debug.Log("AdvertisementManager: RewardedOnAdReadyEvent");
             }
         }
     }
