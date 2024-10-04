@@ -27,6 +27,8 @@ namespace Devenant
 
             IronSource.Agent.validateIntegration();
 
+            IronSource.Agent.setManualLoadRewardedVideo(true);
+
             IronSource.Agent.init(appKey);
         }
 
@@ -187,6 +189,8 @@ namespace Devenant
                 IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedVideoOnAdShowFailedEvent;
                 IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
                 IronSourceRewardedVideoEvents.onAdClickedEvent += RewardedVideoOnAdClickedEvent;
+                IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedOnAdLoadFailedEvent;
+                IronSourceRewardedVideoEvents.onAdReadyEvent += RewardedOnAdReadyEvent;
             }
 
             void Unsetup(bool success)
