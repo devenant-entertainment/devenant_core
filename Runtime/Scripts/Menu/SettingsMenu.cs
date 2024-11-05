@@ -20,6 +20,7 @@ namespace Devenant
         [Header("Audio")]
         [SerializeField] private Slider masterVolumeSlider;
         [SerializeField] private Slider musicVolumeSlider;
+        [SerializeField] private Slider ambientVolumeSlider;
         [SerializeField] private Slider sfxVolumeSlider;
 
         [Header("Links")]
@@ -41,6 +42,7 @@ namespace Devenant
 
             SetupMasterVolume();
             SetupMusicVolume();
+            SetupAmbientVolume();
             SetupSfxVolume();
 
             supportUrlButton.onClick.RemoveAllListeners();
@@ -171,6 +173,21 @@ namespace Devenant
             musicVolumeSlider.onValueChanged.AddListener((float value) =>
             {
                 SettingsManager.instance.SetMusicVolume(Mathf.RoundToInt(value));
+            });
+        }
+
+        private void SetupAmbientVolume()
+        {
+            ambientVolumeSlider.wholeNumbers = true;
+            ambientVolumeSlider.minValue = 0;
+            ambientVolumeSlider.maxValue = 100;
+
+            ambientVolumeSlider.value = SettingsManager.instance.settings.ambientVolume;
+
+            ambientVolumeSlider.onValueChanged.RemoveAllListeners();
+            ambientVolumeSlider.onValueChanged.AddListener((float value) =>
+            {
+                SettingsManager.instance.SetAmbientVolume(Mathf.RoundToInt(value));
             });
         }
 

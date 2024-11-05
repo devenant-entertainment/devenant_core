@@ -45,6 +45,7 @@ namespace Devenant
         [SerializeField] private AudioMixer audioMixer;
 
         [SerializeField] private AudioSource musicSource;
+        [SerializeField] private AudioSource ambientSource;
         [SerializeField] private AudioSource sfxSource;
 
         public Channel master { get { return _master; } private set { _master = value; } }
@@ -52,7 +53,10 @@ namespace Devenant
 
         public Channel music { get { return _music; } private set { _music = value; } }
         private Channel _music;
-            
+
+        public Channel ambient { get { return _ambient; } private set { _ambient = value; } }
+        private Channel _ambient;
+
         public Channel sfx { get { return _sfx; } private set { _sfx = value; } }
         private Channel _sfx;
 
@@ -61,6 +65,7 @@ namespace Devenant
         {
             master = new Channel("Master", audioMixer);
             music = new Channel("Music", audioMixer);
+            ambient = new Channel("Ambient", audioMixer);
             sfx = new Channel("Sfx", audioMixer);
 
             callback?.Invoke(new InitializationResponse(true));
@@ -74,7 +79,7 @@ namespace Devenant
             {
                 musicSource.Stop();
 
-                if(audioClip != null)
+                if (audioClip != null)
                 {
                     musicSource.clip = audioClip;
 
@@ -85,6 +90,31 @@ namespace Devenant
                 else
                 {
                     musicSource.volume = musicVolume;
+
+                    callback?.Invoke();
+                }
+            });
+        }
+
+        public void PlayAmbient(AudioClip audioClip, float time, Action callback = null)
+        {
+            float ambientVolume = ambientSource.volume;
+
+            FadeVolume(ambientSource, 0, time / 2, () =>
+            {
+                ambientSource.Stop();
+
+                if (audioClip != null)
+                {
+                    ambientSource.clip = audioClip;
+
+                    ambientSource.Play();
+
+                    FadeVolume(ambientSource, ambientVolume, time / 2, callback);
+                }
+                else
+                {
+                    ambientSource.volume = ambientVolume;
 
                     callback?.Invoke();
                 }

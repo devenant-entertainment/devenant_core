@@ -29,6 +29,7 @@ namespace Devenant
 
                 settings.masterVolume = 100;
                 settings.musicVolume = 100;
+                settings.ambientVolume = 100;
                 settings.sfxVolume = 100;
 
                 Save();
@@ -80,6 +81,13 @@ namespace Devenant
             settings.musicVolume = Mathf.Clamp(volume, 0, 100);
 
             AudioManager.instance.music.volume = settings.musicVolume;
+        }
+
+        public void SetAmbientVolume(int volume)
+        {
+            settings.ambientVolume = Mathf.Clamp(volume, 0, 100);
+
+            AudioManager.instance.ambient.volume = settings.ambientVolume;
         }
 
         public void SetSfxVolume(int volume)

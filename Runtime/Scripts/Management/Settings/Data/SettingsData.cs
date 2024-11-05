@@ -11,6 +11,7 @@ namespace Devenant
 
         public int masterVolume;
         public int musicVolume;
+        public int ambientVolume;
         public int sfxVolume;
     }
 }
