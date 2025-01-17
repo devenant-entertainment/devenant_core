@@ -14,7 +14,7 @@
         "Unity.Services.Authentication",
         "Unity.Services.Core",
         "Unity.Services.Core.Environments",
-        "Unity.Services.Relay",
+        "Unity.Services.Multiplayer",
         "Unity.TextMeshPro",
         "UnityEngine.Purchasing",
         "UnityEngine.Purchasing.Stores"
