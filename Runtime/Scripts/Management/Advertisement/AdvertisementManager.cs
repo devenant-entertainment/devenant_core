@@ -70,6 +70,10 @@ namespace Devenant
 
         public void ShowBanner(string placement, LevelPlayAdSize size, LevelPlayBannerPosition position)
         {
+#if UNITY_EDITOR
+            return;
+#endif
+
 #if UNITY_ANDROID && !UNITY_EDITOR
             string key = androidBannerKey;
 #elif UNITY_IPHONE && !UNITY_EDITOR
@@ -169,6 +173,8 @@ namespace Devenant
         {
 #if UNITY_EDITOR
             callback?.Invoke();
+
+            return;
 #endif
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -203,7 +209,7 @@ namespace Devenant
                 currentInterstitial.OnAdDisplayed -= InterstitialOnAdDisplayed;
                 currentInterstitial.OnAdDisplayFailed -= InterstitialOnAdDisplayFailed;
                 currentInterstitial.OnAdClosed -= InterstitialOnAdClosed;
-                currentInterstitial.OnAdInfoChanged += InterstitialOnAdInfoChanged;
+                currentInterstitial.OnAdInfoChanged -= InterstitialOnAdInfoChanged;
 
                 callback?.Invoke();
             }
@@ -257,7 +263,9 @@ namespace Devenant
         public void ShowRewarded(string placement, Action<bool> callback)
         {
 #if UNITY_EDITOR
-            callback?.Invoke(true);
+            callback?.Invoke(true); 
+            
+            return;
 #endif
 
             Setup();
