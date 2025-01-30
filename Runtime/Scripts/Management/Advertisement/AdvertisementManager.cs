@@ -1,3 +1,4 @@
+using com.unity3d.mediation;
 using System;
 using UnityEngine;
 
@@ -6,30 +7,60 @@ namespace Devenant
     [RequireComponent(typeof(InitializableObject))]
     public class AdvertisementManager : Singleton<AdvertisementManager>, IInitializable
     {
+        [Header("Application")]
         [SerializeField] private string androidKey;
         [SerializeField] private string iosKey;
+
+        [Header("Banner")]
+        [SerializeField] private string androidBannerKey;
+        [SerializeField] private string iosBannerKey;
+
+        [Header("Interstitial")]
+        [SerializeField] private string androidInterstitialKey;
+        [SerializeField] private string iosInterstitialKey;
+
+        [Header("Rewarded")]
+        [SerializeField] private string androidRewardedKey;
+        [SerializeField] private string iosRewardedKey;
+        
+        private LevelPlayBannerAd currentBanner;
+        private LevelPlayInterstitialAd currentInterstitial;
 
         public void Initialize(Action<InitializationResponse> callback)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
             string appKey = androidKey;
+
+            Debug.Log("AdvertisementManager: Initialize with Android appKey " + appKey);
 #elif UNITY_IPHONE && !UNITY_EDITOR
             string appKey = iosKey;
+
+            Debug.Log("AdvertisementManager: Initialize with iOS appKey " + appKey);
 #else
             string appKey = "unexpected_platform";
 
+            Debug.Log("AdvertisementManager: Initialize with null appKey " + appKey);
+
             callback?.Invoke(new InitializationResponse(true));
 #endif
-            IronSourceEvents.onSdkInitializationCompletedEvent += () =>
+
+            LevelPlayAdFormat[] legacyAdFormats = new[] { LevelPlayAdFormat.BANNER, LevelPlayAdFormat.INTERSTITIAL, LevelPlayAdFormat.REWARDED };
+
+            LevelPlay.OnInitSuccess += (levelPlayConfiguration) =>
             {
+                Debug.Log("AdvertisementManager: OnInitSuccess");
+
                 callback?.Invoke(new InitializationResponse(true));
             };
 
-            IronSource.Agent.validateIntegration();
+            LevelPlay.OnInitFailed += (levelPlayInitError) =>
+            {
+                Debug.LogError("AdvertisementManager: OnInitFailed => " + levelPlayInitError.ErrorMessage);
 
-            IronSource.Agent.setManualLoadRewardedVideo(true);
+                callback?.Invoke(new InitializationResponse(false));
+            };
 
-            IronSource.Agent.init(appKey);
+            LevelPlay.Init(appKey, SystemInfo.deviceUniqueIdentifier, legacyAdFormats);
         }
 
         private void OnApplicationPause(bool isPaused)
@@ -37,145 +68,198 @@ namespace Devenant
             IronSource.Agent.onApplicationPause(isPaused);
         }
 
-        public void ShowBanner(string placement, IronSourceBannerSize size, IronSourceBannerPosition position)
+        public void ShowBanner(string placement, LevelPlayAdSize size, LevelPlayBannerPosition position)
         {
-            Setup();
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string key = androidBannerKey;
+#elif UNITY_IPHONE && !UNITY_EDITOR
+            string key = iosBannerKey;
+#else
+            string key = string.Empty;
+#endif
 
-            IronSource.Agent.loadBanner(size, position, placement);
+            currentBanner = new LevelPlayBannerAd(key, size, position, placement, true, true);
+            currentBanner.LoadAd();
+
+            Setup();
 
             void Setup()
             {
-                IronSourceBannerEvents.onAdLoadedEvent += BannerOnAdLoadedEvent;
-                IronSourceBannerEvents.onAdLoadFailedEvent += BannerOnAdLoadFailedEvent;
-                IronSourceBannerEvents.onAdClickedEvent += BannerOnAdClickedEvent;
-                IronSourceBannerEvents.onAdLeftApplicationEvent += BannerOnAdLeftApplicationEvent;
-                IronSourceBannerEvents.onAdScreenPresentedEvent += BannerOnAdScreenPresentedEvent;
+                currentBanner.OnAdLoaded += BannerOnAdLoaded;
+                currentBanner.OnAdLoadFailed += BannerOnAdLoadFailed;
+                currentBanner.OnAdClicked += BannerOnAdClicked;
+                currentBanner.OnAdLeftApplication += BannerOnAdLeftApplication;
+                currentBanner.OnAdCollapsed += BannerOnAdCollapsed;
+                currentBanner.OnAdExpanded += BannerOnAdExpanded;
+                currentBanner.OnAdDisplayed += BannerOnAdDisplayed;
+                currentBanner.OnAdDisplayFailed += BannerOnAdDisplayedFailed;
             }
 
             void Unsetup()
             {
-                IronSourceBannerEvents.onAdLoadedEvent -= BannerOnAdLoadedEvent;
-                IronSourceBannerEvents.onAdLoadFailedEvent -= BannerOnAdLoadFailedEvent;
-                IronSourceBannerEvents.onAdClickedEvent -= BannerOnAdClickedEvent;
-                IronSourceBannerEvents.onAdLeftApplicationEvent -= BannerOnAdLeftApplicationEvent;
-                IronSourceBannerEvents.onAdScreenPresentedEvent -= BannerOnAdScreenPresentedEvent;
+                currentBanner.OnAdLoaded -= BannerOnAdLoaded;
+                currentBanner.OnAdLoadFailed -= BannerOnAdLoadFailed;
+                currentBanner.OnAdClicked -= BannerOnAdClicked;
+                currentBanner.OnAdLeftApplication -= BannerOnAdLeftApplication;
+                currentBanner.OnAdCollapsed -= BannerOnAdCollapsed;
+                currentBanner.OnAdExpanded -= BannerOnAdExpanded;
+                currentBanner.OnAdDisplayed -= BannerOnAdDisplayed;
+                currentBanner.OnAdDisplayFailed -= BannerOnAdDisplayedFailed;
             }
 
-            void BannerOnAdLoadedEvent(IronSourceAdInfo info)
+            void BannerOnAdLoaded(LevelPlayAdInfo info)
             {
-                IronSource.Agent.displayBanner();
+                currentBanner.ShowAd();
 
                 Unsetup();
 
-                Debug.Log("AdvertisementManager: BannerOnAdLoadedEvent");
+                Debug.Log("AdvertisementManager: BannerOnAdLoaded");
             }
 
-            void BannerOnAdLoadFailedEvent(IronSourceError error)
+            void BannerOnAdLoadFailed(LevelPlayAdError error)
             {
                 Unsetup();
 
                 ShowBanner(placement, size, position);
 
-                Debug.Log("AdvertisementManager: BannerOnAdLoadFailedEvent");
+                Debug.LogError("AdvertisementManager: BannerOnAdLoadFailed => " + error.ErrorMessage);
             }
 
-            void BannerOnAdClickedEvent(IronSourceAdInfo info)
+            void BannerOnAdClicked(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: BannerOnAdClickedEvent");
+                Debug.Log("AdvertisementManager: BannerOnAdClicked");
             }
 
-            void BannerOnAdLeftApplicationEvent(IronSourceAdInfo info)
+            void BannerOnAdLeftApplication(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: BannerOnAdLeftApplicationEvent");
+                Debug.Log("AdvertisementManager: BannerOnAdLeftApplication");
             }
 
-            void BannerOnAdScreenPresentedEvent(IronSourceAdInfo info)
+            void BannerOnAdCollapsed(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: BannerOnAdScreenPresentedEvent");
+                Debug.Log("AdvertisementManager: BannerOnAdCollapsed");
+            }
+
+            void BannerOnAdExpanded(LevelPlayAdInfo info)
+            {
+                Debug.Log("AdvertisementManager: BannerOnAdExpanded");
+            }
+
+            void BannerOnAdDisplayed(LevelPlayAdInfo info)
+            {
+                Unsetup();
+
+                Debug.Log("AdvertisementManager: BannerOnAdDisplayed");
+            }
+
+            void BannerOnAdDisplayedFailed(LevelPlayAdDisplayInfoError error)
+            {
+                Unsetup();
+
+                Debug.LogError("AdvertisementManager: BannerOnAdDisplayedFailed => " + error.LevelPlayError.ErrorMessage);
             }
         }
 
         public void HideBanner()
         {
-            IronSource.Agent.destroyBanner();
+            currentBanner?.HideAd();
         }
 
         public void ShowInterstitial(string placement, Action callback)
         {
-            Setup();
+#if UNITY_EDITOR
+            callback?.Invoke();
+#endif
 
-            IronSource.Agent.loadInterstitial();
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string key = androidInterstitialKey;
+#elif UNITY_IPHONE && !UNITY_EDITOR
+            string key = iosInterstitialKey;
+#else
+            string key = string.Empty;
+#endif
+            
+            currentInterstitial = new LevelPlayInterstitialAd(key);
+            currentInterstitial.LoadAd();
+
+            Setup();
 
             void Setup()
             {
-                IronSourceInterstitialEvents.onAdReadyEvent += InterstitialOnAdReadyEvent;
-                IronSourceInterstitialEvents.onAdLoadFailedEvent += InterstitialOnAdLoadFailed;
-                IronSourceInterstitialEvents.onAdOpenedEvent += InterstitialOnAdOpenedEvent;
-                IronSourceInterstitialEvents.onAdClickedEvent += InterstitialOnAdClickedEvent;
-                IronSourceInterstitialEvents.onAdShowSucceededEvent += InterstitialOnAdShowSucceededEvent;
-                IronSourceInterstitialEvents.onAdShowFailedEvent += InterstitialOnAdShowFailedEvent;
-                IronSourceInterstitialEvents.onAdClosedEvent += InterstitialOnAdClosedEvent;
+                currentInterstitial.OnAdLoaded += InterstitialOnAdLoaded;
+                currentInterstitial.OnAdLoadFailed += InterstitialOnAdLoadFailed;
+                currentInterstitial.OnAdClicked += InterstitialOnAdClicked;
+                currentInterstitial.OnAdDisplayed += InterstitialOnAdDisplayed;
+                currentInterstitial.OnAdDisplayFailed += InterstitialOnAdDisplayFailed;
+                currentInterstitial.OnAdClosed += InterstitialOnAdClosed;
+                currentInterstitial.OnAdInfoChanged += InterstitialOnAdInfoChanged;
             }
 
             void Unsetup()
             {
-                IronSourceInterstitialEvents.onAdReadyEvent -= InterstitialOnAdReadyEvent;
-                IronSourceInterstitialEvents.onAdLoadFailedEvent -= InterstitialOnAdLoadFailed;
-                IronSourceInterstitialEvents.onAdOpenedEvent -= InterstitialOnAdOpenedEvent;
-                IronSourceInterstitialEvents.onAdClickedEvent -= InterstitialOnAdClickedEvent;
-                IronSourceInterstitialEvents.onAdShowSucceededEvent -= InterstitialOnAdShowSucceededEvent;
-                IronSourceInterstitialEvents.onAdShowFailedEvent -= InterstitialOnAdShowFailedEvent;
-                IronSourceInterstitialEvents.onAdClosedEvent -= InterstitialOnAdClosedEvent;
+                currentInterstitial.OnAdLoaded -= InterstitialOnAdLoaded;
+                currentInterstitial.OnAdLoadFailed -= InterstitialOnAdLoadFailed;
+                currentInterstitial.OnAdClicked -= InterstitialOnAdClicked;
+                currentInterstitial.OnAdDisplayed -= InterstitialOnAdDisplayed;
+                currentInterstitial.OnAdDisplayFailed -= InterstitialOnAdDisplayFailed;
+                currentInterstitial.OnAdClosed -= InterstitialOnAdClosed;
+                currentInterstitial.OnAdInfoChanged += InterstitialOnAdInfoChanged;
 
                 callback?.Invoke();
             }
 
-            void InterstitialOnAdReadyEvent(IronSourceAdInfo info)
+            void InterstitialOnAdLoaded(LevelPlayAdInfo info)
             {
-                IronSource.Agent.showInterstitial(placement);
+                currentInterstitial.ShowAd(placement);
 
-                Debug.Log("AdvertisementManager: InterstitialOnAdReadyEvent");
+                Debug.Log("AdvertisementManager: InterstitialOnAdLoaded");
             }
 
-            void InterstitialOnAdLoadFailed(IronSourceError error)
+            void InterstitialOnAdLoadFailed(LevelPlayAdError error)
             {
                 Unsetup();
 
-                Debug.Log("AdvertisementManager: InterstitialOnAdLoadFailed");
+                Debug.LogError("AdvertisementManager: InterstitialOnAdLoadFailed => " + error.ErrorMessage);
             }
 
-            void InterstitialOnAdOpenedEvent(IronSourceAdInfo info)
+            void InterstitialOnAdClicked(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: InterstitialOnAdOpenedEvent");
+                Debug.Log("AdvertisementManager: InterstitialOnAdClicked");
             }
 
-            void InterstitialOnAdClickedEvent(IronSourceAdInfo info)
+            void InterstitialOnAdDisplayed(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: InterstitialOnAdClickedEvent");
+                Debug.Log("AdvertisementManager: InterstitialOnAdDisplayed");
             }
 
-            void InterstitialOnAdShowSucceededEvent(IronSourceAdInfo info)
-            {
-                Debug.Log("AdvertisementManager: InterstitialOnAdShowSucceededEvent");
-            }
-
-            void InterstitialOnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo info)
+            void InterstitialOnAdDisplayFailed(LevelPlayAdDisplayInfoError error)
             {
                 Unsetup();
 
-                Debug.Log("AdvertisementManager: InterstitialOnAdShowFailedEvent");
+                Debug.LogError("AdvertisementManager: InterstitialOnAdDisplayFailed => " + error.LevelPlayError.ErrorMessage);
             }
 
-            void InterstitialOnAdClosedEvent(IronSourceAdInfo info)
+            void InterstitialOnAdClosed(LevelPlayAdInfo info)
             {
                 Unsetup();
 
-                Debug.Log("AdvertisementManager: InterstitialOnAdClosedEvent");
+                Debug.Log("AdvertisementManager: InterstitialOnAdClosed");
+            }
+
+            void InterstitialOnAdInfoChanged(LevelPlayAdInfo info)
+            {
+                Unsetup();
+
+                Debug.Log("AdvertisementManager: InterstitialOnAdInfoChanged");
             }
         }
 
         public void ShowRewarded(string placement, Action<bool> callback)
         {
+#if UNITY_EDITOR
+            callback?.Invoke(true);
+#endif
+
             Setup();
 
             IronSource.Agent.loadRewardedVideo();
@@ -239,7 +323,7 @@ namespace Devenant
 
             void RewardedVideoOnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo info)
             {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdShowFailedEvent");
+                Debug.LogError("AdvertisementManager: RewardedVideoOnAdShowFailedEvent => " + error.getDescription());
 
                 Unsetup(false);
             }
@@ -258,7 +342,7 @@ namespace Devenant
 
             void RewardedOnAdLoadFailedEvent(IronSourceError error)
             {
-                Debug.Log("AdvertisementManager: RewardedOnAdLoadFailedEvent");
+                Debug.LogError("AdvertisementManager: RewardedOnAdLoadFailedEvent => " + error.getDescription());
 
                 Unsetup(false);
             }
