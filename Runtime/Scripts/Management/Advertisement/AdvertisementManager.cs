@@ -25,6 +25,7 @@ namespace Devenant
         
         private LevelPlayBannerAd currentBanner;
         private LevelPlayInterstitialAd currentInterstitial;
+        private LevelPlayRewardedAd currentRewarded;
 
         public void Initialize(Action<InitializationResponse> callback)
         {
@@ -268,91 +269,91 @@ namespace Devenant
             return;
 #endif
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string key = androidRewardedKey;
+#elif UNITY_IPHONE && !UNITY_EDITOR
+            string key = iosRewardedKey;
+#else
+            string key = string.Empty;
+#endif
+            currentRewarded = new LevelPlayRewardedAd(key);
+
             Setup();
 
-            IronSource.Agent.loadRewardedVideo();
+            currentRewarded.LoadAd();
 
             void Setup()
             {
-                IronSourceRewardedVideoEvents.onAdReadyEvent += RewardedOnAdReadyEvent;
-                IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
-                IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedVideoOnAdClosedEvent;
-                IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideoOnAdAvailable;
-                IronSourceRewardedVideoEvents.onAdUnavailableEvent += RewardedVideoOnAdUnavailable;
-                IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedVideoOnAdShowFailedEvent;
-                IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
-                IronSourceRewardedVideoEvents.onAdClickedEvent += RewardedVideoOnAdClickedEvent;
-                IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedOnAdLoadFailedEvent;
+                currentRewarded.OnAdClicked += RewardedOnAdClicked;
+                currentRewarded.OnAdClosed += RewardedOnAdClosed;
+                currentRewarded.OnAdDisplayed += RewardedOnAdDisplayed;
+                currentRewarded.OnAdDisplayFailed += RewardedOnAdDisplayFailed;
+                currentRewarded.OnAdInfoChanged += RewardedOnAdInfoChanged;
+                currentRewarded.OnAdLoaded += RewardedOnAdLoaded;
+                currentRewarded.OnAdLoadFailed += RewardedOnAdLoadFailed;
+                currentRewarded.OnAdRewarded += RewardedOnAdRewarded;
             }
 
             void Unsetup(bool success)
             {
-                IronSourceRewardedVideoEvents.onAdReadyEvent -= RewardedOnAdReadyEvent;
-                IronSourceRewardedVideoEvents.onAdOpenedEvent -= RewardedVideoOnAdOpenedEvent;
-                IronSourceRewardedVideoEvents.onAdClosedEvent -= RewardedVideoOnAdClosedEvent;
-                IronSourceRewardedVideoEvents.onAdAvailableEvent -= RewardedVideoOnAdAvailable;
-                IronSourceRewardedVideoEvents.onAdUnavailableEvent -= RewardedVideoOnAdUnavailable;
-                IronSourceRewardedVideoEvents.onAdShowFailedEvent -= RewardedVideoOnAdShowFailedEvent;
-                IronSourceRewardedVideoEvents.onAdRewardedEvent -= RewardedVideoOnAdRewardedEvent;
-                IronSourceRewardedVideoEvents.onAdClickedEvent -= RewardedVideoOnAdClickedEvent;
-                IronSourceRewardedVideoEvents.onAdLoadFailedEvent -= RewardedOnAdLoadFailedEvent;
+                currentRewarded.OnAdClicked -= RewardedOnAdClicked;
+                currentRewarded.OnAdClosed -= RewardedOnAdClosed;
+                currentRewarded.OnAdDisplayed -= RewardedOnAdDisplayed;
+                currentRewarded.OnAdDisplayFailed -= RewardedOnAdDisplayFailed;
+                currentRewarded.OnAdInfoChanged -= RewardedOnAdInfoChanged;
+                currentRewarded.OnAdLoaded -= RewardedOnAdLoaded;
+                currentRewarded.OnAdLoadFailed -= RewardedOnAdLoadFailed;
+                currentRewarded.OnAdRewarded -= RewardedOnAdRewarded;
 
                 callback?.Invoke(success);
             }
 
-            void RewardedOnAdReadyEvent(IronSourceAdInfo info)
+            void RewardedOnAdClicked(LevelPlayAdInfo info)
             {
-                IronSource.Agent.showRewardedVideo(placement);
-
-                Debug.Log("AdvertisementManager: RewardedOnAdReadyEvent");
+                Debug.Log("AdvertisementManager: RewardedOnAdClicked");
             }
 
-            void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo info)
+            void RewardedOnAdClosed(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdOpenedEvent");
+                Debug.Log("AdvertisementManager: RewardedOnAdClosed");
             }
 
-            void RewardedVideoOnAdClosedEvent(IronSourceAdInfo info)
+            void RewardedOnAdDisplayed(LevelPlayAdInfo info)
             {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdClosedEvent");
+                Debug.Log("AdvertisementManager: RewardedOnAdDisplayed");
             }
 
-            void RewardedVideoOnAdAvailable(IronSourceAdInfo info)
+            void RewardedOnAdDisplayFailed(LevelPlayAdDisplayInfoError error)
             {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdAvailable");
-            }
-
-            void RewardedVideoOnAdUnavailable()
-            {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdUnavailable");
+                Debug.LogError("AdvertisementManager: RewardedOnAdDisplayFailed => " + error.LevelPlayError.ErrorMessage);
 
                 Unsetup(false);
             }
 
-            void RewardedVideoOnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo info)
+            void RewardedOnAdInfoChanged(LevelPlayAdInfo info)
             {
-                Debug.LogError("AdvertisementManager: RewardedVideoOnAdShowFailedEvent => " + error.getDescription());
+                Debug.Log("AdvertisementManager: RewardedOnAdInfoChanged");
+            }
+
+            void RewardedOnAdLoaded(LevelPlayAdInfo info)
+            {
+                currentRewarded.ShowAd(placement);
+
+                Debug.Log("AdvertisementManager: RewardedOnAdLoaded");
+            }
+
+            void RewardedOnAdLoadFailed(LevelPlayAdError error)
+            {
+                Debug.LogError("AdvertisementManager: RewardedOnAdLoadFailed => " + error.ErrorMessage);
 
                 Unsetup(false);
             }
 
-            void RewardedVideoOnAdRewardedEvent(IronSourcePlacement placement, IronSourceAdInfo info)
+            void RewardedOnAdRewarded(LevelPlayAdInfo info, LevelPlayReward reward)
             {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdRewardedEvent");
+                Debug.Log("AdvertisementManager: RewardedOnAdRewarded");
 
                 Unsetup(true);
-            }
-
-            void RewardedVideoOnAdClickedEvent(IronSourcePlacement placement, IronSourceAdInfo info)
-            {
-                Debug.Log("AdvertisementManager: RewardedVideoOnAdClickedEvent");
-            }
-
-            void RewardedOnAdLoadFailedEvent(IronSourceError error)
-            {
-                Debug.LogError("AdvertisementManager: RewardedOnAdLoadFailedEvent => " + error.getDescription());
-
-                Unsetup(false);
             }
         }
     }
