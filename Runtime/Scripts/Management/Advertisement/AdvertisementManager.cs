@@ -1,5 +1,5 @@
-using com.unity3d.mediation;
 using System;
+using Unity.Services.LevelPlay;
 using UnityEngine;
 
 namespace Devenant
@@ -22,34 +22,50 @@ namespace Devenant
         [Header("Rewarded")]
         [SerializeField] private string androidRewardedKey;
         [SerializeField] private string iosRewardedKey;
-        
+
+        private string key;
+        private string bannerKey;
+        private string interstitialKey;
+        private string rewardedKey;
+
         private LevelPlayBannerAd currentBanner;
         private LevelPlayInterstitialAd currentInterstitial;
         private LevelPlayRewardedAd currentRewarded;
 
+        private bool hasAds = false;
+
         public void Initialize(Action<InitializationResponse> callback)
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
-            string appKey = androidKey;
+            if (Application.isEditor)
+            {
+                callback?.Invoke(new InitializationResponse(true));
 
-            Debug.Log("AdvertisementManager: Initialize with Android appKey " + appKey);
-#elif UNITY_IPHONE && !UNITY_EDITOR
-            string appKey = iosKey;
+                return;
+            }
 
-            Debug.Log("AdvertisementManager: Initialize with iOS appKey " + appKey);
+#if UNITY_ANDROID
+            key = androidKey;
+            bannerKey = androidBannerKey;
+            interstitialKey = androidInterstitialKey;
+            rewardedKey = androidRewardedKey;
+
+            Debug.Log("AdvertisementManager: Initialize with Android appKey " + key);
 #else
-            string appKey = "unexpected_platform";
+            key = iosKey;
+            bannerKey = iosBannerKey;
+            interstitialKey = iosInterstitialKey;
+            rewardedKey = iosRewardedKey;
 
-            Debug.Log("AdvertisementManager: Initialize with null appKey " + appKey);
-
-            callback?.Invoke(new InitializationResponse(true));
+            Debug.Log("AdvertisementManager: Initialize with iOS appKey " + key);
 #endif
 
-            LevelPlayAdFormat[] legacyAdFormats = new[] { LevelPlayAdFormat.BANNER, LevelPlayAdFormat.INTERSTITIAL, LevelPlayAdFormat.REWARDED };
+            com.unity3d.mediation.LevelPlayAdFormat[] legacyAdFormats = new[] { com.unity3d.mediation.LevelPlayAdFormat.BANNER, com.unity3d.mediation.LevelPlayAdFormat.INTERSTITIAL, com.unity3d.mediation.LevelPlayAdFormat.REWARDED };
 
             LevelPlay.OnInitSuccess += (levelPlayConfiguration) =>
             {
                 Debug.Log("AdvertisementManager: OnInitSuccess");
+
+                hasAds = true;
 
                 callback?.Invoke(new InitializationResponse(true));
             };
@@ -58,10 +74,12 @@ namespace Devenant
             {
                 Debug.LogError("AdvertisementManager: OnInitFailed => " + levelPlayInitError.ErrorMessage);
 
-                callback?.Invoke(new InitializationResponse(false));
+                callback?.Invoke(new InitializationResponse(true));
             };
 
-            LevelPlay.Init(appKey, SystemInfo.deviceUniqueIdentifier, legacyAdFormats);
+            LevelPlay.Init(key, SystemInfo.deviceUniqueIdentifier, legacyAdFormats);
+
+            IronSource.Agent.shouldTrackNetworkState(true);
         }
 
         private void OnApplicationPause(bool isPaused)
@@ -69,24 +87,23 @@ namespace Devenant
             IronSource.Agent.onApplicationPause(isPaused);
         }
 
-        public void ShowBanner(string placement, LevelPlayAdSize size, LevelPlayBannerPosition position)
+        public void LoadBanner(string placement, com.unity3d.mediation.LevelPlayAdSize size, com.unity3d.mediation.LevelPlayBannerPosition position, Action<bool> callback)
         {
-#if UNITY_EDITOR
-            return;
-#endif
+            if (!hasAds)
+            {
+                callback?.Invoke(true);
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            string key = androidBannerKey;
-#elif UNITY_IPHONE && !UNITY_EDITOR
-            string key = iosBannerKey;
-#else
-            string key = string.Empty;
-#endif
+                return;
+            }
 
-            currentBanner = new LevelPlayBannerAd(key, size, position, placement, true, true);
-            currentBanner.LoadAd();
+            currentBanner?.HideAd();
+            currentBanner?.DestroyAd();
+
+            currentBanner = new LevelPlayBannerAd(bannerKey, size, position, placement, false, true);
 
             Setup();
+
+            currentBanner.LoadAd();
 
             void Setup()
             {
@@ -100,7 +117,7 @@ namespace Devenant
                 currentBanner.OnAdDisplayFailed += BannerOnAdDisplayedFailed;
             }
 
-            void Unsetup()
+            void Unsetup(bool success)
             {
                 currentBanner.OnAdLoaded -= BannerOnAdLoaded;
                 currentBanner.OnAdLoadFailed -= BannerOnAdLoadFailed;
@@ -110,22 +127,20 @@ namespace Devenant
                 currentBanner.OnAdExpanded -= BannerOnAdExpanded;
                 currentBanner.OnAdDisplayed -= BannerOnAdDisplayed;
                 currentBanner.OnAdDisplayFailed -= BannerOnAdDisplayedFailed;
+
+                callback?.Invoke(success);
             }
 
             void BannerOnAdLoaded(LevelPlayAdInfo info)
             {
-                currentBanner.ShowAd();
-
-                Unsetup();
+                Unsetup(true);
 
                 Debug.Log("AdvertisementManager: BannerOnAdLoaded");
             }
 
             void BannerOnAdLoadFailed(LevelPlayAdError error)
             {
-                Unsetup();
-
-                ShowBanner(placement, size, position);
+                Unsetup(false);
 
                 Debug.LogError("AdvertisementManager: BannerOnAdLoadFailed => " + error.ErrorMessage);
             }
@@ -152,41 +167,25 @@ namespace Devenant
 
             void BannerOnAdDisplayed(LevelPlayAdInfo info)
             {
-                Unsetup();
-
                 Debug.Log("AdvertisementManager: BannerOnAdDisplayed");
             }
 
             void BannerOnAdDisplayedFailed(LevelPlayAdDisplayInfoError error)
             {
-                Unsetup();
-
                 Debug.LogError("AdvertisementManager: BannerOnAdDisplayedFailed => " + error.LevelPlayError.ErrorMessage);
             }
         }
 
-        public void HideBanner()
-        {
-            currentBanner?.HideAd();
-        }
-
         public void ShowInterstitial(string placement, Action callback)
         {
-#if UNITY_EDITOR
-            callback?.Invoke();
+            if (!hasAds)
+            {
+                callback?.Invoke();
 
-            return;
-#endif
+                return;
+            }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            string key = androidInterstitialKey;
-#elif UNITY_IPHONE && !UNITY_EDITOR
-            string key = iosInterstitialKey;
-#else
-            string key = string.Empty;
-#endif
-            
-            currentInterstitial = new LevelPlayInterstitialAd(key);
+            currentInterstitial = new LevelPlayInterstitialAd(interstitialKey);
             currentInterstitial.LoadAd();
 
             Setup();
@@ -210,7 +209,7 @@ namespace Devenant
                 currentInterstitial.OnAdDisplayed -= InterstitialOnAdDisplayed;
                 currentInterstitial.OnAdDisplayFailed -= InterstitialOnAdDisplayFailed;
                 currentInterstitial.OnAdClosed -= InterstitialOnAdClosed;
-                currentInterstitial.OnAdInfoChanged -= InterstitialOnAdInfoChanged;
+                currentInterstitial.OnAdInfoChanged += InterstitialOnAdInfoChanged;
 
                 callback?.Invoke();
             }
@@ -263,97 +262,90 @@ namespace Devenant
 
         public void ShowRewarded(string placement, Action<bool> callback)
         {
-#if UNITY_EDITOR
-            callback?.Invoke(true); 
-            
-            return;
-#endif
+            if (!hasAds)
+            {
+                callback?.Invoke(true);
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            string key = androidRewardedKey;
-#elif UNITY_IPHONE && !UNITY_EDITOR
-            string key = iosRewardedKey;
-#else
-            string key = string.Empty;
-#endif
-            currentRewarded = new LevelPlayRewardedAd(key);
+                return;
+            }
+
+            currentRewarded = new LevelPlayRewardedAd(rewardedKey);
+            currentRewarded.LoadAd();
 
             Setup();
 
-            currentRewarded.LoadAd();
-
             void Setup()
             {
-                currentRewarded.OnAdClicked += RewardedOnAdClicked;
-                currentRewarded.OnAdClosed += RewardedOnAdClosed;
-                currentRewarded.OnAdDisplayed += RewardedOnAdDisplayed;
-                currentRewarded.OnAdDisplayFailed += RewardedOnAdDisplayFailed;
-                currentRewarded.OnAdInfoChanged += RewardedOnAdInfoChanged;
-                currentRewarded.OnAdLoaded += RewardedOnAdLoaded;
-                currentRewarded.OnAdLoadFailed += RewardedOnAdLoadFailed;
-                currentRewarded.OnAdRewarded += RewardedOnAdRewarded;
+                currentRewarded.OnAdClicked += OnAdClicked;
+                currentRewarded.OnAdClosed += OnAdClosed;
+                currentRewarded.OnAdDisplayed += OnAdDisplayed;
+                currentRewarded.OnAdDisplayFailed += OnAdDisplayFailed;
+                currentRewarded.OnAdInfoChanged += OnAdInfoChanged;
+                currentRewarded.OnAdLoaded += OnAdLoaded;
+                currentRewarded.OnAdLoadFailed += OnAdLoadFailed;
+                currentRewarded.OnAdRewarded += OnAdRewarded;
             }
 
             void Unsetup(bool success)
             {
-                currentRewarded.OnAdClicked -= RewardedOnAdClicked;
-                currentRewarded.OnAdClosed -= RewardedOnAdClosed;
-                currentRewarded.OnAdDisplayed -= RewardedOnAdDisplayed;
-                currentRewarded.OnAdDisplayFailed -= RewardedOnAdDisplayFailed;
-                currentRewarded.OnAdInfoChanged -= RewardedOnAdInfoChanged;
-                currentRewarded.OnAdLoaded -= RewardedOnAdLoaded;
-                currentRewarded.OnAdLoadFailed -= RewardedOnAdLoadFailed;
-                currentRewarded.OnAdRewarded -= RewardedOnAdRewarded;
+                currentRewarded.OnAdClicked -= OnAdClicked;
+                currentRewarded.OnAdClosed -= OnAdClosed;
+                currentRewarded.OnAdDisplayed -= OnAdDisplayed;
+                currentRewarded.OnAdDisplayFailed -= OnAdDisplayFailed;
+                currentRewarded.OnAdInfoChanged -= OnAdInfoChanged;
+                currentRewarded.OnAdLoaded -= OnAdLoaded;
+                currentRewarded.OnAdLoadFailed -= OnAdLoadFailed;
+                currentRewarded.OnAdRewarded -= OnAdRewarded;
 
                 callback?.Invoke(success);
             }
 
-            void RewardedOnAdClicked(LevelPlayAdInfo info)
+            void OnAdClicked(LevelPlayAdInfo info)
             {
                 Debug.Log("AdvertisementManager: RewardedOnAdClicked");
             }
 
-            void RewardedOnAdClosed(LevelPlayAdInfo info)
+            void OnAdClosed(LevelPlayAdInfo info)
             {
                 Debug.Log("AdvertisementManager: RewardedOnAdClosed");
             }
 
-            void RewardedOnAdDisplayed(LevelPlayAdInfo info)
+            void OnAdDisplayed(LevelPlayAdInfo info)
             {
                 Debug.Log("AdvertisementManager: RewardedOnAdDisplayed");
             }
 
-            void RewardedOnAdDisplayFailed(LevelPlayAdDisplayInfoError error)
+            void OnAdDisplayFailed(LevelPlayAdDisplayInfoError error)
             {
-                Debug.LogError("AdvertisementManager: RewardedOnAdDisplayFailed => " + error.LevelPlayError.ErrorMessage);
-
                 Unsetup(false);
+
+                Debug.Log("AdvertisementManager: RewardedOnAdDisplayFailed " + error.LevelPlayError.ErrorMessage);
             }
 
-            void RewardedOnAdInfoChanged(LevelPlayAdInfo info)
+            void OnAdInfoChanged(LevelPlayAdInfo info)
             {
                 Debug.Log("AdvertisementManager: RewardedOnAdInfoChanged");
             }
 
-            void RewardedOnAdLoaded(LevelPlayAdInfo info)
+            void OnAdLoaded(LevelPlayAdInfo info)
             {
                 currentRewarded.ShowAd(placement);
 
                 Debug.Log("AdvertisementManager: RewardedOnAdLoaded");
             }
 
-            void RewardedOnAdLoadFailed(LevelPlayAdError error)
+            void OnAdLoadFailed(LevelPlayAdError error)
             {
-                Debug.LogError("AdvertisementManager: RewardedOnAdLoadFailed => " + error.ErrorMessage);
-
                 Unsetup(false);
+
+                Debug.Log("AdvertisementManager: RewardedOnAdLoadFailed " + error.ErrorMessage);
             }
 
-            void RewardedOnAdRewarded(LevelPlayAdInfo info, LevelPlayReward reward)
+            void OnAdRewarded(LevelPlayAdInfo info, LevelPlayReward reward)
             {
-                Debug.Log("AdvertisementManager: RewardedOnAdRewarded");
-
                 Unsetup(true);
+
+                Debug.Log("AdvertisementManager: RewardedOnAdRewarded");
             }
         }
     }

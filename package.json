@@ -1,8 +1,8 @@
 {
 	"name": "com.devenant.core",
 	"displayName": "Devenant Core",
-	"version": "1.2.3",
-	"unity": "6000.0",
+	"version": "1.2.4",
+	"unity": "6000.1",
 	"description": "Base scripts and tools for all Devenant projects.",
 	"author": 
 	{
@@ -13,10 +13,10 @@
 	"dependencies": 
 	{
 		"com.unity.ads.ios-support": "1.0.0",
-		"com.unity.localization": "1.5.2",
-		"com.unity.netcode.gameobjects": "2.2.0",
+		"com.unity.localization": "1.5.4",
+		"com.unity.netcode.gameobjects": "2.3.2",
 		"com.unity.purchasing": "4.12.2",
-		"com.unity.services.levelplay": "8.5.1",
-		"com.unity.services.multiplayer": "1.1.0"
+		"com.unity.services.levelplay": "8.8.1",
+		"com.unity.services.multiplayer": "1.1.3"
 	}
 }
