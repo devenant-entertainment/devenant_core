@@ -33,15 +33,15 @@ namespace Devenant
 
                 if (this.products.Get().Length > 0)
                 {
-                    switch (Application.platform)
+                    switch (Application.isEditor)
                     {
-                        default:
+                        case true:
 
                             storeController = new EditorStoreController();
 
                             break;
 
-                        case RuntimePlatform.Android | RuntimePlatform.IPhonePlayer:
+                        case false:
 
                             storeController = new NativeStoreController();
 
