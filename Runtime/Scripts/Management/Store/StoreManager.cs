@@ -11,6 +11,8 @@ namespace Devenant
     {
         public static Action<StoreControllerProduct> onPurchased;
 
+        [SerializeField] private bool enable;
+
         public EntityDataArray<ProductData> products;
 
         public StoreControllerProduct[] storeProducts { get { return _storeProducts; } private set { _storeProducts = value; } }
@@ -20,6 +22,13 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
+            if (!enable)
+            {
+                callback?.Invoke(new InitializationResponse(true));
+
+                return;
+            }
+
             Addressables.LoadAssetsAsync<ProductAsset>(typeof(ProductAsset).Name, null).Completed += (AsyncOperationHandle<IList<ProductAsset>> asyncOperationHandle) =>
             {
                 List<ProductData> products = new List<ProductData>();
@@ -105,7 +114,16 @@ namespace Devenant
 
         public void Purchase(StoreControllerProduct product, Action<bool> callback = null)
         {
-            if(storeController == null)
+            if (!enable)
+            {
+                MessageMenu.instance.Open("info_storeClosed");
+
+                callback?.Invoke(false);
+
+                return;
+            }
+
+            if (storeController == null)
             {
                 callback?.Invoke(false);
 
