@@ -15,7 +15,7 @@ namespace Devenant
                 achievement = AchievementManager.instance.achievements.Get(unlockable.achievement.name);
             }
 
-            if(unlockable.purchase != null)
+            if(StoreManager.instance.isActive && unlockable.purchase != null)
             {
                 product = StoreManager.instance.products.Get(unlockable.purchase.name);
             }
@@ -30,7 +30,7 @@ namespace Devenant
                 result = achievement.completed;
             }
 
-            if(product != null && result)
+            if(StoreManager.instance.isActive && product != null && result)
             {
                 result = StoreManager.instance.storeProducts.ToList().Find((x)=>x.product == product).value;
             }

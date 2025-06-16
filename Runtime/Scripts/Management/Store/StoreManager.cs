@@ -11,7 +11,8 @@ namespace Devenant
     {
         public static Action<StoreControllerProduct> onPurchased;
 
-        [SerializeField] private bool enable;
+        public bool isActive { get { return _isActive; } }
+        [SerializeField] private bool _isActive;
 
         public EntityDataArray<ProductData> products;
 
@@ -22,7 +23,7 @@ namespace Devenant
 
         public void Initialize(Action<InitializationResponse> callback)
         {
-            if (!enable)
+            if (!isActive)
             {
                 callback?.Invoke(new InitializationResponse(true));
 
@@ -114,7 +115,7 @@ namespace Devenant
 
         public void Purchase(StoreControllerProduct product, Action<bool> callback = null)
         {
-            if (!enable)
+            if (!isActive)
             {
                 MessageMenu.instance.Open("info_storeClosed");
 
